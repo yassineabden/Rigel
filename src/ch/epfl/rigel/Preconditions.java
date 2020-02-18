@@ -1,18 +1,25 @@
 package ch.epfl.rigel;
 
+import ch.epfl.rigel.math.Interval;
+
 public final class Preconditions {
+
 
     private Preconditions() {}
 
-    void checkArgumemt(boolean isTrue){
+    public static void checkArgumemt(boolean isTrue){
 
     if (isTrue != true ){
-        throw new IllegalArgumentException() ;
+        throw new IllegalArgumentException() ; }
     }
 
+    public static double checkInInterval (Interval interval, double value){
+        if (interval.contains(value)){
+            return value; } else {
+            throw new IllegalArgumentException();
+        }
 
     }
-
 
 
 }
