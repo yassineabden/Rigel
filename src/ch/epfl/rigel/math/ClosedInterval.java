@@ -11,11 +11,12 @@ public final class ClosedInterval extends Interval {
 
     public static ClosedInterval of(double low, double high) {
 
-        ClosedInterval ci1 = new ClosedInterval(low,high);
-
         if (low >= high) {
-        throw new IllegalArgumentException();
+            throw new IllegalArgumentException();
+
         } else {
+            ClosedInterval ci1 = new ClosedInterval(low,high);
+
             return ci1;
         }
     }
