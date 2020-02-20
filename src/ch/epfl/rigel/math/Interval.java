@@ -7,7 +7,7 @@ package ch.epfl.rigel.math;
  */
 
 public abstract class Interval {
-    private final double UpperBound;  // double?
+    private final double UpperBound;
     private final double LowerBound;
 
 
@@ -46,14 +46,29 @@ public abstract class Interval {
         return UpperBound-LowerBound;
     }
 
-
+    /**
+     *
+     * @param v Valeur arbitraire
+     * Retourne vrai ssi la valeur v appartient à l'intervalle
+     * @return vrai ssi  la valeur v appartient à l'intervalle
+     */
     public abstract boolean contains (double v);
 
+    /**
+     *
+     * @param obj Objet arbitraire
+     * Cette méthode lève l'exception UnsupportedOperationException pour garantir qu'aucune sous-classe ne les redéfinira
+     * @throws UnsupportedOperationException si une super-classe la redéfinit.
+     */
     @Override
     public final boolean equals(Object obj) {
         super.equals(obj);
         throw new UnsupportedOperationException(); }
 
+    /**
+     * Cette méthode lève l'exception UnsupportedOperationException pour garantir qu'aucune sous-classe ne les redéfinira
+     * @throws UnsupportedOperationException si une super-classe la redéfinit.
+     */
     @Override
     public final int hashCode (){
         super.hashCode();
