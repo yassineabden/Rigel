@@ -15,13 +15,13 @@ public final class ClosedInterval extends Interval {
             throw new IllegalArgumentException();
 
         } else {
-            ClosedInterval ci1 = new ClosedInterval(low,high);
+            ClosedInterval ci1 = new ClosedInterval(low, high);
 
             return ci1;
         }
     }
 
-    public static ClosedInterval symmetric (double size) {
+    public static ClosedInterval symmetric(double size) {
 
         if (size <= 0) {
             throw new IllegalArgumentException();
@@ -41,35 +41,25 @@ public final class ClosedInterval extends Interval {
         }
     }
 
-    public double clip (double v) {
-        if (v>=high()) {
-            v=high(); }
-        if (v<=low()) {
-            v=low(); }
-      return v;
+    public double clip(double v) {
+        if (v >= high()) {
+            v = high();
+        }
+        if (v <= low()) {
+            v = low();
+        }
+        return v;
     }
 
     @Override
     public String toString() {
-        return String.format(Locale.ROOT,"[%.2f , %.2f]",low(),high());
+        return String.format(Locale.ROOT, "[%.2f , %.2f]", low(), high());
 
 
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-        }
+}
 
 
 
