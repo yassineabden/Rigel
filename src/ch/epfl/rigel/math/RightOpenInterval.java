@@ -36,6 +36,7 @@ public final class RightOpenInterval extends Interval{
         }
     }
     public double reduce(double v){
+
         return low() + (v-low()) - (size()*floor((v-low())/size()));
     }
 

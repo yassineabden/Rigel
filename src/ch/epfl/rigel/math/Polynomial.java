@@ -60,17 +60,25 @@ public final class Polynomial {
      */
     @Override
     public String toString() {
-        StringBuilder c = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
-        for (double coeffi : this.coeff) {
-            if(coeffi == 0){
+        for (int i = 0; i < coeff.length; i++) {
+
+
+            sb.append(coeff[i] + "x^" + (coeff.length -1));
+
+            if (coeff[i] == 0) {
                 continue;
+            }else if (coeff[i]  >0) {
+                sb.append(" + " + coeff[i] + "x^" + (coeff.length - i));
             } else {
-                c.append(coeffi);
+                    sb.append(" - " + coeff[i] +"x^"+ (coeff.length-i));
             }
-            return c.toString();
+
+
+
         }
-        return c.toString();
+        return sb.toString();
     }
     @Override
     public final boolean equals(Object obj) {
