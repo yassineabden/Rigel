@@ -9,7 +9,7 @@ import ch.epfl.rigel.Preconditions;
  */
 public final class Polynomial {
 
-    private final double[] coeff;
+    private double[] coeff;
 
     /**
      * Créer un tableau de taille N contenant les coefficients du polynôme à l'index de leur puissance (:= par odre croissant)
@@ -52,25 +52,38 @@ public final class Polynomial {
         return polatx;
 
     }
-}
+
     /**
      * TODO implémenter selon pdf
      *
      * @return
      */
-    //@Override
-   /* public  String toString() {
+    @Override
+    public String toString() {
+        StringBuilder c = new StringBuilder();
 
-        StringBuilder coeff = new StringBuilder();
-
-        // est-ce que si je fais <coeff.append(coeffi)> j'airai le coeff en string ou juste en double?
-        //
         for (double coeffi : this.coeff) {
-            if (coeffi == 0) ;
-                //si on laisse comme ça ça fait rien non?
-            else {
-                // but: ajouter le coefficient[i] + "x" + ^(coeff.length-i) + " + "
-                coeff.append(coeffi);
+            if(coeffi == 0){
+                continue;
+            } else {
+                c.append(coeffi);
             }
+            return c.toString();
         }
-    }*/
+        return c.toString();
+    }
+    @Override
+    public final boolean equals(Object obj) {
+        super.equals(obj);
+        throw new UnsupportedOperationException(); }
+
+    @Override
+    public final int hashCode (){
+        super.hashCode();
+        throw new UnsupportedOperationException(); }
+
+}
+
+
+
+
