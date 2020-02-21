@@ -12,7 +12,7 @@ public final class ClosedInterval extends Interval {
     }
 
     public static ClosedInterval of(double low, double high) {
-        Preconditions.checkArgumemt(low<=high);
+        Preconditions.checkArgument(low<high);
             ClosedInterval ci1 = new ClosedInterval(low,high);
 
             return ci1;
@@ -21,7 +21,7 @@ public final class ClosedInterval extends Interval {
 
     public static ClosedInterval symmetric (double size) {
 
-        Preconditions.checkArgumemt(size!=0);
+        Preconditions.checkArgument(size>0);
             ClosedInterval ci2 = new ClosedInterval(-size / 2, size / 2);
             return ci2;
 

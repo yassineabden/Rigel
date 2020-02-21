@@ -13,14 +13,14 @@ public final class RightOpenInterval extends Interval{
     }
 
     public static RightOpenInterval of(double low, double high) {
-        Preconditions.checkArgumemt(low<=high);
+        Preconditions.checkArgument(low<high);
         RightOpenInterval roi1 = new RightOpenInterval(low,high);
             return roi1;
         }
 
 
     public static RightOpenInterval symmetric (double size) {
-        Preconditions.checkArgumemt(size!=0);
+        Preconditions.checkArgument( size >0);
             RightOpenInterval roi2 = new RightOpenInterval(-size / 2, size / 2);
             return roi2;
 

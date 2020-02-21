@@ -34,7 +34,7 @@ public final class Polynomial {
 
 
     public static Polynomial of(double coefficientN, double... coefficients) {
-        Preconditions.checkArgumemt(coefficientN != 0);
+        Preconditions.checkArgument(coefficientN != 0);
         return new Polynomial(coefficientN, coefficients);
     }
 
@@ -45,7 +45,7 @@ public final class Polynomial {
     public double at(double x) {
 
         double polatx = 0;
-        for (int i = coeff.length; i >= 0; i--) {
+        for (int i = 0; i<coeff.length; i++) {
             polatx = polatx * x + coeff[i];
 
         }
@@ -62,18 +62,85 @@ public final class Polynomial {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        for (int i = 0; i < coeff.length; i++) {
+        if (coeff.length==1){
+        sb.append(coeff[0]);
 
-
-            sb.append(coeff[i] + "x^" + (coeff.length -1));
-
-            if (coeff[i] == 0) {
-                continue;
-            }else if (coeff[i]  >0) {
-                sb.append(" + " + coeff[i] + "x^" + (coeff.length - i));
-            } else {
-                    sb.append(" - " + coeff[i] +"x^"+ (coeff.length-i));
+        }else if (coeff.length == 2){
+            if (coeff[1] == 1.0){
+                sb.append("x");
+            }else if (coeff[1] == -1.0) {
+                sb.append("-x");
+            }else {
+                sb.append(coeff[0] + "x");
             }
+
+        }else {
+            if  (coeff[0] == 1.0 ){
+                sb.append("x^" + (coeff.length - 1));
+            }else if (coeff[0]== -1.0) {
+                sb.append("-x^" + (coeff.length - 1));
+            }else{
+                sb.append(coeff[0] + "x^" + (coeff.length - 1));
+            }
+        }
+
+
+        for (int i = 1; i < coeff.length; i++) {
+
+            if (coeff[i] ==0) {
+                continue;
+
+            }else if (i == coeff.length-1) {
+                if (coeff[i] > 0) {
+                    sb.append("+" + coeff[i]);
+                } else {
+                    sb.append(coeff[i]);
+                }
+
+            } else if ( i == coeff.length-2){
+
+                if (coeff[i] > 0) {
+                    if (coeff[2] == 1.0){
+                        sb.append("+x");
+                    }else if (coeff[2]==-1.0) {
+                        sb.append("-x");
+                    }else{
+                        sb.append("+" + coeff[i] + "x");
+                    }
+
+                } else {
+                    if (coeff[2] == 1.0) {
+                        sb.append("x");
+                    }else if (coeff[2] == -1.0){
+                        sb.append("-x");
+                    }else{
+                        sb.append(coeff[i] + "x");
+
+                    }
+                }
+
+            }else {
+                if (coeff[i] > 0) {
+                    if (coeff[i] == 1.0){
+                        sb.append("+x^" + (coeff.length - 1- i));
+                    }else if (coeff[i] == -1.0) {
+                        sb.append("-x^" + (coeff.length - 1- i));
+                    }else{
+                        sb.append("+" + coeff[i] + "x^" + (coeff.length - 1 -i));
+                    }
+
+                } else {
+                    if (coeff[i] == 1.0) {
+                        sb.append("x^" + (coeff.length -1 - i));
+                    }else if (coeff[i] == -1.0){
+                        sb.append("-x^" + (coeff.length - 1 - i));
+                    }else{
+                        sb.append(coeff[i] + "x^" + (coeff.length - 1 - i));
+
+                    }
+                }
+            }
+
 
 
 

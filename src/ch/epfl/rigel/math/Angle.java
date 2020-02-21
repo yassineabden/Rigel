@@ -10,18 +10,19 @@ public final class Angle {
     private static final double RAD_PER_DEG = TAU / 360.0;
     private static final double RAD_PER_HR = TAU/24;
     private static final double HR_PER_RAD = 24/TAU;
+    private static final double SEC_PER_DEG= 1.0/ (60*60);
 
 
     public static double normalizePositive(double rad) {
 
-        RightOpenInterval roiNormal = RightOpenInterval.of(0,Math.PI);
+        RightOpenInterval roiNormal = RightOpenInterval.of(0,TAU);
         return roiNormal.reduce(rad);
 
     }
 
     public static  double ofArcsec(double sec){
         //on a considéré le cercle trigo en entier et pas [0,pi[
-        return sec*TAU/(48*60*60);
+        return ofDeg(sec*SEC_PER_DEG);
     }
      public static double ofDMS (int deg, int min, double sec){
         if(!(min<60 && min>=0 )|| !(sec<60 && sec>=0)) {

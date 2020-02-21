@@ -18,8 +18,8 @@ public abstract class Interval {
      */
 
     protected Interval (double LowerBound , double UpperBound){
-        this.UpperBound= LowerBound;
-        this.LowerBound= UpperBound;
+        this.UpperBound= UpperBound;
+        this.LowerBound= LowerBound;
         ;
     }
 
