@@ -33,7 +33,7 @@ public final class GeographicCoordinates  extends SphericalCoordinates{
      * @throws IllegalArgumentException si lonDeg n'est pas inclus entre [-180 deg, 180 deg[
      * @return IllegalArgumentException si latDeg n'est pas inclus entre [-90 deg, 90 deg]
      */
-    public GeographicCoordinates ofDeg(double lonDeg, double latDeg){
+    public static GeographicCoordinates ofDeg(double lonDeg, double latDeg){
 
             Preconditions.checkArgument(INTERVAL_LONG_DEG.contains(lonDeg));
             Preconditions.checkArgument(INTERVAL_LAT_DEG.contains(latDeg));

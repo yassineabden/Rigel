@@ -74,7 +74,7 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
      * @param w Chaine de caractères correspondant au point cardinal Ouest
      * @return une chaine correspondant à l'octant dans lequel se trouve l'azimuth du récepteur.
      */
-    String azOctantName(String n, String e, String s, String w) {
+    public String azOctantName(String n, String e, String s, String w) {
         String name = new String();
         double phi= azDeg();
         int Quadrant= (int) Math.round(phi/360*8);
