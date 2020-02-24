@@ -4,7 +4,7 @@ import ch.epfl.rigel.Preconditions;
 
 /**
  * Classe Polynôme
- *
+ * @author Yassine Abdennadher (299273)
  * @author Juliette Aerni (296670)
  */
 public final class Polynomial {
@@ -12,7 +12,8 @@ public final class Polynomial {
     private double[] coeff;
 
     /**
-     * Créer un tableau de taille N contenant les coefficients du polynôme à l'index de leur puissance (:= par odre croissant)
+     * constructeur privé pour assurer l'immuabilité de la classe
+     * Créer un tableau de taille N+1 contenant tous les coefficicents par ordre decroissant
      *
      * @param coefficientN coefficient de la puissance N
      * @param coefficients tableau des coeffficient N-1 à 0 par odre décroissant
@@ -27,9 +28,12 @@ public final class Polynomial {
 
 
     /**
-     * @param coefficientN
-     * @param coefficients
-     * @return
+     * mlthode de construction appelant le contrucetur
+     * vérifie que le polynôme ne soit pas nul
+     *
+     * @param coefficientN coefficient du polynôme de degré n
+     * @param coefficients tableau dynamique contenant les autres coefficients par ordre decroissant
+     * @return le polynôme construit := tableau unique regroupant les coefficients
      */
 
 
@@ -39,8 +43,11 @@ public final class Polynomial {
     }
 
     /**
-     * @param x
-     * @return
+     * évalue le polynôme à une valeur donnée pour x
+     * calculé grâce à la focntion de Horner
+     *
+     * @param x valeur à laquelle on évalue le polynôme
+     * @return le polynôme évalué à x (valeur ccalculée)
      */
     public double at(double x) {
 
@@ -54,9 +61,9 @@ public final class Polynomial {
     }
 
     /**
-     * TODO implémenter selon pdf
+     * override de toString, transforme le polynôme en string lisible, sous forme habituelle
      *
-     * @return
+     * @return le polynôme lisible, le plus réduit possible
      */
     @Override
     public String toString() {
@@ -147,11 +154,23 @@ public final class Polynomial {
         }
         return sb.toString();
     }
+
+    /**
+     * permet de regarder si un objet est equal au polynôme ou non
+     * lance une exception pour garantir qu'aucune sous-classe ne redéfinira la méthode
+     * @param obj object à évaluer
+     * @return vrai si l'objet est égale  au polynôme, faux sinon
+     */
     @Override
     public final boolean equals(Object obj) {
         super.equals(obj);
         throw new UnsupportedOperationException(); }
 
+    /**
+     * lève une exception pour garantir qu'aucune sous classe ne les redéfinria
+     *
+     * @return une array conetant le hashCode du polynôme
+     */
     @Override
     public final int hashCode (){
         super.hashCode();

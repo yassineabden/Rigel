@@ -12,7 +12,7 @@ public abstract class Interval {
 
 
     /**
-     *
+     * constructeur d'intervalle, attribue la borne inferieure et supérieure
      * @param LowerBound Borne supérieure de l'intervalle
      * @param UpperBound Borne inférieure de l'intervalle
      */
@@ -35,8 +35,7 @@ public abstract class Interval {
      *  Retourne la borne supérieure de l'intervalle
      * @return la borne supérieure de l'intervalle
      */
-    public double high () {
-        return UpperBound; }
+    public double high () { return UpperBound; }
 
     /**
      * Retourne la taille de l'intervalle
@@ -47,18 +46,18 @@ public abstract class Interval {
     }
 
     /**
-     *
-     * @param v Valeur arbitraire
-     * Retourne vrai ssi la valeur v appartient à l'intervalle
-     * @return vrai ssi  la valeur v appartient à l'intervalle
+     * vérifie si une valeur est contenue dans l'interval ou non (à implémenter par les sous-clases)
+     * @param v Valeur à vérifier
+     * @return vrai si la valeur est contenue dans l'intervalle
      */
     public abstract boolean contains (double v);
 
     /**
-     *
-     * @param obj Objet arbitraire
-     * Cette méthode lève l'exception UnsupportedOperationException pour garantir qu'aucune sous-classe ne les redéfinira
-     * @throws UnsupportedOperationException si une super-classe la redéfinit.
+     * permet de comparer si un obljet donné correspond à l'interval
+     * lance une exception pour assurer qu'aucunes sou-classe ne la redéfinira
+     * fait appelle au super pour la comparaison
+     * @param obj objet (interval généralement) à évaluer
+     * @throws UnsupportedOperationException si une sous-classe la redéfinit.
      */
     @Override
     public final boolean equals(Object obj) {
@@ -66,8 +65,11 @@ public abstract class Interval {
         throw new UnsupportedOperationException(); }
 
     /**
-     * Cette méthode lève l'exception UnsupportedOperationException pour garantir qu'aucune sous-classe ne les redéfinira
-     * @throws UnsupportedOperationException si une super-classe la redéfinit.
+     *  Retourne une array contenant le hashcode de l'interval
+     *  Cette méthode lève l'exception UnsupportedOperationException pour garantir qu'aucune sous-classe ne les redéfinira
+     *
+     *  @throws UnsupportedOperationException si une super-classe la redéfinit
+     * @return une array contenant le hashcode de l'interval
      */
     @Override
     public final int hashCode (){
