@@ -10,6 +10,7 @@ package ch.epfl.rigel.math;
 public final class Angle {
 
     final public static double TAU= 2*Math.PI;
+    private static final RightOpenInterval INTERVAL_NORMAL_TRIGO = RightOpenInterval.of(0,TAU);
     private static final double DEG_PER_RAD = 360.0 / TAU;
     private static final double RAD_PER_DEG = TAU / 360.0;
     private static final double RAD_PER_HR = TAU/24;
@@ -28,9 +29,8 @@ public final class Angle {
      */
 
     public static double normalizePositive(double rad) {
-
-        RightOpenInterval roiNormal = RightOpenInterval.of(0,TAU);
-        return roiNormal.reduce(rad);
+        
+        return INTERVAL_NORMAL_TRIGO.reduce(rad);
 
     }
 
@@ -89,7 +89,7 @@ public final class Angle {
     /**
      * transforme un angle donné en radian en heures
      * @param rad angle en radians
-     * @return angle en heure 
+     * @return angle en heure
      */
     public static double toHr (double rad){
         return rad*HR_PER_RAD;

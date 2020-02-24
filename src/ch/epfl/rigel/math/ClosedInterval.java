@@ -22,9 +22,8 @@ public final class ClosedInterval extends Interval {
         super(low, high);
     }
 
-    /** TODO il faut mettre un @throw si la methode appelle une methode qui peut lancer un truc?
-     * permet de créer un interval fermé en appleant le constructeur
-     * vérifie que l'interval est contructible
+    /**
+     * Créer un interval fermé en appleant le constructeur
      * @param low borne inférieure
      * @param high borne supérieure
      * @return intervalle fermé construit
@@ -36,7 +35,7 @@ public final class ClosedInterval extends Interval {
             return ci1;
         }
 
-    /**TODO il faut mettre un @throw si la methode appelle une methode qui peut lancer un truc?
+    /**
      * permet la création d'un interval symmetrique autour de zéro de taille donnée
      * @param size taille de l'intervalle
      * @return interval fermé créé
