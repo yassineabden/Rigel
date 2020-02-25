@@ -1,6 +1,9 @@
 package ch.epfl.rigel.coordinates;
 import ch.epfl.test.TestRandomizer;
 import org.junit.jupiter.api.Test;
+
+import java.util.UnknownFormatConversionException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GeographicCoordinatesTest {
@@ -29,13 +32,18 @@ public class GeographicCoordinatesTest {
     }
 
     @Test
-    void isValidLonDegWithInValidValues(){
-        GeographicCoordinates gc3= GeographicCoordinates.ofDeg(200,-100);
-        assertFalse(GeographicCoordinates.isValidLonDeg(200));
-        assertFalse(GeographicCoordinates.isValidLatDeg(-100));
+    void toStringWorksonGeographicCoordinates(){
+        assertEquals("(lon=-120.0000°, lat=2.0000°)",GeographicCoordinates.ofDeg(-120,2).toString());
+        assertEquals("(lon=40.5434°, lat=-80.7672°)",GeographicCoordinates.ofDeg(40.54342, -80.76722).toString());
+        assertEquals("(lon=120.0000°, lat=2.0000°)",GeographicCoordinates.ofDeg(120,2).toString());
+        assertEquals("(lon=100.9899°, lat=89.8788°)",GeographicCoordinates.ofDeg(100.9898776,89.87878).toString());
+
 
     }
 
 
-
 }
+
+
+
+
