@@ -15,8 +15,8 @@ import java.util.Locale;
 
 public final class GeographicCoordinates  extends SphericalCoordinates{
 
-    private static final RightOpenInterval INTERVAL_LONG_DEG = RightOpenInterval.symmetric(360);
-    private static final ClosedInterval INTERVAL_LAT_DEG =  ClosedInterval.symmetric(180);
+    private static final RightOpenInterval INTERVAL_LONG_RAD = RightOpenInterval.symmetric(Angle.TAU);
+    private static final ClosedInterval INTERVAL_LAT_RAD =  ClosedInterval.symmetric(Angle.TAU/2);
 
 
     private GeographicCoordinates(double lonDeg, double latDeg){
@@ -35,8 +35,8 @@ public final class GeographicCoordinates  extends SphericalCoordinates{
      */
     public GeographicCoordinates ofDeg(double lonDeg, double latDeg){
 
-            Preconditions.checkArgument(INTERVAL_LONG_DEG.contains(lonDeg));
-            Preconditions.checkArgument(INTERVAL_LAT_DEG.contains(latDeg));
+            Preconditions.checkArgument(INTERVAL_LONG_RAD.contains(Angle.ofDeg(lonDeg)));
+            Preconditions.checkArgument(INTERVAL_LAT_RAD.contains(Angle.ofDeg(latDeg)));
 
             GeographicCoordinates gcDeg = new GeographicCoordinates(lonDeg,latDeg);
 
@@ -51,7 +51,7 @@ public final class GeographicCoordinates  extends SphericalCoordinates{
      * @return vrai si l'angle est valide, faux sinon
      */
     public static boolean isValidLonDeg(double lonDeg){
-        return INTERVAL_LONG_DEG.contains(lonDeg);
+        return INTERVAL_LONG_RAD.contains(Angle.ofDeg(lonDeg));
     }
 
     /**
@@ -61,7 +61,7 @@ public final class GeographicCoordinates  extends SphericalCoordinates{
      * @return vrai si l'angle est valide, faux sinon
      */
     public static boolean isValidLatDeg(double latDeg){
-        return INTERVAL_LAT_DEG.contains(latDeg);
+        return INTERVAL_LAT_RAD.contains(Angle.ofDeg(latDeg));
     }
 
     /**
