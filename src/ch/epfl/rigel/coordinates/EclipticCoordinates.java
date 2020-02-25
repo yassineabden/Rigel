@@ -13,39 +13,39 @@ import java.util.Locale;
  * @author Juliette Aerni (296670)
  */
 
-public final class GeographicCoordinates  extends SphericalCoordinates{
+public final class EclipticCoordinates extends SphericalCoordinates{
 
-    private static final RightOpenInterval INTERVAL_LONG_RAD = RightOpenInterval.symmetric(Angle.TAU);
+    private static final RightOpenInterval INTERVAL_LONG_RAD = RightOpenInterval.of(0.0,Angle.TAU);
     private static final ClosedInterval INTERVAL_LAT_RAD =  ClosedInterval.symmetric(Angle.TAU/2);
 
 
-    private GeographicCoordinates(double lonDeg, double latDeg){
+    private EclipticCoordinates(double lon, double lat){
 
-        super(Angle.ofDeg(lonDeg),Angle.ofDeg(latDeg));
+        super(lon,lat);
 
     }
 
     /**
-     * Méthode de construction de coordonées géographiques
+     * Méthode de construction de coordonées ecliptique
      *
      * @param lonDeg longitude en degré
      * @param latDeg latitude en degré
-     * @throws IllegalArgumentException si lonDeg n'est pas inclus entre [-180 deg, 180 deg[
+     * @throws IllegalArgumentException si lonDeg n'est pas inclus entre [0°, 360°[
      * @return IllegalArgumentException si latDeg n'est pas inclus entre [-90 deg, 90 deg]
      */
-    public static GeographicCoordinates ofDeg(double lonDeg, double latDeg){
+    public static EclipticCoordinates of(double lonDeg, double latDeg){
 
             Preconditions.checkArgument(INTERVAL_LONG_RAD.contains(Angle.ofDeg(lonDeg)));
             Preconditions.checkArgument(INTERVAL_LAT_RAD.contains(Angle.ofDeg(latDeg)));
 
-            GeographicCoordinates gcDeg = new GeographicCoordinates(lonDeg,latDeg);
+         return new EclipticCoordinates(Angle.ofDeg(latDeg),Angle.ofDeg(latDeg));
 
-            return gcDeg;
+
 
     }
 
     /**
-     * Vérifie qu'un angle est une logitude valide, contenue entre [-180 deg, 180 deg[
+     * Vérifie qu'un angle est une logitude valide, contenue entre [0°, 360°[
      *
      * @param lonDeg longitude en degré à vérifier
      * @return vrai si l'angle est valide, faux sinon
@@ -55,7 +55,7 @@ public final class GeographicCoordinates  extends SphericalCoordinates{
     }
 
     /**
-     * Vérifie qu'un angle est une latitude valide, contenue entre [-90 deg, 90 deg]
+     * Vérifie qu'un angle est une latitude valide, contenue entre [-90 °, 90 °]
      *
      * @param latDeg latitude en degré à vérifier
      * @return vrai si l'angle est valide, faux sinon
@@ -106,13 +106,13 @@ public final class GeographicCoordinates  extends SphericalCoordinates{
     }
 
     /**
-     * Transforme en string les coordonées géographique
+     * Transforme en string les coordonées ecliptiques
      *
-     * @return une string de type (lon=6.5700°, lat=46.5200°)
+     * @return une string de type (λ=22.5000°, β=18.0000°)
      */
     @Override
     public String toString(){
-    return String.format(Locale.ROOT, "(lon=%.4f°, lat=%.4f°)", lonDeg(), latDeg());
+    return(String.format(Locale.ROOT, "(λ.=%.4f.°, β=%.4.f", lonDeg(), latDeg()));
     }
 
 
