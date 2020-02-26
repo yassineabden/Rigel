@@ -28,17 +28,17 @@ public final class EclipticCoordinates extends SphericalCoordinates{
     /**
      * Méthode de construction de coordonées ecliptique
      *
-     * @param lonDeg longitude en degré
-     * @param latDeg latitude en degré
+     * @param lon longitude en radians
+     * @param lat latitude en radians
      * @throws IllegalArgumentException si lonDeg n'est pas inclus entre [0°, 360°[
      * @return IllegalArgumentException si latDeg n'est pas inclus entre [-90 deg, 90 deg]
      */
-    public static EclipticCoordinates of(double lonDeg, double latDeg){
+    public static EclipticCoordinates of(double lon, double lat){
 
-            Preconditions.checkArgument(INTERVAL_LONG_RAD.contains(Angle.ofDeg(lonDeg)));
-            Preconditions.checkArgument(INTERVAL_LAT_RAD.contains(Angle.ofDeg(latDeg)));
+            Preconditions.checkArgument(INTERVAL_LONG_RAD.contains(lon));
+            Preconditions.checkArgument(INTERVAL_LAT_RAD.contains(lat));
 
-         return new EclipticCoordinates(Angle.ofDeg(latDeg),Angle.ofDeg(latDeg));
+         return new EclipticCoordinates(lon,lat);
 
 
 
@@ -112,7 +112,7 @@ public final class EclipticCoordinates extends SphericalCoordinates{
      */
     @Override
     public String toString(){
-    return(String.format(Locale.ROOT, "(λ.=%.4f.°, β=%.4.f", lonDeg(), latDeg()));
+    return(String.format(Locale.ROOT, "(λ=%.4f°, β=%.4f°)", lonDeg(), latDeg()));
     }
 
 

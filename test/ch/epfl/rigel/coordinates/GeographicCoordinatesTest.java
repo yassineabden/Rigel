@@ -43,9 +43,20 @@ public class GeographicCoordinatesTest {
         assertEquals("(lon=40.5434°, lat=-80.7672°)",GeographicCoordinates.ofDeg(40.54342, -80.76722).toString());
         assertEquals("(lon=120.0000°, lat=2.0000°)",GeographicCoordinates.ofDeg(120,2).toString());
         assertEquals("(lon=100.9899°, lat=89.8787°)",GeographicCoordinates.ofDeg(100.9898776,89.87872).toString());
-
-
     }
+    @Test
+    void isAngularDistancetoValid(){
+        HorizontalCoordinates epfl= HorizontalCoordinates.ofDeg(6.5682,46.5138);
+        HorizontalCoordinates epfz = HorizontalCoordinates.ofDeg(8.5476,47.3763);
+        assertEquals(0.027978468380590767,epfl.angularDistanceTo(epfz));
+    }
+
+
+
+
+
+
+
 
 
 }

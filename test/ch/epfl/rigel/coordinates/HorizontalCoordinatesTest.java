@@ -11,8 +11,8 @@ public class HorizontalCoordinatesTest {
 
     @Test
     void ofWorksWithValidValues(){
-        HorizontalCoordinates hc1 = HorizontalCoordinates.of(1.23234,Math.PI/4);
-        assertEquals(1.23234,hc1.az());
+        HorizontalCoordinates hc1 = HorizontalCoordinates.of(0,Math.PI/4);
+        assertEquals(0,hc1.az());
         assertEquals(Math.PI/4,hc1.alt());
         HorizontalCoordinates hc2 = HorizontalCoordinates.of(3.13,-Math.PI/2);
         assertEquals(3.13,hc2.az());
@@ -21,9 +21,9 @@ public class HorizontalCoordinatesTest {
     @Test
     void ofWorksWithInvalidValues(){
         assertThrows(IllegalArgumentException.class,()->{
-            HorizontalCoordinates.ofDeg(Angle.TAU,2.34); });
+            HorizontalCoordinates.of(3,-Math.PI); });
         assertThrows(IllegalArgumentException.class,()->{
-            HorizontalCoordinates.ofDeg(2.54,(Math.PI/2)+1);
+            HorizontalCoordinates.of(2.54,(Math.PI/2)+1);
         });
     }
 
@@ -48,12 +48,16 @@ public class HorizontalCoordinatesTest {
     void isAzGetterValid(){
         HorizontalCoordinates hc4= HorizontalCoordinates.of(Math.PI,1.54345);
         assertEquals(Math.PI,hc4.az());
+        HorizontalCoordinates hc5= HorizontalCoordinates.ofDeg(180,-90);
+        assertEquals(Math.PI,hc5.az());
     }
 
     @Test
     void isAzDegGetterValid(){
         HorizontalCoordinates hc4= HorizontalCoordinates.ofDeg(130,75);
         assertEquals(130,hc4.azDeg());
+        HorizontalCoordinates hc5= HorizontalCoordinates.of(Math.PI,1.54345);
+        assertEquals(180,hc5.azDeg());
     }
 
     @Test
@@ -69,12 +73,16 @@ public class HorizontalCoordinatesTest {
     void isAltGetterValid(){
         HorizontalCoordinates hc4= HorizontalCoordinates.of(Math.PI,1.54345);
         assertEquals(1.54345,hc4.alt());
+        HorizontalCoordinates hc5= HorizontalCoordinates.ofDeg(180,-90);
+        assertEquals(-Math.PI/2,hc5.alt());
     }
 
     @Test
     void isAltDegGetterValid(){
         HorizontalCoordinates hc4= HorizontalCoordinates.ofDeg(130,75);
         assertEquals(75,hc4.altDeg());
+        HorizontalCoordinates hc6= HorizontalCoordinates.of(Math.PI,Math.PI/3);
+        assertEquals(60,hc6.altDeg(),1e6);
     }
 
     @Test
