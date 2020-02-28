@@ -10,12 +10,16 @@ package ch.epfl.rigel.math;
 public final class Angle {
 
     final public static double TAU= 2*Math.PI;
+
     private static final RightOpenInterval INTERVAL_NORMAL_TRIGO = RightOpenInterval.of(0,TAU);
+
     private static final double DEG_PER_RAD = 360.0 / TAU;
     private static final double RAD_PER_DEG = TAU / 360.0;
     private static final double RAD_PER_HR = TAU/24;
     private static final double HR_PER_RAD = 24/TAU;
     private static final double SEC_PER_DEG= 1.0/ (60*60);
+
+
 
     /**
      * constructeur privé et sans argument pour que la classe soit ininstantiable
@@ -29,7 +33,7 @@ public final class Angle {
      */
 
     public static double normalizePositive(double rad) {
-        
+
         return INTERVAL_NORMAL_TRIGO.reduce(rad);
 
     }

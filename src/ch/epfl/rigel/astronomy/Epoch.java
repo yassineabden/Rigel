@@ -37,7 +37,6 @@ public enum Epoch {
      */
    public  double daysUntil(ZonedDateTime when){
 
-
        return (this.epoch.until(when, ChronoUnit.MILLIS))* MILLIS_SEC_PER_DAYS;
 
        }

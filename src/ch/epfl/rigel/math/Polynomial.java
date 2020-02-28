@@ -51,12 +51,12 @@ public final class Polynomial {
      */
     public double at(double x) {
 
-        double polatx = 0;
+        double polAtx = 0;
         for (int i = 0; i<coeff.length; i++) {
-            polatx = polatx * x + coeff[i];
+            polAtx = polAtx * x + coeff[i];
 
         }
-        return polatx;
+        return polAtx;
 
     }
 
