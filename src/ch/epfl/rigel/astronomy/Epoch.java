@@ -10,24 +10,25 @@ import java.time.temporal.ChronoUnit;
  * @author Juliette Aerni (296670)
  */
 public enum Epoch {
-    //TODO est-ce que Epoch doit implémenter Temporal?
 
-    // ça joue comme ça ???!
 
     J2000(ZonedDateTime.of(LocalDateTime.of(2000,Month.JANUARY,1,12,0), ZoneId.of("UTC"))),
     J2010(ZonedDateTime.of(LocalDateTime.of(2010,Month.JANUARY,1,0,0).minusDays(1), ZoneId.of("UTC")));
-    // TODO est-ce que double suffit où c'est pas assez gros?
-    final static double MILLIS_SEC_PER_HOUR = (1/(60*60*1000));
-    final static double HOURS_PER_JULIAN_CENTURY = (1/24*36525);
+
+    private ZonedDateTime epoch ;
+
+
+    final static double MILLIS_SEC_PER_DAYS = 1.0/Duration.ofDays(1).toMillis();
+    final static double HOURS_PER_JULIAN_CENTURY = (1.0/Duration.ofDays(36525).toMillis());
 
 
 
     private Epoch(ZonedDateTime of) {
-
+    this.epoch = of;
    }
 
     /**
-     * TODO finir la méthode et comprendre quelle méthohde de ZoneDateTime utiliser, comment mettre l'unité?
+
      * Calcul le nombre de jours précis entre une des époque et le temps voulu
      *
      * @param when Moment de calcul(?!)
@@ -35,16 +36,14 @@ public enum Epoch {
      * @return Nombre de jours entre l'époque et le temps demandé
      */
    public  double daysUntil(ZonedDateTime when){
-       // il y a pas besoin de faire un switch en fait
-       // TODO il faut un moins car on veut de J2000/J2010 à when et pas de when à J...
 
-       return -(when.until(this,ChronoUnit.MILLIS))* MILLIS_SEC_PER_HOUR;
+
+       return (this.epoch.until(when, ChronoUnit.MILLIS))* MILLIS_SEC_PER_DAYS;
 
        }
 
 
     /**
-     * TODO Vérifier la méthode, me paraît trop petite - j'ai mis un moins devant pour les même raisons qu'avant
      * Calcul du nombre de siècle Julien entre l'époque et le moment voulu
      *
      * @param when moment à calculer
@@ -53,7 +52,7 @@ public enum Epoch {
      */
     public double julianCenturiesUntil(ZonedDateTime when){
 
-       return -(when.until(this, ChronoUnit.MILLIS))*MILLIS_SEC_PER_HOUR*HOURS_PER_JULIAN_CENTURY;
+       return (this.epoch.until(when, ChronoUnit.MILLIS))*MILLIS_SEC_PER_DAYS*HOURS_PER_JULIAN_CENTURY;
     }
 }
 
