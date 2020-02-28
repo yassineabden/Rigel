@@ -64,10 +64,10 @@ public class HorizontalCoordinatesTest {
     void isAzOctantNameValid(){
         assertEquals("NO",HorizontalCoordinates.ofDeg(335,0).azOctantName("N","E","S","O"));
         assertEquals("NE",HorizontalCoordinates.ofDeg(22.5,0).azOctantName("N","E","S","O"));
-        assertEquals("N",HorizontalCoordinates.ofDeg(350,0).azOctantName("N","E","S","O"));
-        assertEquals("S",HorizontalCoordinates.ofDeg(180,0).azOctantName("N","E","S","O"));
-        assertEquals("SO",HorizontalCoordinates.ofDeg(230,12).azOctantName("N","E","S","O"));
-        assertEquals("SE",HorizontalCoordinates.ofDeg(150,89).azOctantName("N","E","S","O")); }
+        assertEquals("E",HorizontalCoordinates.ofDeg(90,0).azOctantName("N","E","S","O"));
+        assertEquals("O",HorizontalCoordinates.ofDeg(270,0).azOctantName("N","E","S","O"));
+        assertEquals("S",HorizontalCoordinates.ofDeg(157.5,12).azOctantName("N","E","S","O"));
+        assertEquals("SE",HorizontalCoordinates.ofDeg(135,89).azOctantName("N","E","S","O")); }
 
     @Test
     void isAltGetterValid(){
@@ -91,6 +91,22 @@ public class HorizontalCoordinatesTest {
         assertEquals("(az=45.9879°, alt=-85.7876°)", HorizontalCoordinates.ofDeg(45.987897,-85.7876).toString());
         assertEquals("(az=80.7654°, alt=-90.0000°)", HorizontalCoordinates.ofDeg(80.76543,-90).toString());
     }
+
+    @Test
+    void isangularDistanceTo(){
+        HorizontalCoordinates hc4= HorizontalCoordinates.ofDeg(6.5682,46.5138);
+        HorizontalCoordinates hc5= HorizontalCoordinates.ofDeg(8.5476,47.3763);
+        assertEquals(0.0279,hc4.angularDistanceTo(hc5),1e7);
+
+
+    }
+
+
+
+
+
+
+
 }
 
 
