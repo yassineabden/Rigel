@@ -28,6 +28,7 @@ public final class Angle {
 
     /**
      * Normalise un angle en radians quelquonque dans l'intrervalle [o, TAU[
+     *
      * @param rad angle en radian à normaliser
      * @return l'angle normalisé
      */

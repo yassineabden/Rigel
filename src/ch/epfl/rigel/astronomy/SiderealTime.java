@@ -5,11 +5,13 @@ import ch.epfl.rigel.math.Angle;
 import ch.epfl.rigel.math.Polynomial;
 import ch.epfl.rigel.math.RightOpenInterval;
 
+import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
 /**
+ * TODO demander s'il faut changer le nom de la méthode
  * Classe de temps sidéral
  * @author Yassine Abdennadher (299273)
  * @author Juliette Aerni (296670)
@@ -18,9 +20,11 @@ import java.time.temporal.ChronoUnit;
 public final class SiderealTime {
 
     final private static Polynomial S_0 = Polynomial.of(0.000025863, 2400.051336,6.697374558);
-    final private static Polynomial S_1 = Polynomial.of(1.002737909);
+    final private static Polynomial S_1 = Polynomial.of(1.002737909,0);
 
-    final private static RightOpenInterval NORMAL_LAT_RAD = RightOpenInterval.of(0,Angle.TAU);
+    //TODO à vérifier la cte...
+
+    final static double MILLIS_TO_HOURS = 1/ Duration.ofHours(1).toMillis();
 
     private SiderealTime(){}
 
@@ -35,15 +39,16 @@ public final class SiderealTime {
 
 
        ZonedDateTime atGreenwich =  when.withZoneSameInstant(ZoneId.of("UTC"));
+
        ZonedDateTime atGreenwichMidnight = atGreenwich.truncatedTo(ChronoUnit.DAYS);
 
        double T = Epoch.J2000.julianCenturiesUntil(atGreenwichMidnight);
-       double t = when.getHour();
 
+        double t = atGreenwichMidnight.until(atGreenwich,ChronoUnit.MILLIS)*MILLIS_TO_HOURS;
 
         double sGHr = S_1.at(T) + S_1.at(t);
 
-        return NORMAL_LAT_RAD.reduce(Angle.ofHr(sGHr));
+        return Angle.normalizePositive(Angle.ofHr(sGHr));
     }
 
     /**
