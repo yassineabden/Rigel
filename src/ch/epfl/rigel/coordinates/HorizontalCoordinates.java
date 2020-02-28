@@ -46,7 +46,7 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
     public static HorizontalCoordinates ofDeg(double azDeg, double altDeg) {
         Preconditions.checkInInterval(RightOpenInterval.of(0, 360), azDeg);
         Preconditions.checkInInterval(ClosedInterval.symmetric(180), altDeg);
-        HorizontalCoordinates hc2 = new HorizontalCoordinates(azDeg, altDeg);
+        HorizontalCoordinates hc2 = new HorizontalCoordinates(Angle.ofDeg(azDeg),Angle.ofDeg(altDeg));
         return hc2;
     }
 
@@ -56,7 +56,7 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
      */
 
     public double az() {
-        return lon();
+        return super.lon();
     }
 
     /**
@@ -64,7 +64,7 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
      * @return l'azimut en degrés
      */
     public double azDeg() {
-        return lonDeg();
+        return super.lonDeg();
     }
 
     /** Retourne une chaine correspondant à l'octant dans lequel se trouve l'azimuth du récepteur.

@@ -19,26 +19,26 @@ public final class EquatorialCoordinates extends SphericalCoordinates{
     private static final ClosedInterval INTERVAL_DEC_RAD =  ClosedInterval.symmetric(Angle.TAU/2);
 
 
-    private EquatorialCoordinates(double raHr, double decDeg){
+    private EquatorialCoordinates(double lon, double lat){
 
-        super(Angle.ofHr(raHr),Angle.ofDeg(decDeg));
+        super(lon,lat);
 
     }
 
     /**
      * Méthode de construction de coordonées équatoriales
      *
-     * @param raHr ascension droite  en heure
-     * @param decDeg declinaison en degré
+     * @param ra ascension droite  en radians
+     * @param dec declinaison en radians
      * @throws IllegalArgumentException si  l'ascension droite n'est pas inclus entre [0h, 24h[
      * @return IllegalArgumentException si la declinaison  n'est pas inclus entre [-90 deg, 90 deg]
      */
-    public EquatorialCoordinates of(double raHr, double decDeg){
+    public static EquatorialCoordinates of(double ra, double dec){
 
-            Preconditions.checkArgument(INTERVAL_RA_RAD.contains(Angle.ofHr(raHr)));
-            Preconditions.checkArgument(INTERVAL_DEC_RAD.contains(Angle.ofDeg(decDeg)));
+            Preconditions.checkArgument(INTERVAL_RA_RAD.contains(ra));
+            Preconditions.checkArgument(INTERVAL_DEC_RAD.contains(dec));
 
-            EquatorialCoordinates ec = new EquatorialCoordinates(raHr,decDeg);
+            EquatorialCoordinates ec = new EquatorialCoordinates(ra,dec);
 
             return ec;
 
@@ -87,7 +87,7 @@ public final class EquatorialCoordinates extends SphericalCoordinates{
      *
      *  @return l'ascension droite en heure, qui correspond à la longitude
      */
-    public double raHr(){ return Angle.toHr(super.lonDeg());
+    public double raHr(){ return Angle.toHr(super.lon());
     }
 
 
@@ -116,7 +116,7 @@ public final class EquatorialCoordinates extends SphericalCoordinates{
      */
     @Override
     public String toString(){
-    return String.format(Locale.ROOT, "(ra=%.4f.h, dec=%.4.f", raHr(), decDeg());
+    return String.format(Locale.ROOT, "(ra=%.4fh, dec=%.4f°)", raHr(), decDeg());
     }
 
 
