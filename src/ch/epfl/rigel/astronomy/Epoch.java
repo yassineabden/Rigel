@@ -13,14 +13,15 @@ public enum Epoch {
 
 
     J2000(ZonedDateTime.of(LocalDateTime.of(2000,Month.JANUARY,1,12,0), ZoneId.of("UTC"))),
-   // J2010(ZonedDateTime.of(LocalDateTime.of(2010,Month.JANUARY,1,0,0), ZoneId.of("UTC")),
-    J2010 (ZonedDateTime.of(LocalDate.of(2010, Month.JANUARY, 1).minusDays(1),LocalTime.MIDNIGHT,ZoneId.of("UTC")))
-    ;
+   // J2010(ZonedDateTime.of(LocalDateTime.of(2010,Month.JANUARY,1,0,0), ZoneId.of("UTC")));
+    J2010 (ZonedDateTime.of(LocalDate.of(2010, Month.JANUARY, 1).minusDays(1),LocalTime.MIDNIGHT,ZoneId.of("UTC")));
+
 
     private ZonedDateTime epoch ;
 
 
-    private final static double MILLIS_SEC_PER_DAYS = 1.0/Duration.ofDays(1).toMillis();
+    private final static double MILLIS_SEC_TO_DAYS = 1.0/Duration.ofDays(1).toMillis();
+    //private static final double MILLIS_SEC_PER_DAYS = 1.1574e-8;
     private final static double DAYS_TO_JULIAN_CENTURY = (1.0/36525);
 
 
@@ -39,7 +40,7 @@ public enum Epoch {
      */
    public  double daysUntil(ZonedDateTime when){
 
-       return (this.epoch.until(when, ChronoUnit.MILLIS))* MILLIS_SEC_PER_DAYS;
+       return (this.epoch.until(when, ChronoUnit.MILLIS))* MILLIS_SEC_TO_DAYS;
 
        }
 
@@ -53,7 +54,7 @@ public enum Epoch {
      */
     public double julianCenturiesUntil(ZonedDateTime when){
 
-       return (this.epoch.until(when, ChronoUnit.MILLIS))*MILLIS_SEC_PER_DAYS* DAYS_TO_JULIAN_CENTURY;
+       return (this.epoch.until(when, ChronoUnit.MILLIS))* MILLIS_SEC_TO_DAYS * DAYS_TO_JULIAN_CENTURY;
     }
 }
 

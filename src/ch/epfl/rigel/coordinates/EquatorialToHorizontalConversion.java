@@ -1,9 +1,8 @@
 package ch.epfl.rigel.coordinates;
 
-import ch.epfl.rigel.astronomy.SiderealTime;
+import ch.epfl.rigel.astronomy.SideralTime;
 
 import java.time.ZonedDateTime;
-import java.util.HashMap;
 import java.util.function.Function;
 
 /**
@@ -28,7 +27,7 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
 
         cosLat = Math.cos(where.lat());
         sinLat = Math.sin(where.lat());
-        localSideralTime = SiderealTime.local(when,where);
+        localSideralTime = SideralTime.local(when,where);
     }
 
     /**
