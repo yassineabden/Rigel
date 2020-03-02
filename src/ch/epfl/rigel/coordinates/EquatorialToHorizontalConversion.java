@@ -20,6 +20,7 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
 
     /**
      * Constructeur de conversion de coordonées données
+     *
      *  @param when L'instant à ctransformer en coordonées horizontales
      * @param where L'endroit à transformer en coordonées horizontales
      */
@@ -31,40 +32,44 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
     }
 
     /**
-     * TODO javadoc et vérifier méthide
-     * Applies this function to the given argument.
+     * Effectue la conversion de coordonées équatoriales à des coordonées horizontales
      *
-     * @param equatorialCoordinates the function argument
-     * @return the function result
+     * @param ecl coordonées équatoriales à trsndformer
+     *
+     * @return les coordonées horizontales correspondantes
      */
     @Override
-    public HorizontalCoordinates apply(EquatorialCoordinates equatorialCoordinates) {
-        double angleHoraire = localSideralTime - equatorialCoordinates.ra();
+    public HorizontalCoordinates apply(EquatorialCoordinates ecl) {
 
-        double h = Math.asin(Math.sin(equatorialCoordinates.dec()*sinLat + Math.cos(equatorialCoordinates.dec())*Math.cos(angleHoraire)*cosLat));
-        double A = Math.atan2(-Math.cos(equatorialCoordinates.dec())*cosLat*Math.sin(angleHoraire), Math.sin(equatorialCoordinates.dec())-sinLat*Math.sin(h));
+        double angleHoraire = localSideralTime - ecl.ra();
+
+        double eclD = ecl.dec();
+
+        double h = Math.asin(Math.sin(eclD)*sinLat + Math.cos(eclD)*Math.cos(angleHoraire)*cosLat);
+        double A = Math.atan2(-Math.cos(eclD)*cosLat*Math.sin(angleHoraire), Math.sin(eclD)-sinLat*Math.sin(h));
 
         return HorizontalCoordinates.of(A,h);
     }
 
     /**
-     * TODO javadoc + méthode
+     *TODO javdoc
      *
-     * @return
+     * @throws UnsupportedOperationException
      */
     @Override
     public int hashCode() {
-        return super.hashCode();
+        throw new UnsupportedOperationException();
     }
 
     /**
-     * TODO javadoc + méthode
+     *TODO javadoc
      *
      * @param obj
-     * @return
+     *@throws UnsupportedOperationException
      */
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj);
+        throw new UnsupportedOperationException();
+
     }
 }
