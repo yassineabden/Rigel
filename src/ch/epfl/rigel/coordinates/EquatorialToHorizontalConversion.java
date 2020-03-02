@@ -54,8 +54,9 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
      */
     @Override
     public int hashCode() {
-        return super.hashCode();
-    }
+        super.hashCode();
+        throw new UnsupportedOperationException(); }
+
 
     /**
      * TODO javadoc + méthode
@@ -64,7 +65,8 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
      * @return
      */
     @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
-    }
+    public final boolean equals(Object obj) {
+        super.equals(obj);
+        throw new UnsupportedOperationException(); }
+
 }

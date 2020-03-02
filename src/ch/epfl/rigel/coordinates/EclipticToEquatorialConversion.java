@@ -30,13 +30,13 @@ public final class EclipticToEquatorialConversion implements Function<EclipticCo
 
         @Override
         public final boolean equals(Object obj) {
-        super.equals(obj);
-        throw new UnsupportedOperationException(); }
+            super.equals(obj);
+            throw new UnsupportedOperationException(); }
 
         @Override
         public final int hashCode (){
-        super.hashCode();
-        throw new UnsupportedOperationException(); }
+            super.hashCode();
+            throw new UnsupportedOperationException(); }
 
 
 
