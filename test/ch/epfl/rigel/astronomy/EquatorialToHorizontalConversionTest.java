@@ -15,9 +15,11 @@ public class EquatorialToHorizontalConversionTest {
 
     @Test
     void isConversionValid(){
-        EquatorialToHorizontalConversion equToHor= new EquatorialToHorizontalConversion(ZonedDateTime.of(2020,3,1,15,0,0,0, ZoneId.of("UTC")), GeographicCoordinates.ofDeg(10,6));
-        assertEquals(HorizontalCoordinates.ofDeg(0.0335,44.907).toString(),equToHor.apply(EquatorialCoordinates.of(Math.PI,Math.PI/2)).toString());
+        EquatorialToHorizontalConversion equToHor= new EquatorialToHorizontalConversion(ZonedDateTime.of(2020,3,2,17,10,57,0, ZoneId.of("Europe/Paris")), GeographicCoordinates.ofDeg(2.5,45));
+        assertEquals(HorizontalCoordinates.ofDeg(187.9679,21.6044).toString(),equToHor.apply(EquatorialCoordinates.of(Angle.ofHr(2.54),Angle.ofDeg(-23))).toString());
 
+        EquatorialToHorizontalConversion equToHor1= new EquatorialToHorizontalConversion(ZonedDateTime.of(2020,8,14,11,00,00,0, ZoneId.of("Europe/Paris")), GeographicCoordinates.ofDeg(2.5,45));
+        assertEquals(HorizontalCoordinates.ofDeg(65.82367,67.88464).toString(),equToHor1.apply(EquatorialCoordinates.of(Angle.ofHr(8.83764),Angle.ofDeg(49.90546))).toString());
 
     }
 

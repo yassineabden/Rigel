@@ -16,16 +16,17 @@ public final class EclipticToEquatorialConversion implements Function<EclipticCo
 
 
         public EclipticToEquatorialConversion(ZonedDateTime when){
-        this.obliquity = Polynomial.of(Angle.ofArcsec(0.00181),-Angle.ofArcsec(0.0006),-Angle.ofArcsec(46.815)+
+        this.obliquity = Polynomial.of(Angle.ofArcsec(0.00181),-Angle.ofArcsec(0.0006),-Angle.ofArcsec(46.815),
                 Angle.ofDMS(23,26,21.45));
         this.oblik = obliquity.at(Epoch.J2000.julianCenturiesUntil(when));
         this.cosOblik= Math.cos(oblik);
-        this.sinOblik= Math.cos(oblik); }
+        this.sinOblik= Math.sin(oblik); }
 
         @Override
         public EquatorialCoordinates apply(EclipticCoordinates ecl){
-            double alpha= Math.atan2(Math.sin(ecl.lon())* cosOblik- Math.tan(ecl.lat())*sinOblik,Math.cos(ecl.lon()));
-            double delta= Math.asin(Math.sin(ecl.lat())*cosOblik+Math.cos(ecl.lat())*sinOblik*Math.sin(ecl.lat()));
+            double alpha= Angle.normalizePositive(Math.atan2(Math.sin(ecl.lon())* cosOblik- Math.tan(ecl.lat())*sinOblik,Math.cos(ecl.lon())));
+            double delta= Math.asin(Math.sin(ecl.lat())*cosOblik+Math.cos(ecl.lat())*sinOblik*Math.sin(ecl.lon())) ;
+            System.out.println(Angle.toDeg(delta));
             return EquatorialCoordinates.of(alpha,delta); }
 
         @Override
