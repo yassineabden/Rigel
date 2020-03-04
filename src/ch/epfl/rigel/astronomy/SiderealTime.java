@@ -17,7 +17,7 @@ import java.time.temporal.ChronoUnit;
  * @author Juliette Aerni (296670)
  */
 
-public final class SideralTime {
+public final class SiderealTime {
 
     final private static Polynomial S_0 = Polynomial.of(0.000025862, 2400.051336,6.697374558);
     final private static Polynomial S_1 = Polynomial.of(1.002737909,0);
@@ -26,7 +26,7 @@ public final class SideralTime {
 
     final static double MILLIS_TO_HOURS = 1.0/ Duration.ofHours(1).toMillis();
 
-    private SideralTime(){}
+    private SiderealTime(){}
 
     /**
      * Calcul le temps sidéral en radians à Greewich d'un moment donné
