@@ -3,7 +3,7 @@ package ch.epfl.rigel.astronomy;
 import ch.epfl.rigel.coordinates.GeographicCoordinates;
 import ch.epfl.rigel.math.Angle;
 import ch.epfl.rigel.math.Polynomial;
-import ch.epfl.rigel.math.RightOpenInterval;
+import org.junit.platform.engine.support.descriptor.FileSystemSource;
 
 import java.time.Duration;
 import java.time.ZoneId;
@@ -11,7 +11,6 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
 /**
- * TODO demander s'il faut changer le nom de la méthode
  * Classe de temps sidéral
  * @author Yassine Abdennadher (299273)
  * @author Juliette Aerni (296670)
@@ -21,8 +20,6 @@ public final class SideralTime {
 
     final private static Polynomial S_0 = Polynomial.of(0.000025862, 2400.051336,6.697374558);
     final private static Polynomial S_1 = Polynomial.of(1.002737909,0);
-
-    //TODO à vérifier la cte...
 
     final static double MILLIS_TO_HOURS = 1.0/ Duration.ofHours(1).toMillis();
 
@@ -60,6 +57,7 @@ public final class SideralTime {
         double sGHr = S_0.at(T) + S_1.at(t);
             System.out.println(sGHr);
 
+        System.out.println(Angle.normalizePositive(Angle.ofHr(sGHr)));
         return Angle.normalizePositive(Angle.ofHr(sGHr));
     }
 

@@ -1,5 +1,6 @@
 package ch.epfl.rigel.astronomy;
 
+import ch.epfl.rigel.coordinates.GeographicCoordinates;
 import ch.epfl.rigel.math.Angle;
 import org.junit.jupiter.api.Test;
 
@@ -23,6 +24,14 @@ public class MySideralTimeTest {
                 LocalTime.of(14, 36, 51, (int) 6.7e8),
                 ZoneOffset.UTC)),
                 1e-10);
+    }
+
+    @Test
+    void localWorksWithValidValues (){
+
+        assertEquals(Angle.ofDMS(0,24,5.23), SideralTime.local(ZonedDateTime.of(1980,4,22,14,36,51,0, ZoneId.of("UTC")), GeographicCoordinates.ofDeg(-64, 0 )));
+
+
     }
 
 
