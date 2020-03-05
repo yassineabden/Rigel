@@ -33,31 +33,13 @@ public final class SiderealTime {
      * @return temps sidéral à Greenwich en radians
      */
     public static double greenwich(ZonedDateTime when){
-
-
-       ZonedDateTime atGreenwich =  when.withZoneSameInstant(ZoneId.of("UTC"));
-
-
-       ZonedDateTime atGreenwichMidnight = atGreenwich.truncatedTo(ChronoUnit.DAYS);
-
-
+        ZonedDateTime atGreenwich =  when.withZoneSameInstant(ZoneId.of("UTC"));
+        ZonedDateTime atGreenwichMidnight = atGreenwich.truncatedTo(ChronoUnit.DAYS);
 
         double T = Epoch.J2000.julianCenturiesUntil(atGreenwichMidnight);
-
-         System.out.println(T);
-
-      double t = atGreenwichMidnight.until(atGreenwich,ChronoUnit.MILLIS)*MILLIS_TO_HOURS;
-
-        //double t = (Epoch.J2000.daysUntil(atGreenwich) - Epoch.J2000.daysUntil(atGreenwichMidnight)*24);
-            System.out.println(t);
-
-            System.out.println(S_0.at(T));
-            System.out.println(S_1.at(t));
+        double t = atGreenwichMidnight.until(atGreenwich,ChronoUnit.MILLIS)*MILLIS_TO_HOURS;
 
         double sGHr = S_0.at(T) + S_1.at(t);
-            System.out.println(sGHr);
-
-        System.out.println(Angle.normalizePositive(Angle.ofHr(sGHr)));
         return Angle.normalizePositive(Angle.ofHr(sGHr));
     }
 

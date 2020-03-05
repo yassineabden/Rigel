@@ -32,18 +32,19 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
     }
 
     /**
+     *
      * Effectue la conversion de coordonées équatoriales à des coordonées horizontales
      *
-     * @param ecl coordonées équatoriales à trsndformer
+     * @param equ coordonées équatoriales à trsndformer
      *
      * @return les coordonées horizontales correspondantes
      */
     @Override
-    public HorizontalCoordinates apply(EquatorialCoordinates ecl) {
+    public HorizontalCoordinates apply(EquatorialCoordinates equ) {
 
-        double angleHoraire = localSideralTime - ecl.ra();
+        double angleHoraire = localSideralTime - equ.ra();
 
-        double eclD = ecl.dec();
+        double eclD = equ.dec();
 
         double h = Math.asin(Math.sin(eclD)*sinLat + Math.cos(eclD)*Math.cos(angleHoraire)*cosLat);
         double A = Angle.normalizePositive(Math.atan2(-Math.cos(eclD)*cosLat*Math.sin(angleHoraire), Math.sin(eclD)-sinLat*Math.sin(h)));
