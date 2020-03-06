@@ -41,7 +41,6 @@ public final class EclipticToEquatorialConversion implements Function<EclipticCo
         public EquatorialCoordinates apply(EclipticCoordinates ecl){
             double alpha= Angle.normalizePositive(Math.atan2(Math.sin(ecl.lon())* cosOblik- Math.tan(ecl.lat())*sinOblik,Math.cos(ecl.lon())));
             double delta= Math.asin(Math.sin(ecl.lat())*cosOblik+Math.cos(ecl.lat())*sinOblik*Math.sin(ecl.lon())) ;
-            System.out.println(Angle.toDeg(delta));
             return EquatorialCoordinates.of(alpha,delta); }
 
     /**
@@ -51,7 +50,6 @@ public final class EclipticToEquatorialConversion implements Function<EclipticCo
      */
     @Override
         public final boolean equals(Object obj) {
-            super.equals(obj);
             throw new UnsupportedOperationException(); }
 
     /**
@@ -60,7 +58,6 @@ public final class EclipticToEquatorialConversion implements Function<EclipticCo
      */
     @Override
     public final int hashCode (){
-        super.hashCode();
         throw new UnsupportedOperationException(); }
 
 

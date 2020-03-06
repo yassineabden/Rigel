@@ -24,10 +24,16 @@ public class MySideralTimeTest {
                 ZoneOffset.UTC)),
                 1e-10); }
 
+
     @Test
     void localWorksWithValidValues (){
-
-        assertEquals(Angle.ofDMS(0,24,5.23), SiderealTime.local(ZonedDateTime.of(1980,4,22,14,36,51,0, ZoneId.of("UTC")), GeographicCoordinates.ofDeg(-64, 0 ))); }
+        ZonedDateTime d1 =ZonedDateTime.of(
+                LocalDate.of(1980, Month.APRIL, 22),
+                LocalTime.of(14, 36, 51, (int) 6.7e8),
+                ZoneOffset.UTC);
+        GeographicCoordinates where= GeographicCoordinates.ofDeg(-64,0);
+        assertEquals(Angle.ofHr(0.401453),SiderealTime.local(d1,where),1e-6);
+    }
 
 
 

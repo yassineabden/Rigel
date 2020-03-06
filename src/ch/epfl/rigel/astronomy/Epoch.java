@@ -13,7 +13,6 @@ public enum Epoch {
 
 
     J2000(ZonedDateTime.of(LocalDateTime.of(2000,Month.JANUARY,1,12,0), ZoneId.of("UTC"))),
-   // J2010(ZonedDateTime.of(LocalDateTime.of(2010,Month.JANUARY,1,0,0), ZoneId.of("UTC")));
     J2010 (ZonedDateTime.of(LocalDate.of(2010, Month.JANUARY, 1).minusDays(1),LocalTime.MIDNIGHT,ZoneId.of("UTC")));
 
 
@@ -21,7 +20,6 @@ public enum Epoch {
 
 
     private final static double MILLIS_SEC_TO_DAYS = 1.0/Duration.ofDays(1).toMillis();
-    //private static final double MILLIS_SEC_PER_DAYS = 1.1574e-8;
     private final static double DAYS_TO_JULIAN_CENTURY = (1.0/36525);
 
 

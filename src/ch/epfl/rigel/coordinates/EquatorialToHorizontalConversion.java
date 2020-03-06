@@ -1,5 +1,4 @@
 package ch.epfl.rigel.coordinates;
-
 import ch.epfl.rigel.astronomy.SiderealTime;
 import ch.epfl.rigel.math.Angle;
 
@@ -29,6 +28,7 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
         cosLat = Math.cos(where.lat());
         sinLat = Math.sin(where.lat());
         localSideralTime = SiderealTime.local(when,where);
+
     }
 
     /**
@@ -43,7 +43,6 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
     public HorizontalCoordinates apply(EquatorialCoordinates equ) {
 
         double angleHoraire = localSideralTime - equ.ra();
-
         double eclD = equ.dec();
 
         double h = Math.asin(Math.sin(eclD)*sinLat + Math.cos(eclD)*Math.cos(angleHoraire)*cosLat);

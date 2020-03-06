@@ -3,11 +3,9 @@ package ch.epfl.rigel.astronomy;
 import ch.epfl.rigel.coordinates.GeographicCoordinates;
 import ch.epfl.rigel.math.Angle;
 import ch.epfl.rigel.math.Polynomial;
-import org.junit.platform.engine.support.descriptor.FileSystemSource;
 
-import java.time.Duration;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+
+import java.time.*;
 import java.time.temporal.ChronoUnit;
 
 /**
@@ -56,4 +54,9 @@ public final class SiderealTime {
         return greenwich(when) + where.lon();
     }
 
-}
+    }
+
+
+
+
+
