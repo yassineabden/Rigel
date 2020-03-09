@@ -51,7 +51,8 @@ public final class SiderealTime {
      */
     public static double local(ZonedDateTime when, GeographicCoordinates where){
 
-        return greenwich(when) + where.lon();
+
+        return Angle.normalizePositive(greenwich(when) +where.lon());
     }
 
     }

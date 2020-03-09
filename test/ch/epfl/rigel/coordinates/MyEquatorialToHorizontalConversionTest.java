@@ -11,7 +11,7 @@ import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class EquatorialToHorizontalConversionTest {
+public class MyEquatorialToHorizontalConversionTest {
 
     @Test
     void isConversionValid(){

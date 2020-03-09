@@ -7,7 +7,7 @@ import java.time.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-public class EclipticToEquatorialConversionTest {
+public class MyEclipticToEquatorialConversionTest {
     @Test
     void applyOK(){
         EclipticToEquatorialConversion e = new EclipticToEquatorialConversion(ZonedDateTime.of(2009,7,6,0,0,0, 0, ZoneId.of("UTC")));
