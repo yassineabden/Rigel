@@ -33,7 +33,7 @@ public final class StereographicProjection implements Function<HorizontalCoordin
         double sLon = Math.sin(azAlt.lon()-center.lon());
         double d = 1.0 / (1+sLat*sinLat + cosLat*cLat*cLon);
 
-        return  CartesianCoordinates.of(d*cLat*sLon, d*(sLon*cosLat - cLat*sinLat*cLon));
+        return  CartesianCoordinates.of(d*cLat*sLon, d*(sLat*cosLat - cLat*sinLat*cLon));
     }
 
     /**

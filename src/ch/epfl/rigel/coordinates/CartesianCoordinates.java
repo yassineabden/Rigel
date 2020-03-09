@@ -45,13 +45,13 @@ public  final class CartesianCoordinates {
      */
     double y(){return y;}
 
-    //TODO il faut appeler le super ou pas?!
+    //TODO javadoc
     @Override
     public int hashCode() {
         throw new UnsupportedOperationException();
     }
 
-    //TODO il faut appeler le super ou pas?!
+    //TODO javdoc
 
     @Override
     public boolean equals(Object obj) {
@@ -60,6 +60,7 @@ public  final class CartesianCoordinates {
     }
 
     /**
+     * TODO plus de dixièmes ou ça joue?
      * Retourne les coordonées sous forme lisible
      *
      * @return les coordonées carthésiennes sous la fomre (x, y)
