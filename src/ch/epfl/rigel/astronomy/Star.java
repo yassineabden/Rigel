@@ -4,6 +4,12 @@ import ch.epfl.rigel.Preconditions;
 import ch.epfl.rigel.coordinates.EquatorialCoordinates;
 import ch.epfl.rigel.math.ClosedInterval;
 
+/**
+    * Classe modélisant une étoile
+    *
+    * @author Yassine Abdennadher (299273)
+    * @author Juliette Aerni (296670)
+    */
 public class Star extends CelestialObject {
 
 
