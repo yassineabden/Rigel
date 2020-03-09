@@ -54,7 +54,6 @@ abstract class SphericalCoordinates {
      */
     @Override
     public final boolean equals(Object obj) {
-        super.equals(obj);
         throw new UnsupportedOperationException(); }
 
     /**
@@ -63,7 +62,6 @@ abstract class SphericalCoordinates {
      */
     @Override
     public final int hashCode (){
-        super.hashCode();
         throw new UnsupportedOperationException(); }
 
 

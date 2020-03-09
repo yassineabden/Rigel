@@ -48,16 +48,14 @@ public  final class CartesianCoordinates {
     //TODO il faut appeler le super ou pas?!
     @Override
     public int hashCode() {
-        return super.hashCode();
-       // throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     //TODO il faut appeler le super ou pas?!
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj);
-        //throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
 
     }
 
