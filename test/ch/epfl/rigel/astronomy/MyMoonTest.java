@@ -16,14 +16,14 @@ public class MyMoonTest {
         Moon m2 = new Moon(EquatorialCoordinates.of(Angle.TAU/3, -Math.PI/3), 2.3456f, 6.6787f, 0.3752f);
 
         assertEquals("Lune", m1.name());
-        assertEquals("(ra=4.0000h, dec=60.0000°)", m1.EquatorielPos().toString());
+        assertEquals("(ra=4.0000h, dec=60.0000°)", m1.equatorielPos().toString());
         assertEquals(2f, m1.magnitude());
         assertEquals(4f, m1.angularSize());
         assertEquals("Lune (100.0%)", m1.info());
         assertEquals(m1.info(), m1.toString());
 
         assertEquals("Lune", m2.name());
-        assertEquals("(ra=8.0000h, dec=-60.0000°)", m2.EquatorielPos().toString());
+        assertEquals("(ra=8.0000h, dec=-60.0000°)", m2.equatorielPos().toString());
         assertEquals(6.6787f, m2.magnitude());
         assertEquals(2.3456f, m2.angularSize());
         assertEquals("Lune (37.5%)", m2.info());

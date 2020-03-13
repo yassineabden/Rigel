@@ -61,7 +61,7 @@ public abstract class CelestialObject {
      * Retourne les coordonnées equatoriales
      * @return les coordonnées equatoriales
      */
-    public EquatorialCoordinates EquatorielPos(){
+    public EquatorialCoordinates equatorielPos(){
         return equatorielPos; }
 
     /**
