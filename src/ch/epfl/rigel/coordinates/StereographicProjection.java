@@ -1,5 +1,7 @@
 package ch.epfl.rigel.coordinates;
 
+import ch.epfl.rigel.math.Angle;
+
 import java.util.Locale;
 import java.util.function.Function;
 /**
@@ -29,8 +31,10 @@ public final class StereographicProjection implements Function<HorizontalCoordin
     public CartesianCoordinates apply(HorizontalCoordinates azAlt) {
         double cLat =Math.cos(azAlt.lat());
         double sLat = Math.sin(azAlt.lat());
+
         double cLon = Math.cos(azAlt.lon()-center.lon());
         double sLon = Math.sin(azAlt.lon()-center.lon());
+
         double d = 1.0 / (1+sLat*sinLat + cosLat*cLat*cLon);
 
         return  CartesianCoordinates.of(d*cLat*sLon, d*(sLat*cosLat - cLat*sinLat*cLon));
@@ -62,7 +66,9 @@ public final class StereographicProjection implements Function<HorizontalCoordin
      * @return centre du cerle de projection du parallèle
      */
     public CartesianCoordinates circleCenterForParallel(HorizontalCoordinates hor){
+
         double sLat = Math.sin(hor.lat());
+
         return CartesianCoordinates.of(0.0,(cosLat)/(sinLat+ sLat));
 
     }
@@ -95,7 +101,7 @@ public final class StereographicProjection implements Function<HorizontalCoordin
 
     @Override
     public String toString() {
-        return  String.format(Locale.ROOT, "Centre de StereographicProjection (%.2f, %.2f) ", center.az(),center.alt());
+        return  String.format(Locale.ROOT, "Centre de StereographicProjection (%.4f, %.4f) ", center.az(),center.alt());
     }
 
     @Override
