@@ -13,7 +13,7 @@ public class MyPlanetTest {
     public void isConstructorValidwithValidValues() {
         Planet p = new Planet("Saturne", EquatorialCoordinates.of(0.5, 1.5), 12, 8);
         assertEquals("Saturne", p.name());
-        assertEquals(EquatorialCoordinates.of(0.5, 1.5).toString(), p.equatorielPos().toString());
+        assertEquals(EquatorialCoordinates.of(0.5, 1.5).toString(), p.equatorialPos().toString());
         assertEquals(12, p.angularSize());
         assertEquals(8, p.magnitude());
     }

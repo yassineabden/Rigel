@@ -10,7 +10,7 @@ import java.util.List;
  */
 public final class Asterism  {
 
-    private List<Star> stars;
+    private  final List<Star> stars;
 
     /**
      * Constructeur qui initialise la liste d'étoiles

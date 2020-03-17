@@ -50,7 +50,7 @@ public final class StereographicProjection implements Function<HorizontalCoordin
         double sin_c = (2*p)/(p*p + 1);
         double cos_c = (1 - p*p)/ (p*p + 1);
 
-        double az = Math.atan2(xy.x()*sin_c , (p*cosLat*cos_c - xy.y()*sinLat*sin_c) ) + center.lon();
+        double az = Angle.normalizePositive(Math.atan2(xy.x()*sin_c , (p*cosLat*cos_c - xy.y()*sinLat*sin_c) ) + center.lon());
         double alt = Math.asin(cos_c*sinLat + (xy.y()*sin_c*cosLat)/ p);
 
         return HorizontalCoordinates.of(az,alt);

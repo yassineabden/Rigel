@@ -36,14 +36,14 @@ public  final class CartesianCoordinates {
      *
      * @return l'abscisse x
      */
-    double x(){return x;}
+    public double x(){return x;}
 
     /**
      * Retourne l'ordonnée
      *
      * @return l'ordonnée y
      */
-    double y(){return y;}
+    public double y(){return y;}
 
     //TODO javadoc
     @Override
