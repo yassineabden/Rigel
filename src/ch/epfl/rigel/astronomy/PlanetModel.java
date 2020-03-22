@@ -51,7 +51,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         this.ua= ua;
         this.inclinaison= Angle.ofDeg(inclinaison);
         this.lonNoeud= Angle.ofDeg(lonNoeud);
-        this.tailleAng= Angle.ofDMS(0,0,tailleAng);
+        this.tailleAng= Angle.ofArcsec(tailleAng);
         this.magnitude= magnitude; }
 
 
@@ -59,9 +59,13 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
 
     @Override
     public Planet at(double daysSinceJ2010, EclipticToEquatorialConversion eclipticToEquatorialConversion) {
+
+
+
+
+
+
         return null;
-
-
 
     }
 
