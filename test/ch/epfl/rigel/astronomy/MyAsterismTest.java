@@ -1,0 +1,7 @@
+package ch.epfl.rigel.astronomy;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+public class MyAsterismTest {
+
+}

@@ -1,10 +1,10 @@
 package ch.epfl.rigel.astronomy;
 
+import ch.epfl.rigel.coordinates.EclipticCoordinates;
 import ch.epfl.rigel.coordinates.EclipticToEquatorialConversion;
+import ch.epfl.rigel.coordinates.EquatorialCoordinates;
 import ch.epfl.rigel.math.Angle;
 
-import java.security.AllPermission;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,31 +28,35 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
             30.1985, 1.7673, 131.879, 62.20, -6.87);
 
     private final String name;
-    private final double periodeRevol;
-    private final double longToJ2010;
-    private final double longAuPerigee;
+    private final double periodRevol;
+    private final double lonAtJ2010;
+    private final double lonAtPerigee;
     private final double excOrbite;
-    private final double ua;
-    private final double inclinaison;
-    private final double lonNoeud;
-    private final double tailleAng;
+    private final double a;
+    private final double inclinationOfOrbiteAtEcl;
+    private final double lonOrbitalNode;
+    private final double angularSize;
     private final double magnitude;
 
     public static List<PlanetModel> ALL = Arrays.asList(PlanetModel.values());
 
+    final private static double TROPICAL_YEAR = 365.242191;
 
-    private PlanetModel(String name, double periodeRevol, double longToJ2010, double longAuPerigee, double excOrbite, double ua,
-                        double inclinaison, double lonNoeud, double tailleAng, double magnitude){
+
+
+    private PlanetModel(String name, double periodRevol, double longAtJ2010, double longAtPerigee, double excOrbite, double a,
+                        double inclinationOfOrbiteAtEcl, double lonOrbitalNode, double angularSize, double magnitude){
         this.name=name;
-        this.periodeRevol= periodeRevol;
-        this.longToJ2010= Angle.ofDeg(longToJ2010);
-        this.longAuPerigee= Angle.ofDeg(longAuPerigee);
+        this.periodRevol = periodRevol;
+        this.lonAtJ2010 = Angle.ofDeg(longAtJ2010);
+        this.lonAtPerigee = Angle.ofDeg(longAtPerigee);
         this.excOrbite= excOrbite;
-        this.ua= ua;
-        this.inclinaison= Angle.ofDeg(inclinaison);
-        this.lonNoeud= Angle.ofDeg(lonNoeud);
-        this.tailleAng= Angle.ofArcsec(tailleAng);
-        this.magnitude= magnitude; }
+        this.a = a;
+        this.inclinationOfOrbiteAtEcl = Angle.ofDeg(inclinationOfOrbiteAtEcl);
+        this.lonOrbitalNode = Angle.ofDeg(lonOrbitalNode);
+        this.angularSize = Angle.ofArcsec(angularSize);
+        this.magnitude= magnitude;
+    }
 
 
 
@@ -60,12 +64,67 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
     @Override
     public Planet at(double daysSinceJ2010, EclipticToEquatorialConversion eclipticToEquatorialConversion) {
 
+        double N =  Angle.normalizePositive((Angle.TAU*daysSinceJ2010)/(TROPICAL_YEAR*periodRevol));
+        double meanAnomaly = N + lonAtJ2010 - lonAtPerigee;
+        double realAnomaly = meanAnomaly + 2*excOrbite*Math.sin(meanAnomaly);
+
+        double rNum = a*(1-excOrbite*excOrbite);
+        double radiusToSun = rNum / ( 1 + excOrbite*Math.cos(realAnomaly));
+
+        double heliocentricLon = realAnomaly + lonAtPerigee;
+
+        double sinLOmega = Math.sin(heliocentricLon - lonOrbitalNode);
+        double cosLOmega = Math.cos(heliocentricLon - lonOrbitalNode);
+
+
+        double heliocentricEclLat = Math.asin(sinLOmega*Math.sin(inclinationOfOrbiteAtEcl));
+
+        double projectionOfRadiusOnEcliptic = radiusToSun*Math.cos(heliocentricEclLat);
+        double heliocentricEclLon = Math.atan2(sinLOmega*Math.cos(inclinationOfOrbiteAtEcl), cosLOmega) + lonOrbitalNode;
+
+        double earthN = Angle.normalizePositive((Angle.TAU*daysSinceJ2010)/(TROPICAL_YEAR*EARTH.periodRevol));
+        double earthM = earthN + EARTH.lonAtJ2010 - EARTH.lonAtPerigee;
+        double earthV = earthM + 2*EARTH.excOrbite*Math.sin(earthM);
+
+        double earthRNum = EARTH.a*(1 - EARTH.excOrbite*EARTH.excOrbite);
+        double earthR = earthRNum / (1 + EARTH.excOrbite*Math.cos(earthV));
+
+        double earthL = earthV + EARTH.lonAtPerigee;
+
+        double sinLL = Math.sin(earthL - heliocentricLon);
+        double cosLL = Math.cos(earthL - heliocentricLon);
+
+        double newLat = Math.atan2(projectionOfRadiusOnEcliptic*Math.tan(heliocentricEclLat)*sinLL, earthR - projectionOfRadiusOnEcliptic*cosLL);
 
 
 
+        switch (this){
+            case MERCURY:
+            case VENUS:
+                double aTanInf = Math.atan2(projectionOfRadiusOnEcliptic*sinLL, earthR - projectionOfRadiusOnEcliptic*cosLL);
+                double lonInf = Math.PI + earthL + aTanInf;
+                EclipticCoordinates eclInf = EclipticCoordinates.of(lonInf,newLat);
+                EquatorialCoordinates eqInf = eclipticToEquatorialConversion.apply(eclInf);
+
+                return new Planet(name, eqInf,(float)(angularSize),(float)(magnitude));
+
+            case MARS:
+            case SATURN:
+            case URANUS:
+            case JUPITER:
+            case NEPTUNE:
+                double aTanSup = Math.atan2(earthR*sinLL,projectionOfRadiusOnEcliptic-earthR*cosLL);
+                double lonSup = heliocentricEclLon + aTanSup;
+                EclipticCoordinates eclSup = EclipticCoordinates.of(lonSup,newLat);
+                EquatorialCoordinates eqSup = eclipticToEquatorialConversion.apply(eclSup);
+
+                return new Planet(name, eqSup,(float)(angularSize),(float)(magnitude));
+
+            default:
+                throw new IllegalArgumentException();
 
 
-        return null;
+        }
 
     }
 

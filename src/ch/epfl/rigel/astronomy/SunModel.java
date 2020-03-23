@@ -6,6 +6,11 @@ import ch.epfl.rigel.coordinates.EquatorialCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import ch.epfl.rigel.math.Angle;
 
+/**
+ * Enum modélisant le soleil
+ * @author Yassine Abdennadher (299273)
+ * @author Juliette Aerni (296670)
+ */
 public enum SunModel implements CelestialObjectModel<Sun> {
 
 
@@ -18,7 +23,14 @@ public enum SunModel implements CelestialObjectModel<Sun> {
     final private static double ECLIPTIC_LON_AT_J2010 = Angle.ofDeg(279.557208);
     final private static double ANGULAR_DIAMETER =  Angle.ofDeg(0.533128);
 
-
+    /**
+     * Calcul la position du soleil à un moment donné
+     *
+     * @param daysSinceJ2010 nombre de jour après J2010 double
+     * @param eclipticToEquatorialConversion conversion de coordonées ecliptic en coordonées équatoriales
+     *
+     * @return le soleil
+     */
     @Override
     public Sun at(double daysSinceJ2010, EclipticToEquatorialConversion eclipticToEquatorialConversion) {
 
