@@ -65,65 +65,46 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
     @Override
     public Planet at(double daysSinceJ2010, EclipticToEquatorialConversion eclipticToEquatorialConversion) {
 
-        double N =  (Angle.TAU*daysSinceJ2010)/(TROPICAL_YEAR*periodRevol);
-        double meanAnomaly = N + lonAtJ2010 - lonAtPerigee;
+        double meanAnomaly = (Angle.TAU*daysSinceJ2010)/(TROPICAL_YEAR*periodRevol)+ lonAtJ2010 - lonAtPerigee;
         double realAnomaly = meanAnomaly + 2*excOrbite*Math.sin(meanAnomaly);
 
-        double rNum = a*(1-excOrbite*excOrbite);
-        double radiusToSun = rNum / ( 1 + excOrbite*Math.cos(realAnomaly));
-
+        double radiusToSun = a*(1-excOrbite*excOrbite) / ( 1 + excOrbite*Math.cos(realAnomaly));
         double heliocentricLon = realAnomaly + lonAtPerigee;
-
-        double sinLOmega = Math.sin(heliocentricLon - lonOrbitalNode);
-        double cosLOmega = Math.cos(heliocentricLon - lonOrbitalNode);
-
-
-        double heliocentricEclLat = Math.asin(sinLOmega*Math.sin(inclinationOfOrbiteAtEcl));
+        double heliocentricEclLat = Math.asin(Math.sin(heliocentricLon - lonOrbitalNode)*Math.sin(inclinationOfOrbiteAtEcl));
 
         double projectionOfRadiusOnEcliptic = radiusToSun*Math.cos(heliocentricEclLat);
-        double heliocentricEclLon = Angle.normalizePositive(Math.atan2(sinLOmega*Math.cos(inclinationOfOrbiteAtEcl), cosLOmega)) + lonOrbitalNode;
+        double heliocentricEclLon = Math.atan2(Math.sin(heliocentricLon - lonOrbitalNode)*Math.cos(inclinationOfOrbiteAtEcl), Math.cos(heliocentricLon - lonOrbitalNode)) + lonOrbitalNode;
 
-        double earthN = Angle.normalizePositive((Angle.TAU*daysSinceJ2010)/(TROPICAL_YEAR*EARTH.periodRevol));
-        double earthM = earthN + EARTH.lonAtJ2010 - EARTH.lonAtPerigee;
+        double earthM = (Angle.TAU*daysSinceJ2010)/(TROPICAL_YEAR*EARTH.periodRevol) + EARTH.lonAtJ2010 - EARTH.lonAtPerigee;
         double earthV = earthM + 2*EARTH.excOrbite*Math.sin(earthM);
 
-        double earthRNum = EARTH.a*(1 - EARTH.excOrbite*EARTH.excOrbite);
-        double earthR = earthRNum / (1 + EARTH.excOrbite*Math.cos(earthV));
-
+        double earthR = EARTH.a*(1 - EARTH.excOrbite*EARTH.excOrbite) / (1 + EARTH.excOrbite*Math.cos(earthV));
         double earthL = earthV + EARTH.lonAtPerigee;
 
-        double sinLL = Math.sin(earthL - heliocentricLon);
-        double cosLL = Math.cos(earthL - heliocentricLon);
+        double distanceTerre= Math.sqrt(earthR*earthR+radiusToSun*radiusToSun-2*earthR*radiusToSun*Math.cos(heliocentricLon-earthL)*Math.cos(heliocentricEclLat));
+        double newAngularSize = angularSize/distanceTerre;
 
 
 
+        if (periodRevol<1) {
+            double lonInf =Angle.normalizePositive( Math.PI + earthL +Math.atan2(projectionOfRadiusOnEcliptic * Math.sin(earthL - heliocentricLon), earthR - projectionOfRadiusOnEcliptic * Math.cos(earthL - heliocentricLon)));
+            double newLat = Math.atan((projectionOfRadiusOnEcliptic * Math.tan(heliocentricEclLat) * Math.sin(lonInf - heliocentricEclLon)) / (earthR * Math.sin(heliocentricLon-earthL)));
+            EclipticCoordinates eclInf = EclipticCoordinates.of(lonInf, newLat);
+            EquatorialCoordinates eqInf = eclipticToEquatorialConversion.apply(eclInf);
+            double phase = (1+Math.cos(lonInf-heliocentricLon)/2);
+            double newMagnitude = magnitude+ 5* Math.log10(radiusToSun*distanceTerre/Math.sqrt(phase));
 
-        switch (this){
-            case MERCURY:
-            case VENUS:
-                double aTanInf = Math.atan2(projectionOfRadiusOnEcliptic*sinLL, earthR - projectionOfRadiusOnEcliptic*cosLL);
-                double lonInf = Angle.normalizePositive(Math.PI + earthL + aTanInf);
-                double newLat = Math.atan((projectionOfRadiusOnEcliptic*Math.tan(heliocentricEclLat)*Math.sin(lonInf-heliocentricEclLon))/(earthR*sinLL));
-                EclipticCoordinates eclInf = EclipticCoordinates.of(lonInf,newLat);
-                EquatorialCoordinates eqInf = eclipticToEquatorialConversion.apply(eclInf);
+            return new Planet(name, eqInf, (float) (newAngularSize), (float) (newMagnitude));
 
-                return new Planet(name, eqInf,(float)(angularSize),(float)(magnitude));
-
-            case MARS:
-            case SATURN:
-            case URANUS:
-            case JUPITER:
-            case NEPTUNE:
-                double aTanSup = Math.atan2(earthR*sinLL,projectionOfRadiusOnEcliptic-earthR*cosLL);
-                double lonSup = Angle.normalizePositive(heliocentricEclLon + aTanSup);
-                double newLat1 = Math.atan((projectionOfRadiusOnEcliptic*Math.tan(heliocentricEclLat)*Math.sin(lonSup-heliocentricEclLon))/(earthR*sinLL));
+        } else {
+                double lonSup = Angle.normalizePositive(heliocentricEclLon +Math.atan2(earthR* Math.sin(heliocentricLon-earthL),projectionOfRadiusOnEcliptic-earthR*Math.cos(heliocentricLon-earthL)));
+                double newLat1 = Math.atan((projectionOfRadiusOnEcliptic*Math.tan(heliocentricEclLat)*Math.sin(lonSup-heliocentricEclLon))/(earthR* Math.sin(heliocentricLon-earthL)));
                 EclipticCoordinates eclSup = EclipticCoordinates.of(lonSup,newLat1);
                 EquatorialCoordinates eqSup = eclipticToEquatorialConversion.apply(eclSup);
+                double phase = (1+Math.cos(lonSup-heliocentricLon)/2);
+                double newMagnitude = magnitude+ 5* Math.log10(radiusToSun*distanceTerre/Math.sqrt(phase));
 
-                return new Planet(name, eqSup,(float)(angularSize),(float)(magnitude));
-
-                default:
-                throw new IllegalArgumentException();
+            return new Planet(name, eqSup,(float)(newAngularSize),(float)(newMagnitude));
 
 
         }

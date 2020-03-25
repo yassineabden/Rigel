@@ -14,13 +14,14 @@ public class PlanetModelTest {
     @Test
     void atWorksOnKnownValues(){
         EquatorialCoordinates eq1 = PlanetModel.JUPITER.at(-2231.0, new EclipticToEquatorialConversion(ZonedDateTime.of(LocalDate.of(2003, Month.NOVEMBER, 22), LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC))).equatorialPos();
-        assertEquals(11.18715493470968, eq1.raHr(), 1e-12);
-        assertEquals(6.356635506685742, eq1.decDeg(), 1e-12);}
-     @Test
+        assertEquals(6.356635506685742, eq1.decDeg(), 1e-12);
+        assertEquals(11.18715493470968, eq1.raHr(), 1e-12);}
+
+    @Test
         void lol() {
-            EquatorialCoordinates eq2 = PlanetModel.MERCURY.at(-2231.0, new EclipticToEquatorialConversion(ZonedDateTime.of(LocalDate.of(2003, Month.NOVEMBER, 22), LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC))).equatorialPos();
-            assertEquals(16.820074565897148, eq2.raHr(), 1e-12);
-            assertEquals(-24.500872462861224, eq2.decDeg(), 1e-12);
+        EquatorialCoordinates eq2 = PlanetModel.MERCURY.at(-2231.0, new EclipticToEquatorialConversion(ZonedDateTime.of(LocalDate.of(2003, Month.NOVEMBER, 22), LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC))).equatorialPos();
+        assertEquals(16.820074565897148, eq2.raHr(), 1e-12);
+        assertEquals(-24.500872462861224, eq2.decDeg(), 1e-12);
         }
 
       @Test
