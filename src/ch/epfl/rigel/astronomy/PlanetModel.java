@@ -5,8 +5,10 @@ import ch.epfl.rigel.coordinates.EclipticToEquatorialConversion;
 import ch.epfl.rigel.coordinates.EquatorialCoordinates;
 import ch.epfl.rigel.math.Angle;
 
+import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
+
 
 public enum PlanetModel implements CelestialObjectModel<Planet> {
 
@@ -39,7 +41,6 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
     private final double magnitude;
 
     public static List<PlanetModel> ALL = Arrays.asList(PlanetModel.values());
-
     final private static double TROPICAL_YEAR = 365.242191;
 
 
@@ -64,7 +65,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
     @Override
     public Planet at(double daysSinceJ2010, EclipticToEquatorialConversion eclipticToEquatorialConversion) {
 
-        double N =  Angle.normalizePositive((Angle.TAU*daysSinceJ2010)/(TROPICAL_YEAR*periodRevol));
+        double N =  (Angle.TAU*daysSinceJ2010)/(TROPICAL_YEAR*periodRevol);
         double meanAnomaly = N + lonAtJ2010 - lonAtPerigee;
         double realAnomaly = meanAnomaly + 2*excOrbite*Math.sin(meanAnomaly);
 
@@ -80,7 +81,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         double heliocentricEclLat = Math.asin(sinLOmega*Math.sin(inclinationOfOrbiteAtEcl));
 
         double projectionOfRadiusOnEcliptic = radiusToSun*Math.cos(heliocentricEclLat);
-        double heliocentricEclLon = Math.atan2(sinLOmega*Math.cos(inclinationOfOrbiteAtEcl), cosLOmega) + lonOrbitalNode;
+        double heliocentricEclLon = Angle.normalizePositive(Math.atan2(sinLOmega*Math.cos(inclinationOfOrbiteAtEcl), cosLOmega)) + lonOrbitalNode;
 
         double earthN = Angle.normalizePositive((Angle.TAU*daysSinceJ2010)/(TROPICAL_YEAR*EARTH.periodRevol));
         double earthM = earthN + EARTH.lonAtJ2010 - EARTH.lonAtPerigee;
@@ -94,7 +95,6 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         double sinLL = Math.sin(earthL - heliocentricLon);
         double cosLL = Math.cos(earthL - heliocentricLon);
 
-        double newLat = Math.atan2(projectionOfRadiusOnEcliptic*Math.tan(heliocentricEclLat)*sinLL, earthR - projectionOfRadiusOnEcliptic*cosLL);
 
 
 
@@ -102,7 +102,8 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
             case MERCURY:
             case VENUS:
                 double aTanInf = Math.atan2(projectionOfRadiusOnEcliptic*sinLL, earthR - projectionOfRadiusOnEcliptic*cosLL);
-                double lonInf = Math.PI + earthL + aTanInf;
+                double lonInf = Angle.normalizePositive(Math.PI + earthL + aTanInf);
+                double newLat = Math.atan((projectionOfRadiusOnEcliptic*Math.tan(heliocentricEclLat)*Math.sin(lonInf-heliocentricEclLon))/(earthR*sinLL));
                 EclipticCoordinates eclInf = EclipticCoordinates.of(lonInf,newLat);
                 EquatorialCoordinates eqInf = eclipticToEquatorialConversion.apply(eclInf);
 
@@ -114,13 +115,14 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
             case JUPITER:
             case NEPTUNE:
                 double aTanSup = Math.atan2(earthR*sinLL,projectionOfRadiusOnEcliptic-earthR*cosLL);
-                double lonSup = heliocentricEclLon + aTanSup;
-                EclipticCoordinates eclSup = EclipticCoordinates.of(lonSup,newLat);
+                double lonSup = Angle.normalizePositive(heliocentricEclLon + aTanSup);
+                double newLat1 = Math.atan((projectionOfRadiusOnEcliptic*Math.tan(heliocentricEclLat)*Math.sin(lonSup-heliocentricEclLon))/(earthR*sinLL));
+                EclipticCoordinates eclSup = EclipticCoordinates.of(lonSup,newLat1);
                 EquatorialCoordinates eqSup = eclipticToEquatorialConversion.apply(eclSup);
 
                 return new Planet(name, eqSup,(float)(angularSize),(float)(magnitude));
 
-            default:
+                default:
                 throw new IllegalArgumentException();
 
 
