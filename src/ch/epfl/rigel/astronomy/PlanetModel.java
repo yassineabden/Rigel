@@ -104,11 +104,11 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
             return new Planet(name, eqInf, (float) (newAngularSize), (float) (newMagnitude));
 
         } else {
-                double lonSup = Angle.normalizePositive(heliocentricEclLon + Math.atan2(earthR* Math.sin(heliocentricEclLon - earthL),
+                double lonSup = Angle.normalizePositive(heliocentricEclLon + Math.atan2(earthR * Math.sin(heliocentricEclLon - earthL),
                         projectionOfRadiusOnEcliptic - earthR*Math.cos(heliocentricEclLon - earthL)));
 
                 double newLat1 = Math.atan((projectionOfRadiusOnEcliptic*Math.tan(heliocentricEclLat)*Math.sin(lonSup-heliocentricEclLon))
-                        /(earthR* Math.sin(heliocentricEclLon - earthL)));
+                        /(earthR * Math.sin(heliocentricEclLon - earthL)));
 
                 EclipticCoordinates eclSup = EclipticCoordinates.of(lonSup,newLat1);
                 EquatorialCoordinates eqSup = eclipticToEquatorialConversion.apply(eclSup);
