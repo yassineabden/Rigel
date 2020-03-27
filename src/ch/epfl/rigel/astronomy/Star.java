@@ -10,7 +10,7 @@ import ch.epfl.rigel.math.ClosedInterval;
     * @author Yassine Abdennadher (299273)
     * @author Juliette Aerni (296670)
     */
-public class Star extends CelestialObject {
+public final class Star extends CelestialObject {
 
 
     private static final ClosedInterval HIPPARCOS_INTERVAL = ClosedInterval.of(-0.5,5.5);

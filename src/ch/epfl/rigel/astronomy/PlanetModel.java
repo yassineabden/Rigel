@@ -5,7 +5,7 @@ import ch.epfl.rigel.coordinates.EclipticToEquatorialConversion;
 import ch.epfl.rigel.coordinates.EquatorialCoordinates;
 import ch.epfl.rigel.math.Angle;
 
-import java.awt.*;
+
 import java.util.Arrays;
 import java.util.List;
 
