@@ -2,6 +2,7 @@ package ch.epfl.rigel.astronomy;
 
 import ch.epfl.rigel.Preconditions;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
@@ -83,6 +84,7 @@ public final class StarCatalogue {
 
 
     public final static class Builder {
+        //TODO est-ce que les listes attribut doivent être final ou pas?
         private List<Star> stars = new ArrayList<>();
         private List<Asterism> asterisms= new ArrayList<>();
 
@@ -112,13 +114,28 @@ public final class StarCatalogue {
             return new StarCatalogue(stars,asterisms);
         }
 
+    }
 
+    /**
+     * Interface qui charge des données
+     *
+     * @author Yassine Abdennadher (299273)
+     * @author Juliette Aerni (296670)
+     */
+    public interface Loader{
 
-
-
-
-
-
+        /**
+         * Charge les étoiles et/ou asterism du flot d'entrée et les ajoute au catalogue en cours de construction du bâtisseur
+         *  lève une IOException s'il y a une erreur
+         *
+         * @param inputStream Flot d'entrée contenant des asterism et/ou des étoiles
+         * @param builder Catalogue en cours de construction
+         *
+         * @throws IOException S'il y a une erreur d'entrée /sortie
+         */
+        public abstract void load(InputStream inputStream, Builder builder) throws IOException ;
 
     }
+
+
 }
