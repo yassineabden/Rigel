@@ -7,7 +7,11 @@ import ch.epfl.rigel.math.Angle;
 
 import java.util.Arrays;
 import java.util.List;
-
+/**
+ * Enum modélisant une planète
+ * @author Yassine Abdennadher (299273)
+ * @author Juliette Aerni (296670)
+ */
 
 public enum PlanetModel implements CelestialObjectModel<Planet> {
 
@@ -44,7 +48,19 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
     public static List<PlanetModel> ALL = Arrays.asList(PlanetModel.values());
     final private static double TROPICAL_YEAR = 365.242191;
 
-
+    /**
+     *
+     * @param name nom de la planète
+     * @param periodRevol période de révolution
+     * @param longAtJ2010 longitude à J2010
+     * @param longAtPerigee longitude au périgrée
+     * @param excOrbite Excentricité de l'robite
+     * @param a demi grand-axe de l'orbite
+     * @param inclinationOfOrbiteAtEcl Inclinaison de l'orbite à l'écliptique
+     * @param lonOrbitalNode longitude du noeud ascendant
+     * @param angularSize taille angualire
+     * @param magnitude magnitude
+     */
 
     private PlanetModel(String name, double periodRevol, double longAtJ2010, double longAtPerigee, double excOrbite, double a,
                         double inclinationOfOrbiteAtEcl, double lonOrbitalNode, double angularSize, double magnitude){
@@ -63,7 +79,12 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
 
     }
 
-
+    /**
+     *
+     * @param daysSinceJ2010 nombre de jour après J2010 double
+     * @param eclipticToEquatorialConversion coordonées équatoriales à J2010
+     * @return la planète
+     */
 
 
     @Override

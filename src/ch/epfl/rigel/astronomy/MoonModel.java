@@ -5,7 +5,11 @@ import ch.epfl.rigel.coordinates.EquatorialCoordinates;
 import ch.epfl.rigel.math.Angle;
 
 public enum MoonModel implements CelestialObjectModel<Moon> {
-
+    /**
+     * Enum modélisant une lune
+     * @author Yassine Abdennadher (299273)
+     * @author Juliette Aerni (296670)
+     */
     MOON;
 
     final private static double LONGITUDE_MOY= Angle.ofDeg(91.929336);
@@ -14,6 +18,12 @@ public enum MoonModel implements CelestialObjectModel<Moon> {
     final private static double INCLIN_ORBITE= Angle.ofDeg(5.145396);
     final private static double EXCENT_ORBITE= Angle.ofDeg(0.0549);
 
+    /**
+     *
+     * @param daysSinceJ2010 nombre de jour après J2010 double
+     * @param eclipticToEquatorialConversion coordonées équatoriales à J2010
+     * @return la lune
+     */
     @Override
     public Moon at(double daysSinceJ2010, EclipticToEquatorialConversion eclipticToEquatorialConversion) {
 
