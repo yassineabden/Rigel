@@ -78,5 +78,6 @@ public final class StarCatalogue {
         return asterismsMap.get(asterism);
     }
 
+
     }
 
