@@ -35,6 +35,7 @@ public final class StarCatalogue {
 
         HashMap<Asterism, List<Integer>> aMap = new HashMap<>();
 
+        //TODO à vérifier avec assistants
         HashMap<Star, Integer> starsIndex = new HashMap<>();
         for (Star s : stars) {
             starsIndex.put(s, this.stars.indexOf(s));
@@ -139,11 +140,13 @@ public final class StarCatalogue {
         public List<Asterism> asterisms (){
             return Collections.unmodifiableList(asterisms); }
 
-
             // TODO
 
-        public Builder loadFrom(InputStream inputStream) throws IOException{
-            return null;
+        public Builder loadFrom(InputStream inputStream, Loader loader) throws IOException{
+
+            loader.load(inputStream,this);
+
+            return this;
         }
 
 
