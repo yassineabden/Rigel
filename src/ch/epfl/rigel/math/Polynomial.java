@@ -143,14 +143,9 @@ public final class Polynomial {
                         sb.append("-x^" + (coeff.length - 1 - i));
                     }else{
                         sb.append(coeff[i] + "x^" + (coeff.length - 1 - i));
-
                     }
                 }
             }
-
-
-
-
         }
         return sb.toString();
     }
@@ -163,7 +158,6 @@ public final class Polynomial {
      */
     @Override
     public final boolean equals(Object obj) {
-        super.equals(obj);
         throw new UnsupportedOperationException(); }
 
     /**
@@ -173,7 +167,6 @@ public final class Polynomial {
      */
     @Override
     public final int hashCode (){
-        super.hashCode();
         throw new UnsupportedOperationException(); }
 
 }
