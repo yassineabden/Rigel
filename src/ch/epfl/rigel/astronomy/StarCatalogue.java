@@ -16,6 +16,7 @@ import java.util.*;
 public final class StarCatalogue {
 
     private final HashMap<Asterism, List<Integer>> asterismsMap = new HashMap<>();
+
     private final List<Star> stars = new ArrayList<>();
 
     /**
@@ -27,8 +28,10 @@ public final class StarCatalogue {
      * @throws IllegalArgumentException si un asterisms contient une étoile qui ne se trouve pas dans la liste donnée
      */
     public StarCatalogue(List<Star> stars, List<Asterism> asterisms) {
+// TODO c'est mieux de pas initialiser et l'égaler ou initialiser et addAll?
 
         this.stars.addAll(List.copyOf(stars));
+       // this.stars = List.copyOf(stars);
 
         HashMap<Asterism, List<Integer>> aMap = new HashMap<>();
 
@@ -42,7 +45,9 @@ public final class StarCatalogue {
             List<Integer> aIndex = new ArrayList<>(a.stars().size());
 
             for (Star s : a.stars()) {
-                Preconditions.checkArgument(!(Objects.isNull(aIndex.add(starsIndex.get(s)))));
+                Preconditions.checkArgument(starsIndex.containsKey(s));
+                aIndex.add(starsIndex.get(s));
+
             }
             aMap.put(a, aIndex);
         }
