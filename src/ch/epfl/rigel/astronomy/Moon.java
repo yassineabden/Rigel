@@ -10,7 +10,7 @@ import java.util.Locale;
  * @author Yassine Abdennadher (299273)
  * @author Juliette Aerni (296670)
  */
-public class Moon extends CelestialObject {
+public final class Moon extends CelestialObject {
 
     private final float phase;
     private final ClosedInterval INTERVAL_PHASE= ClosedInterval.of(0,1);
