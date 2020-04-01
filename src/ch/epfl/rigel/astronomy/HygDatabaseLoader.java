@@ -39,13 +39,11 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
     public  void load(InputStream inputStream, StarCatalogue.Builder builder) throws IOException {
         try ( BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,US_ASCII))){
 
-            String s=bufferedReader.readLine();
-
+            String line;
             bufferedReader.readLine();
 
-            while (s!=null){
-                String[] parts= s.split(",");
-                System.out.print("a");
+            while ((line = bufferedReader.readLine()) != null) {
+                String[] parts= line.split(",");
                 System.out.print(parts[HIP]);
 
                 int hipparcosId= parts[HIP].isEmpty()? 0 : Integer.parseInt(parts[HIP]);
