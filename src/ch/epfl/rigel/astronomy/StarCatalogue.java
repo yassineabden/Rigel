@@ -28,17 +28,16 @@ public final class StarCatalogue {
      * @throws IllegalArgumentException si un asterisms contient une étoile qui ne se trouve pas dans la liste donnée
      */
     public StarCatalogue(List<Star> stars, List<Asterism> asterisms) {
-// TODO c'est mieux de pas initialiser et l'égaler ou initialiser et addAll?
 
         this.stars.addAll(List.copyOf(stars));
-       // this.stars = List.copyOf(stars);
 
         HashMap<Asterism, List<Integer>> aMap = new HashMap<>();
 
-        //TODO à vérifier avec assistants
-        HashMap<Star, Integer> starsIndex = new HashMap<>();
+        HashMap <Star, Integer> starsIndex = new HashMap<>();
+        int i= 0;
         for (Star s : stars) {
-            starsIndex.put(s, this.stars.indexOf(s));
+            starsIndex.put(s, i);
+          i++;
         }
 
         for (Asterism a : asterisms) {
@@ -48,7 +47,6 @@ public final class StarCatalogue {
             for (Star s : a.stars()) {
                 Preconditions.checkArgument(starsIndex.containsKey(s));
                 aIndex.add(starsIndex.get(s));
-
             }
             aMap.put(a, aIndex);
         }
@@ -98,8 +96,8 @@ public final class StarCatalogue {
 
     public final static class Builder {
         //TODO est-ce que les listes attribut doivent être final ou pas?
-        private List<Star> stars = new ArrayList<>();
-        private List<Asterism> asterisms= new ArrayList<>();
+        private final List<Star> stars = new ArrayList<>();
+        private final List<Asterism> asterisms= new ArrayList<>();
 
         /**
          * Constructeur par défaut qui initialise le bâtisseur de manière à ce que le catalogue
@@ -140,7 +138,16 @@ public final class StarCatalogue {
         public List<Asterism> asterisms (){
             return Collections.unmodifiableList(asterisms); }
 
-            // TODO
+
+        /**
+         * Méthode qui charge un input d'asterism et/ou d'étoiles au builder grâce à un chargeur d'étoiles et/ou d'asterims
+         *
+         * @param inputStream input d'asterisms et/ou d'étoiles
+         * @param loader chargeur d'asterisms et/ou d'étoiles
+         * @return le builder chargé
+         * @throws IOException s'il y a une erreur d'entrée/sortie
+         */
+        //TODO vérifier que l'exception est bien lancée quand il faut
 
         public Builder loadFrom(InputStream inputStream, Loader loader) throws IOException{
 

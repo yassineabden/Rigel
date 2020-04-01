@@ -35,7 +35,7 @@ public enum AsterismLoader implements StarCatalogue.Loader {
 
 
             String a = bufferedReader.readLine() ;
-
+    //readLine
             while (! a.isEmpty() ){
 
                 String [] stars = a.split(",");
@@ -46,6 +46,7 @@ public enum AsterismLoader implements StarCatalogue.Loader {
                 }
 
                 builder.addAsterism(new Asterism(aStars));
+
                 }
 
 
