@@ -17,14 +17,14 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
     INSTANCE;
 
     // Index des colonnes dont les informations doivent être extraites
-    private final static int HIP = 2;
-    private final static int PROPER=7;
-    private final static int MAG= 14;
-    private final static int CI= 17;
-    private final static int RARAD = 24;
-    private final static int DECRAD = 25;
-    private final static int BAYER = 28;
-    private final static int CON = 30;
+    private final static int HIP = 1;
+    private final static int PROPER=6;
+    private final static int MAG= 13;
+    private final static int CI= 16;
+    private final static int RARAD = 23;
+    private final static int DECRAD = 24;
+    private final static int BAYER = 27;
+    private final static int CON = 29;
 
 
     /**
@@ -41,9 +41,15 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
 
             String s=bufferedReader.readLine();
 
+            bufferedReader.readLine();
+
             while (s!=null){
                 String[] parts= s.split(",");
+                System.out.print("a");
+                System.out.print(parts[HIP]);
+
                 int hipparcosId= parts[HIP].isEmpty()? 0 : Integer.parseInt(parts[HIP]);
+
                 String con = parts[CON];
                 String bayer = parts[BAYER].isEmpty()? "?": parts[BAYER];
                 String name = parts[PROPER].isEmpty()? bayer+ " " + con: parts[PROPER];

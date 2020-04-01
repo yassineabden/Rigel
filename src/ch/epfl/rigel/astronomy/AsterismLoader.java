@@ -45,12 +45,7 @@ public enum AsterismLoader implements StarCatalogue.Loader {
                     aStars.add(hipToStar.get(Integer.parseInt(n)));
                 }
 
-                builder.addAsterism(new Asterism(aStars));
-
-                }
-
-
-            }
-
+                builder.addAsterism(new Asterism(aStars)); }
         }
+    }
 }

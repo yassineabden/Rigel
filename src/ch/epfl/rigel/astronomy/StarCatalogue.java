@@ -37,8 +37,7 @@ public final class StarCatalogue {
         int i= 0;
         for (Star s : stars) {
             starsIndex.put(s, i);
-          i++;
-        }
+          i++; }
 
         for (Asterism a : asterisms) {
 
@@ -46,14 +45,10 @@ public final class StarCatalogue {
 
             for (Star s : a.stars()) {
                 Preconditions.checkArgument(starsIndex.containsKey(s));
-                aIndex.add(starsIndex.get(s));
-            }
+                aIndex.add(starsIndex.get(s)); }
             aMap.put(a, aIndex);
         }
-
-        asterismsMap.putAll(Map.copyOf(aMap));
-
-    }
+        asterismsMap.putAll(Map.copyOf(aMap)); }
 
     /**
      * Retourne la liste d'étoiles contenues dans les asterisms
@@ -95,7 +90,6 @@ public final class StarCatalogue {
 
 
     public final static class Builder {
-        //TODO est-ce que les listes attribut doivent être final ou pas?
         private final List<Star> stars = new ArrayList<>();
         private final List<Asterism> asterisms= new ArrayList<>();
 
@@ -150,11 +144,8 @@ public final class StarCatalogue {
         //TODO vérifier que l'exception est bien lancée quand il faut
 
         public Builder loadFrom(InputStream inputStream, Loader loader) throws IOException{
-
             loader.load(inputStream,this);
-
-            return this;
-        }
+            return this;}
 
 
         /**
