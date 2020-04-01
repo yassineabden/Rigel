@@ -1,5 +1,7 @@
 package ch.epfl.rigel.astronomy;
 
+import org.junit.platform.engine.support.descriptor.FileSystemSource;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,6 +9,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
@@ -28,15 +31,17 @@ public enum AsterismLoader implements StarCatalogue.Loader {
 
             List<Star> starsBuilded = builder.stars();
 
-            HashMap<Integer, Star> hipToStar = new HashMap<>();
+
+            HashMap <Integer, Star> hipToStar = new HashMap<>();
             for (Star star  : starsBuilded) {
                 hipToStar.put(star.hipparcosId(), star);
             }
 
 
-            String a = bufferedReader.readLine() ;
-    //readLine
-            while (! a.isEmpty() ){
+            bufferedReader.readLine();
+            String a;
+
+           while ((a = bufferedReader.readLine()) != null){
 
                 String [] stars = a.split(",");
                 List<Star>  aStars = new ArrayList<>(stars.length);
@@ -45,7 +50,12 @@ public enum AsterismLoader implements StarCatalogue.Loader {
                     aStars.add(hipToStar.get(Integer.parseInt(n)));
                 }
 
-                builder.addAsterism(new Asterism(aStars)); }
+                builder.addAsterism(new Asterism(aStars));
+
+                }
+
+
+            }
+
         }
-    }
 }
