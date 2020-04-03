@@ -1,6 +1,5 @@
 package ch.epfl.rigel.astronomy;
 
-import org.junit.platform.engine.support.descriptor.FileSystemSource;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,7 +8,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
