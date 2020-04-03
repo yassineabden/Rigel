@@ -8,6 +8,7 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MyAsterismLoaderTest {
 
@@ -38,6 +39,7 @@ public class MyAsterismLoaderTest {
                     }
                 }
             }
+
             for (Asterism ast : a) {
                 for (Star s : ast.stars()) {
                     if (s.name().equalsIgnoreCase("Betelgeuse")) {
@@ -46,6 +48,13 @@ public class MyAsterismLoaderTest {
                 }
             }
             assertNotNull(beltegeuse);
+
+            assertThrows(UnsupportedOperationException.class, () -> {
+                catalogue.stars().clear();
+            });
+            assertThrows(UnsupportedOperationException.class, () -> {
+                catalogue.asterisms().clear();
+            });
         }
     }
 

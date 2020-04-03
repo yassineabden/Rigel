@@ -15,9 +15,9 @@ import java.util.*;
 
 public final class StarCatalogue {
 
-    private final HashMap<Asterism, List<Integer>> asterismsMap = new HashMap<>();
-
-    private final List<Star> stars = new ArrayList<>();
+    private final Map <Asterism, List<Integer>> asterismsMap;
+    private final List<Star> stars ;
+   // private final List<Star> stars = new ArrayList<>();
 
     /**
      * Constructeur d'un catalogue d'étoiles. Pour chaque asterism donné est lié une liste
@@ -29,9 +29,10 @@ public final class StarCatalogue {
      */
     public StarCatalogue(List<Star> stars, List<Asterism> asterisms) {
 
-        this.stars.addAll(List.copyOf(stars));
+        this.stars = List.copyOf(stars);
+        //this.stars.addAll(List.copyOf(stars));
 
-        HashMap<Asterism, List<Integer>> aMap = new HashMap<>();
+        HashMap <Asterism, List<Integer>> aMap = new HashMap<>();
 
         HashMap <Star, Integer> starsIndex = new HashMap<>();
         int i= 0;
@@ -43,31 +44,30 @@ public final class StarCatalogue {
 
             List<Integer> aIndex = new ArrayList<>(a.stars().size());
 
+
             for (Star s : a.stars()) {
-                Preconditions.checkArgument(starsIndex.containsKey(s));
+                Preconditions.checkArgument(starsIndex.get(s) != null);
                 aIndex.add(starsIndex.get(s)); }
             aMap.put(a, aIndex);
         }
-        asterismsMap.putAll(Map.copyOf(aMap)); }
+        asterismsMap = Collections.unmodifiableMap(aMap);
+    }
 
     /**
      * Retourne la liste d'étoiles contenues dans les asterisms
      *
      * @return la liste d'étoiles contenues dans les asterims
      */
-    public List<Star> stars() {
-        return stars;
-
-    }
+    //TODO immuabilité
+    public List<Star> stars() { return stars; }
 
     /**
      * Retourne la liste d'asterisms
      *
      * @return la liste d'asterisms
      */
-    public Set<Asterism> asterisms() {
-        return asterismsMap.keySet();
-    }
+    //TODO immuabilité
+    public Set<Asterism> asterisms() { return asterismsMap.keySet(); }
 
     /**
      * Retourne la liste d'index des étoiles contenues dans l'asterism donné
