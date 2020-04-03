@@ -10,6 +10,8 @@ public final class ObservedSky {
     private final GeographicCoordinates observPosition;
     private final StereographicProjection stereographicProjection;
     private final StarCatalogue starCatalogue;
+    private final Sun sun;
+    private final Moon moon;
 
 
     public ObservedSky(ZonedDateTime observTime, GeographicCoordinates observPosition, StereographicProjection stereographicProjection, StarCatalogue starCatalogue) {
@@ -19,10 +21,10 @@ public final class ObservedSky {
         this.starCatalogue = starCatalogue;
         double daysSinceJ2010= Epoch.J2010.daysUntil(observTime);
         EclipticToEquatorialConversion eclipticToEquatorialConversion = new EclipticToEquatorialConversion(observTime);
-        Sun sun= SunModel.SUN.at(daysSinceJ2010,eclipticToEquatorialConversion);
-        Moon moon =MoonModel.MOON.at(daysSinceJ2010,eclipticToEquatorialConversion);
+        this.sun= SunModel.SUN.at(daysSinceJ2010,eclipticToEquatorialConversion);
+        this.moon =MoonModel.MOON.at(daysSinceJ2010,eclipticToEquatorialConversion);
         EquatorialToHorizontalConversion equatorialToHorizontalConversion = new EquatorialToHorizontalConversion(observTime,observPosition);
-        CartesianCoordinates posSun = stereographicProjection.apply(equatorialToHorizontalConversion.apply(sun().equatorialPos()));
+        CartesianCoordinates posSun = stereographicProjection.apply(equatorialToHorizontalConversion.apply(sun.equatorialPos()));
         CartesianCoordinates posMoon = stereographicProjection.apply(equatorialToHorizontalConversion.apply(moon.equatorialPos());
         for (PlanetModel planetModel: PlanetModel.ALL){
             Planet planet=planetModel.at(daysSinceJ2010,eclipticToEquatorialConversion);
