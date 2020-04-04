@@ -19,11 +19,10 @@ public final class GeographicCoordinates  extends SphericalCoordinates{
     private static final ClosedInterval INTERVAL_LAT_RAD =  ClosedInterval.symmetric(Angle.TAU/2);
 
 
+
     private GeographicCoordinates(double lonDeg, double latDeg){
 
-        super(Angle.ofDeg(lonDeg),Angle.ofDeg(latDeg));
-
-    }
+        super(Angle.ofDeg(lonDeg),Angle.ofDeg(latDeg)); }
 
     /**
      * Méthode de construction de coordonées géographiques
@@ -35,14 +34,11 @@ public final class GeographicCoordinates  extends SphericalCoordinates{
      */
     public static GeographicCoordinates ofDeg(double lonDeg, double latDeg){
 
-            Preconditions.checkArgument(INTERVAL_LONG_RAD.contains(Angle.ofDeg(lonDeg)));
-            Preconditions.checkArgument(INTERVAL_LAT_RAD.contains(Angle.ofDeg(latDeg)));
+        Preconditions.checkArgument(INTERVAL_LONG_RAD.contains(Angle.ofDeg(lonDeg)));
+        Preconditions.checkArgument(INTERVAL_LAT_RAD.contains(Angle.ofDeg(latDeg)));
 
-            GeographicCoordinates gcDeg = new GeographicCoordinates(lonDeg,latDeg);
-
-            return gcDeg;
-
-    }
+        GeographicCoordinates gcDeg = new GeographicCoordinates(lonDeg,latDeg);
+        return gcDeg; }
 
     /**
      * Vérifie qu'un angle est une logitude valide, contenue entre [-180 deg, 180 deg[
@@ -108,12 +104,10 @@ public final class GeographicCoordinates  extends SphericalCoordinates{
     /**
      * Transforme en string les coordonées géographique
      *
-     * @return une string de type (lon=6.5700°, lat=46.5200°)
+     * @return une string de type (lon=x.xxxx°, lat=x.xxxx°)
      */
     @Override
     public String toString(){
-    return String.format(Locale.ROOT, "(lon=%.4f°, lat=%.4f°)", lonDeg(), latDeg());
-    }
-
+    return String.format(Locale.ROOT, "(lon=%.4f°, lat=%.4f°)", lonDeg(), latDeg()); }
 
 }

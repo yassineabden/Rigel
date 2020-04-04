@@ -30,6 +30,7 @@ public final class StarCatalogue {
     public StarCatalogue(List<Star> stars, List<Asterism> asterisms) {
 
         this.stars = List.copyOf(stars);
+
         //this.stars.addAll(List.copyOf(stars));
 
         HashMap <Asterism, List<Integer>> aMap = new HashMap<>();
@@ -57,7 +58,7 @@ public final class StarCatalogue {
      *
      * @return la liste d'étoiles contenues dans les asterims
      */
-    //TODO immuabilité
+
     public List<Star> stars() { return stars; }
 
     /**
@@ -65,7 +66,7 @@ public final class StarCatalogue {
      *
      * @return la liste d'asterisms
      */
-    //TODO immuabilité
+
     public Set<Asterism> asterisms() { return asterismsMap.keySet(); }
 
     /**

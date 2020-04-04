@@ -18,12 +18,8 @@ public final class EquatorialCoordinates extends SphericalCoordinates{
     private static final RightOpenInterval INTERVAL_RA_RAD = RightOpenInterval.of(0.0, Angle.TAU );
     private static final ClosedInterval INTERVAL_DEC_RAD =  ClosedInterval.symmetric(Angle.TAU/2);
 
-
-    private EquatorialCoordinates(double lon, double lat){
-
-        super(lon,lat);
-
-    }
+   
+    private EquatorialCoordinates(double lon, double lat){ super(lon,lat); }
 
     /**
      * Méthode de construction de coordonées équatoriales
@@ -35,14 +31,10 @@ public final class EquatorialCoordinates extends SphericalCoordinates{
      */
     public static EquatorialCoordinates of(double ra, double dec){
 
-            Preconditions.checkArgument(INTERVAL_RA_RAD.contains(ra));
-            Preconditions.checkArgument(INTERVAL_DEC_RAD.contains(dec));
+        Preconditions.checkArgument(INTERVAL_RA_RAD.contains(ra));
+        Preconditions.checkArgument(INTERVAL_DEC_RAD.contains(dec));
 
-            EquatorialCoordinates ec = new EquatorialCoordinates(ra,dec);
-
-            return ec;
-
-    }
+        return new EquatorialCoordinates(ra,dec); }
 
     /**
      * Vérifie qu'une heure est une ascension droite valide, comprise entre [0h, 24h[
@@ -78,9 +70,7 @@ public final class EquatorialCoordinates extends SphericalCoordinates{
      *
      *  @return l'ascension droite en degrés, qui correspond à la longitude
      */
-
     public double raDeg(){ return super.lonDeg(); }
-
 
     /**
      * Retourne l'ascesion droite en heure
@@ -90,13 +80,11 @@ public final class EquatorialCoordinates extends SphericalCoordinates{
     public double raHr(){ return Angle.toHr(super.lon());
     }
 
-
     /**
      *  Retourne la déclinaison en radian
      *
      * @return declinaison en radian
      */
-
     public double dec(){ return super.lat(); }
 
     /**
@@ -104,7 +92,6 @@ public final class EquatorialCoordinates extends SphericalCoordinates{
      *
      * @return declinaison en degré
      */
-
     public double decDeg(){
         return super.latDeg();
     }
@@ -112,12 +99,11 @@ public final class EquatorialCoordinates extends SphericalCoordinates{
     /**
      * Transforme en string les coordonées équatoriales
      *
-     * @return une string de type (ra=6.5700°, dec=46.5200°)
+     * @return une string de type (ra=x.xxxx°, dec=x.xxxx°)
      */
     @Override
     public String toString(){
-    return String.format(Locale.ROOT, "(ra=%.4fh, dec=%.4f°)", raHr(), decDeg());
-    }
+    return String.format(Locale.ROOT, "(ra=%.4fh, dec=%.4f°)", raHr(), decDeg()); }
 
 
 }

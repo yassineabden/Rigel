@@ -16,14 +16,10 @@ import java.util.Locale;
 public final class EclipticCoordinates extends SphericalCoordinates{
 
     private static final RightOpenInterval INTERVAL_LONG_RAD = RightOpenInterval.of(0.0,Angle.TAU);
-    private static final ClosedInterval INTERVAL_LAT_RAD =  ClosedInterval.symmetric(Angle.TAU/2);
+    private static final ClosedInterval INTERVAL_LAT_RAD = ClosedInterval.symmetric(Angle.TAU/2);
 
 
-    private EclipticCoordinates(double lon, double lat){
-
-        super(lon,lat);
-
-    }
+    private EclipticCoordinates(double lon, double lat){ super(lon,lat); }
 
     /**
      * Méthode de construction de coordonées ecliptique
@@ -35,14 +31,10 @@ public final class EclipticCoordinates extends SphericalCoordinates{
      */
     public static EclipticCoordinates of(double lon, double lat){
 
-            Preconditions.checkArgument(INTERVAL_LONG_RAD.contains(lon));
-            Preconditions.checkArgument(INTERVAL_LAT_RAD.contains(lat));
+        Preconditions.checkArgument(INTERVAL_LONG_RAD.contains(lon));
+        Preconditions.checkArgument(INTERVAL_LAT_RAD.contains(lat));
 
-         return new EclipticCoordinates(lon,lat);
-
-
-
-    }
+         return new EclipticCoordinates(lon,lat); }
 
     /**
      * Vérifie qu'un angle est une logitude valide, contenue entre [0°, 360°[
@@ -108,7 +100,7 @@ public final class EclipticCoordinates extends SphericalCoordinates{
     /**
      * Transforme en string les coordonées ecliptiques
      *
-     * @return une string de type (λ=22.5000°, β=18.0000°)
+     * @return une string de type (λ=x.xxxx°, β=x.xxxx°)
      */
     @Override
     public String toString(){

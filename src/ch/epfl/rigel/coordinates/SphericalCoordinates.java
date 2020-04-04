@@ -9,47 +9,51 @@ import ch.epfl.rigel.math.Angle;
  */
 
 abstract class SphericalCoordinates {
-    private final double Longitude;
-    private final double Latitude;
+
+    private final double longitude;
+    private final double latitude;
 
     /**
-     *
+     * Constructeur de la classe
      * @param lon Longitude
      * @param lat Latitude
      */
     SphericalCoordinates(double lon, double lat){
-        this.Latitude=lat;
-        this.Longitude=lon;
-    }
+        this.latitude =lat;
+        this.longitude =lon; }
 
     /**
      * Retourne la longitude
+     *
      * @return la longitude
      */
-    double lon() { return Longitude;}
+    double lon() { return longitude;}
 
     /**
      * Retourne la longitude en degrés
+     *
      * @return la longitude en degrés
      */
-    double lonDeg() { return Angle.toDeg(Longitude);}
+    double lonDeg() { return Angle.toDeg(longitude);}
 
     /**
      * Retourne la latitude
+     *
      * @return la latitude
      */
-    double lat() { return Latitude;}
+    double lat() { return latitude;}
 
     /**
      * Retourne la latitude en degrés
-     * @return la latitude en degrés
+     *
+     *  @return la latitude en degrés
      */
-    double latDeg () { return Angle.toDeg(Latitude);}
+    double latDeg () { return Angle.toDeg(latitude);}
 
     /**
+     *Cette méthode lève l'exception UnsupportedOperationException pour garantir qu'aucune sous-classe ne les redéfinira
      *
      * @param obj Objet arbitraire
-     * Cette méthode lève l'exception UnsupportedOperationException pour garantir qu'aucune sous-classe ne les redéfinira
      * @throws UnsupportedOperationException si une super-classe la redéfinit.
      */
     @Override
@@ -58,19 +62,11 @@ abstract class SphericalCoordinates {
 
     /**
      * Cette méthode lève l'exception UnsupportedOperationException pour garantir qu'aucune sous-classe ne les redéfinira
+     *
      * @throws UnsupportedOperationException si une super-classe la redéfinit.
      */
     @Override
     public final int hashCode (){
         throw new UnsupportedOperationException(); }
-
-
-
-
-
-
-
-
-
 
 }
