@@ -46,6 +46,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
     private final double cos_i, sin_i;
 
     public static List<PlanetModel> ALL = Arrays.asList(PlanetModel.values());
+
     final private static double TROPICAL_YEAR = 365.242191;
 
     /**
