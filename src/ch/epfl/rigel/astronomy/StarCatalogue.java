@@ -44,7 +44,6 @@ public final class StarCatalogue {
 
             List<Integer> aIndex = new ArrayList<>(a.stars().size());
 
-
             for (Star s : a.stars()) {
                 Preconditions.checkArgument(starsIndex.get(s) != null);
                 aIndex.add(starsIndex.get(s)); }

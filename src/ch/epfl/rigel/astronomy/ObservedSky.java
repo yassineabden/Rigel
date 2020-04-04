@@ -94,6 +94,7 @@ public final class ObservedSky {
     public double [] starsPositions(){ return starsCord;}
 
     public Set<Asterism> asterisms(){ return starCatalogue.asterisms();}
+
     public List<Integer> asterismIndices(Asterism asterism){ return starCatalogue.asterismIndices(asterism) ;}
 
     //TODO

@@ -62,7 +62,6 @@ public final class StereographicProjection implements Function<HorizontalCoordin
      * L'ordonée du centre du cerle peut être infinie
      *
      * @param hor point appartenant au parallèle
-     *
      * @return centre du cerle de projection du parallèle
      */
     public CartesianCoordinates circleCenterForParallel(HorizontalCoordinates hor){
@@ -77,7 +76,6 @@ public final class StereographicProjection implements Function<HorizontalCoordin
      * Détermine le rayon du cercle de projection d'un parallèle déterminé par un point
      *
      * @param parallel coordonées horizontales d'un point du parralèle
-     *
      * @return Rayon de projection du parralèle
      */
     public double circleRadiusForParallel(HorizontalCoordinates parallel){
