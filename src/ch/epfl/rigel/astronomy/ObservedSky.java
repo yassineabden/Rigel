@@ -35,7 +35,7 @@ public final class ObservedSky {
         moon = MoonModel.MOON.at(daysSinceJ2010,eclipticToEquatorialConversion);
 
         sunCoord = stereographicProjection.apply(equatorialToHorizontalConversion.apply(sun.equatorialPos()));
-        moonCoord = stereographicProjection.apply(equatorialToHorizontalConversion.apply(moon.equatorialPos()));
+        moonCoord = stereographicProjection.apply(equatorialToHorizontalConversion.apply(moon.equatorialPos())) ;
 
 
         double [] pCoord = new double[14] ;
@@ -45,18 +45,23 @@ public final class ObservedSky {
         double [] starsCord = new double [2*stars.size()];
 
         int i = 0;
+        //TODO mauvaise idée en fait à revoir
 
         for (PlanetModel planetModel : PlanetModel.ALL) {
            //sûrement moyen de faire ça plus joli
-            if (planetModel.equals(PlanetModel.EARTH)) {
-            } else {
+            switch (planetModel){
+                case EARTH:
+                    break;
+                    //vérifier que default soit bien tous les autres cas
+                default :
                 Planet planet = planetModel.at(daysSinceJ2010, eclipticToEquatorialConversion);
                 CartesianCoordinates posPlanet = stereographicProjection.apply(equatorialToHorizontalConversion.apply(planet.equatorialPos()));
 
                 planets.add(planet);
+
                 pCoord[i] = posPlanet.x();
                 pCoord[i + 1] = posPlanet.y();
-                i++;
+                i += 2;
             }
         }
 
@@ -68,8 +73,8 @@ public final class ObservedSky {
         for (Star s: stars){
             CartesianCoordinates posStar = stereographicProjection.apply(equatorialToHorizontalConversion.apply(s.equatorialPos()));
             starsCord [i] = posStar.x();
-            starsCord [i] = posStar.y();
-            i++;
+            starsCord [i + 1] = posStar.y();
+            i += 2;
         }
         // Attention immuabilité
         this.starsCord = starsCord;
