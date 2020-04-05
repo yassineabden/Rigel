@@ -22,38 +22,36 @@ public enum AsterismLoader implements StarCatalogue.Loader {
 
     INSTANCE;
 
+    /**
+     * Charge les étoiles et/ou asterism du flot d'entrée et les ajoute au catalogue en cours de construction du bâtisseur
+     * ou lève une IOException s'il y a une erreur
+     *
+     * @param inputStream Flot d'entrée contenant des asterism et/ou des étoiles
+     * @param builder     Catalogue en cours de construction
+     *
+     * @throws IOException s'il y'a une erreur d'entrée/sortie.
+     */
     @Override
     public void load(InputStream inputStream, StarCatalogue.Builder builder) throws IOException {
-
         try ( BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,US_ASCII))){
 
             List<Star> starsBuilded = builder.stars();
-
-
             HashMap <Integer, Star> hipToStar = new HashMap<>();
-            for (Star star  : starsBuilded) {
-                hipToStar.put(star.hipparcosId(), star);
-            }
 
+            for (Star star  : starsBuilded)
+                hipToStar.put(star.hipparcosId(), star);
 
             bufferedReader.readLine();
             String a;
-
-           while ((a = bufferedReader.readLine()) != null){
+            while ((a = bufferedReader.readLine()) != null){
 
                 String [] stars = a.split(",");
                 List<Star>  aStars = new ArrayList<>(stars.length);
 
-                for (String n : stars) {
+                for (String n : stars)
                     aStars.add(hipToStar.get(Integer.parseInt(n)));
-                }
 
-                builder.addAsterism(new Asterism(aStars));
-
-                }
-
-
-            }
-
+                builder.addAsterism(new Asterism(aStars)); }
         }
+    }
 }
