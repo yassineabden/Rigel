@@ -10,7 +10,6 @@ import java.util.Objects;
  * @author Juliette Aerni (296670)
  */
 
-
 public abstract class CelestialObject {
     private final String name;
     private final EquatorialCoordinates equatorielPos;
@@ -18,19 +17,21 @@ public abstract class CelestialObject {
     private final float magnitude;
 
     /**
-     * Unique constructeur visible dans le package.
+     * Constructeur visible dans le package.
+     *
      * @param name nom de l'objet céleste
      * @param equatorialPos Position de l'objet en cordonées equatoriales
      * @param angularSize taille angulaire
      * @param magnitude magnitude
+     *
      * @throws IllegalArgumentException si la taille angulaire est négative
      * @throws NullPointerException si le nom ou la position equatoriale sont nuls
      */
     CelestialObject(String name, EquatorialCoordinates equatorialPos, float angularSize, float magnitude){
-
         Preconditions.checkArgument(angularSize>=0);
         Objects.requireNonNull(name);
         Objects.requireNonNull(equatorialPos);
+
         this.name= name;
         this.equatorielPos=equatorialPos;
         this.angularSize= angularSize;
@@ -38,6 +39,7 @@ public abstract class CelestialObject {
 
     /**
      * Retourne le nom de l'objet céleste
+     *
      * @return le nom de l'objet céleste
      */
     public String name(){
@@ -45,6 +47,7 @@ public abstract class CelestialObject {
 
     /**
      * Retourne la taille angulaire
+     *
      * @return la taille angulaire
      */
     public double angularSize(){
@@ -52,6 +55,7 @@ public abstract class CelestialObject {
 
     /**
      * Retourne la magnitude
+     *
      * @return la magnitude
      */
     public double magnitude(){
@@ -59,14 +63,16 @@ public abstract class CelestialObject {
 
     /**
      * Retourne les coordonnées equatoriales
+     *
      * @return les coordonnées equatoriales
      */
     public EquatorialCoordinates equatorialPos(){
         return equatorielPos; }
 
     /**
-     * Retourne un (court) texte informatif au sujet de l'objet, destiné à être montré à l'utilisateur.
-     * @return  un (court) texte informatif au sujet de l'objet, destiné à être montré à l'utilisateur.
+     * Retourne un texte informatif au sujet de l'objet, destiné à l'utilisateur.
+     *
+     * @return  un  texte informatif au sujet de l'objet, destiné à l'utilisateur.
      */
 
     public String info(){
@@ -74,34 +80,14 @@ public abstract class CelestialObject {
     }
 
     /**
-     * Redéfinit la méthode toString afin qu'elle retourne la même chose que la méthode info.
-     * @return la même chose que la méthode info
+     * Redéfinit la méthode toString afin qu'elle retourne la même chaîne de caractères que la méthode info.
+     *
+     * @return la même chaîne de caractères que la méthode info
      */
 
     @Override
     public String toString(){
         return info();
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
