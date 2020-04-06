@@ -58,7 +58,28 @@ public final class Polynomial {
      */
     @Override
     public String toString() {
+
         StringBuilder sb = new StringBuilder();
+        int power = coefficients.length -1;
+
+        for (double c : coefficients) {
+            if (c != 0) {
+
+                if (power != 0 && c > 0) sb.append("+");
+
+                if (c != 1.0 && c != -1.0) sb.append(c);
+                else if (c < 0) sb.append("-");
+
+                if (power != coefficients.length -1){
+                    sb.append("x");
+                    if(power != coefficients.length -2){
+                        sb.append("^").append(power); } }
+                }
+            power--;
+            }
+
+        return sb.toString(); }
+        /**
 
         if (coefficients.length == 1){
             sb.append(coefficients[0]);
@@ -140,6 +161,7 @@ public final class Polynomial {
         }
         return sb.toString();
     }
+
 
     /**
      * Lance une exception car on ne peut pas utilié cette méthode avec un polynôme immuable

@@ -19,6 +19,7 @@ public final class ObservedSky {
     private final double [] planetsCoord ;
     private final double [] starsCord;
     //TODO faire des copies defensives
+    private final Map <List<CelestialObject>, double[]> map = new HashMap<>();
 
 
     public ObservedSky(ZonedDateTime observTime, GeographicCoordinates observPosition, StereographicProjection stereographicProjection, StarCatalogue starCatalogue) {
