@@ -43,7 +43,7 @@ public final class StarCatalogue {
                 Preconditions.checkArgument(starsIndex.get(s) != null);
                 aIndex.add(starsIndex.get(s));
             }
-            aMap.put(a, aIndex); }
+            aMap.put(a, Collections.unmodifiableList(aIndex)); }
 
         asterismsMap = Collections.unmodifiableMap(aMap); }
 

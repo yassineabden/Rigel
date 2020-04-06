@@ -20,25 +20,25 @@ public final class GeographicCoordinates  extends SphericalCoordinates{
 
 
 
-    private GeographicCoordinates(double lonDeg, double latDeg){
-        super(Angle.ofDeg(lonDeg),Angle.ofDeg(latDeg)); }
+    private GeographicCoordinates(double lon, double lat){
+        super(lon,lat); }
 
     /**
      * Méthode de construction de coordonées géographiques
      *
      * @param lonDeg longitude en degré
      * @param latDeg latitude en degré
+     *
      * @throws IllegalArgumentException si lonDeg n'est pas inclus entre [-180 deg, 180 deg[
-     * @return IllegalArgumentException si latDeg n'est pas inclus entre [-90 deg, 90 deg]
+     * @throws IllegalArgumentException si latDeg n'est pas inclus entre [-90 deg, 90 deg]
+     * @return les coordonées géographique construites
      */
-    //TODO corriger le return & throws
     public static GeographicCoordinates ofDeg(double lonDeg, double latDeg){
 
         Preconditions.checkArgument(INTERVAL_LONG_RAD.contains(Angle.ofDeg(lonDeg)));
         Preconditions.checkArgument(INTERVAL_LAT_RAD.contains(Angle.ofDeg(latDeg)));
 
-        GeographicCoordinates gcDeg = new GeographicCoordinates(lonDeg,latDeg);
-        return gcDeg; }
+        return new GeographicCoordinates(Angle.ofDeg(lonDeg),Angle.ofDeg(latDeg)); }
 
     /**
      * Vérifie qu'un angle est une logitude valide, contenue entre [-180 deg, 180 deg[

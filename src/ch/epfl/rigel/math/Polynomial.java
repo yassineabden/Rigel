@@ -9,10 +9,10 @@ import ch.epfl.rigel.Preconditions;
  */
 public final class Polynomial {
 
-    //TODO il faut bien que l'attribut soit final non?
+
     private final double[] coefficients;
 
-    //TODO estc-ce que l'immuabilitl est conservée avec la méthode arraycopy?
+    //TODO estc-ce que l'immuabilité est conservée avec la méthode arraycopy?
     // est-ce qu'on doit spécifier que la méthode arraycopy peut lancer des exceptions?
     private Polynomial(double coefficientN, double... coefficients) {
 
@@ -47,13 +47,8 @@ public final class Polynomial {
         double polAtx = 0;
         // Polynôme évalué en x au moyen de la form de Horner
         for (double coefficient : coefficients) {
-            polAtx = polAtx * x + coefficient;
-        }
-        // TODO vérifier que c'est bien égal
-        //for (int i = 0; i< coefficients.length; i++) {
-        //    polAtx = polAtx * x + coefficients[i];}
+            polAtx = polAtx * x + coefficient; }
         return polAtx;
-
     }
 
     /**
@@ -150,7 +145,6 @@ public final class Polynomial {
      * Lance une exception car on ne peut pas utilié cette méthode avec un polynôme immuable
      *
      * @param obj object à évaluer
-     * @return vrai si l'object est égal au polynôme, faux sinon
      * @throws UnsupportedOperationException car cette méthode de peut pas être appelée pour un polynôme
      */
     @Override
@@ -161,10 +155,8 @@ public final class Polynomial {
     /**
      * Lance une exception car on ne peut pas utilié cette méthode avec un polynôme immuable
      *
-     * @return une array conetant le hashCode du polynôme
      * @throws UnsupportedOperationException car cette méthode ne peut pas être appelée pour un polynôme
      */
-    //TODO il faut laisser le return?
     @Override
     public final int hashCode (){
         throw new UnsupportedOperationException();

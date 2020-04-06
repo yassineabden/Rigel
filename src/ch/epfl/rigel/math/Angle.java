@@ -15,6 +15,7 @@ public final class Angle {
      */
     final public static double TAU= 2*Math.PI;
     //TODO c'est mieux de les mettre en cte de classe ou de les créer à chaque fois dans les méthodes
+
     private static final RightOpenInterval INTERVAL_NORMAL_TRIGO = RightOpenInterval.of(0,TAU);
     private static final RightOpenInterval INTERVAL_SEC_HOURS = RightOpenInterval.of(0, 60);
 
@@ -59,9 +60,7 @@ public final class Angle {
      public static double ofDMS (int deg, int min, double sec){
 
          Preconditions.checkArgument( !( INTERVAL_SEC_HOURS.contains(min) && INTERVAL_SEC_HOURS.contains(sec)));
-         //TODO est-ce qu'il y a moyen d'utiliser la méthode ofArcSec ?
-        // return ofDeg(deg) + min/ 60 + ofArcsec(sec);
-         return ofDeg(deg+ (min+ (sec/60))/60);
+         return ofDeg(deg) + min/ 60 + ofArcsec(sec);
      }
 
     /**

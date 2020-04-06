@@ -64,11 +64,9 @@ public abstract class Interval {
      * @param obj objet (interval généralement) à évaluer
      * @throws UnsupportedOperationException si une sous-classe la redéfinit.
      */
-    //TODO il me semble qu'elle doit pas faire appel au super justement
     @Override
     public final boolean equals(Object obj) {
 
-        //super.equals(obj);
         throw new UnsupportedOperationException(); }
 
     /**
@@ -76,10 +74,9 @@ public abstract class Interval {
      *
      * @throws UnsupportedOperationException si une super-classe la redéfinit
      */
-    //TODO il me semble qu'elle doit pas faire appel au super justement
     @Override
     public final int hashCode (){
-        //super.hashCode();
+
         throw new UnsupportedOperationException(); }
 
     }

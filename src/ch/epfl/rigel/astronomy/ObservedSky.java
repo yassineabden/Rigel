@@ -18,6 +18,7 @@ public final class ObservedSky {
     private final List<Planet> planets ;
     private final double [] planetsCoord ;
     private final double [] starsCord;
+    //TODO faire des copies defensives
 
 
     public ObservedSky(ZonedDateTime observTime, GeographicCoordinates observPosition, StereographicProjection stereographicProjection, StarCatalogue starCatalogue) {
@@ -46,9 +47,11 @@ public final class ObservedSky {
 
         int i = 0;
         //TODO mauvaise idée en fait à revoir
+        //
+        //méthode plus général qui s'occupe des celestial object
 
         for (PlanetModel planetModel : PlanetModel.ALL) {
-           //sûrement moyen de faire ça plus joli
+           //faire un if
             switch (planetModel){
                 case EARTH:
                     break;
