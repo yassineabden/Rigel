@@ -1,33 +1,32 @@
 package ch.epfl.rigel.math;
 
 
+import ch.epfl.rigel.Preconditions;
+
 /**
- * Angle
- * permet la gestion des angles
+ * Un angle
  * @author Yassine Abdennadher (299273)
  * @author Juliette Aerni (296670)
  */
 public final class Angle {
 
+    /**
+     * Constante valant 360 degré
+     */
     final public static double TAU= 2*Math.PI;
-
+    //TODO c'est mieux de les mettre en cte de classe ou de les créer à chaque fois dans les méthodes
     private static final RightOpenInterval INTERVAL_NORMAL_TRIGO = RightOpenInterval.of(0,TAU);
+    private static final RightOpenInterval INTERVAL_SEC_HOURS = RightOpenInterval.of(0, 60);
 
-    private static final double DEG_PER_RAD = 360.0 / TAU;
-    private static final double RAD_PER_DEG = TAU / 360.0;
     private static final double RAD_PER_HR = TAU/24;
     private static final double HR_PER_RAD = 24/TAU;
     private static final double SEC_PER_DEG= 1.0/ (60*60);
 
 
-
-    /**
-     * constructeur privé et sans argument pour que la classe soit ininstantiable
-     */
     private Angle(){};
 
     /**
-     * Normalise un angle en radians quelquonque dans l'intrervalle [o, TAU[
+     * Normalise un angle en radians quelconque dans l'intrervalle [o, TAU[
      *
      * @param rad angle en radian à normaliser
      * @return l'angle normalisé
@@ -36,73 +35,70 @@ public final class Angle {
     public static double normalizePositive(double rad) {
 
         return INTERVAL_NORMAL_TRIGO.reduce(rad);
-
     }
 
     /**
      * Transforme un angle donné en secondes en radians
-     * @param sec secondes à transformer
-     * @return l'angle transformé de radians
+     *
+     * @param sec secondes d'angle à transformer
+     * @return l'angle transformé en radians
      */
     public static  double ofArcsec(double sec){
         return ofDeg(sec*SEC_PER_DEG);
     }
 
     /**
-     * transforme un angle donné en degré, minutes, secondes en radians
+     * Transforme un angle donné en degré, minutes, secondes en radians
+     *
      * @param deg degrés de l'angle donné
      * @param min minutes de l'angle donné
      * @param sec secondes de l'angle donné
-     * @return l'angle transformé en radian
+     * @throws IllegalArgumentException si les secondes où les minutes ne sont pas contenues dans l'intervalle [0,60[
+     * @return l'angle transformé en radians
      */
      public static double ofDMS (int deg, int min, double sec){
-        if(!(min<60 && min>=0 )|| !(sec<60 && sec>=0)) {
-            throw new IllegalArgumentException();
-        } else {
-            return ofDeg(deg+ (min+ (sec/60))/60);
 
-        }
+         Preconditions.checkArgument( !( INTERVAL_SEC_HOURS.contains(min) && INTERVAL_SEC_HOURS.contains(sec)));
+         //TODO est-ce qu'il y a moyen d'utiliser la méthode ofArcSec ?
+        // return ofDeg(deg) + min/ 60 + ofArcsec(sec);
+         return ofDeg(deg+ (min+ (sec/60))/60);
      }
 
     /**
-     * transforme un angle donné en degré en radian
+     * Transforme un angle donné en degré en radian
+     *
      * @param deg angle en degré
      * @return angle en radians
      */
-    public static double ofDeg(double deg){
-        return deg*RAD_PER_DEG;
-    }
+    public static double ofDeg(double deg){ return Math.toRadians(deg); }
 
     /**
-     * transforme un angle donné en radians en degés
+     * Transforme un angle donné en radians en degrés
+     *
      * @param rad angle en radians
-     * @return angle en dgré
+     * @return angle en degrés
      */
     public static double toDeg (double rad) {
-        return rad*DEG_PER_RAD;
+        return Math.toDegrees(rad);
     }
 
     /**
-     * transforme un angle donné en heure en radians
-     * @param hr angle en heures
-     * @return angles en radians
+     * Transforme un angle donné en heure en radians
+     *
+     * @param hr heures d'angle données
+     * @return angle en radians
      */
-    public static double ofHr (double hr){
-        return hr*RAD_PER_HR;
-    }
+    public static double ofHr (double hr){ return hr*RAD_PER_HR; }
 
     /**
      * transforme un angle donné en radian en heures
-     * @param rad angle en radians
-     * @return angle en heure
+     *
+     * @param rad angle donné en radians
+     * @return angle en heures
      */
     public static double toHr (double rad){
         return rad*HR_PER_RAD;
     }
 
-
-
-
-
-     }
+}
 

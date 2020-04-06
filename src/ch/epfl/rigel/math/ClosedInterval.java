@@ -5,87 +5,78 @@ import ch.epfl.rigel.Preconditions;
 import java.util.Locale;
 
 /**
- * ClosedInterval, sous classe d'interval
+ * Un intervalle fermé
  * @author Yassine Abdennadher (299273)
  * @author Juliette Aerni (296670)
  */
 
 public final class ClosedInterval extends Interval {
 
-    /**
-     * constructeur privé pour assurer l'immuabilité de la classe
-     * fait appel au super pour la cosntruction
-     * @param low borne inférieure
-     * @param high borne supérieure
-     */
     private ClosedInterval(double low, double high) {
         super(low, high);
     }
 
     /**
-     * Créer un interval fermé en appleant le constructeur
+     * Méthode de construction d'un intervalle fermé avec une borne inférieur et une borne supérieur
+     *
      * @param low borne inférieure
      * @param high borne supérieure
-     * @return intervalle fermé construit
+     * @throws IllegalArgumentException si la borne inférieur est plus grande ou égale à la borne supérieur
+     * @return l'intervalle fermé construit
      */
     public static ClosedInterval of(double low, double high) {
-        Preconditions.checkArgument(low<high);
-            ClosedInterval ci1 = new ClosedInterval(low,high);
 
-            return ci1;
-        }
+        Preconditions.checkArgument(low < high);
+        return new ClosedInterval(low,high); }
 
     /**
-     * permet la création d'un interval symmetrique autour de zéro de taille donnée
-     * @param size taille de l'intervalle
-     * @return interval fermé créé
+     * Méthode de construction d'un intervalle fermé symmetrique autour de zéro d'une taille donée
+     *
+     * @param size la taille de l'intervalle
+     * @throws IllegalArgumentException si la taille est inférieure ou égale à zéro
+     * @return l'intervalle fermé construit
      */
     public static ClosedInterval symmetric (double size) {
 
-        Preconditions.checkArgument(size>0);
-            ClosedInterval ci2 = new ClosedInterval(-size / 2, size / 2);
-            return ci2;
-
-        }
+        Preconditions.checkArgument(size > 0);
+        return new ClosedInterval(-size / 2, size / 2); }
 
     /**
-     *vérifie qu'une valeur est contenue dans l'interval
-     * @param v Valeur à vérifier
-     * @return vraie si elle est dans l'interval, faux sinon
+     * Vérifie qu'une valeur est contenue dans l'intervalle
+     *
+     * @param v valeur à vérifier
+     * @return vraie si la valeur est dans l'intervalle, faux sinon
      */
     @Override
     public boolean contains(double v) {
-        if (v >= low() && v <= high()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+
+       return v >= low() && v <= high(); }
+
 
 
     /**
-     * ecrêtage d'une valeur à l'interval, empêche la valeur d'être en dehors de l'interval
+     * Ecrêtage d'une valeur à l'intervalle, empêche la valeur d'être en dehors de l'interval
+     *
      * @param v valeur à ecrêter
-     * @return la valeure apràs ecrêtage
+     * @return la valeure après ecrêtage
      */
     public double clip (double v) {
-        if (v>=high()) {
-            v=high(); }
-        if (v<=low()) {
-            v=low(); }
-      return v;
-    }
+
+        if ((! contains(v)) && v > high()) {
+            v = high(); }
+        if ((! contains(v)) && v < low()) {
+            v = low(); }
+      return v; }
 
     /**
-     * transforme l'interavl en format ecrit, lisible
-     * @return intervale lisible de type [borne inférieure, borne supérieur]
+     * Transforme en string l'intervalle
+     *
+     * @return une string de type [borne inférieure, borne supérieur]
      */
     @Override
     public String toString() {
-        return String.format(Locale.ROOT,"[%.2f , %.2f]",low(),high());
 
-
-    }
+        return String.format(Locale.ROOT,"[%.2f , %.2f]",low(),high()); }
 
 
 

@@ -29,6 +29,7 @@ public final class EquatorialCoordinates extends SphericalCoordinates{
      * @throws IllegalArgumentException si  l'ascension droite n'est pas inclus entre [0h, 24h[
      * @return IllegalArgumentException si la declinaison  n'est pas inclus entre [-90 deg, 90 deg]
      */
+    //TODO corriger le return & le throws
     public static EquatorialCoordinates of(double ra, double dec){
 
         Preconditions.checkArgument(INTERVAL_RA_RAD.contains(ra));

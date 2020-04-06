@@ -7,73 +7,79 @@ package ch.epfl.rigel.math;
  */
 
 public abstract class Interval {
-    private final double UpperBound;
-    private final double LowerBound;
+
+    private final double upperBound;
+    private final double lowerBound;
 
 
     /**
-     * constructeur d'intervalle, attribue la borne inferieure et supérieure
-     * @param LowerBound Borne supérieure de l'intervalle
-     * @param UpperBound Borne inférieure de l'intervalle
+     * Construit un intervalle avec une borne inférieur et une borne supérieur
+     *
+     * @param lowerBound Borne supérieure de l'intervalle
+     * @param upperBound Borne inférieure de l'intervalle
      */
 
-    protected Interval (double LowerBound , double UpperBound){
-        this.UpperBound= UpperBound;
-        this.LowerBound= LowerBound;
-        ;
+    protected Interval (double lowerBound , double upperBound){
+
+        this.upperBound = upperBound;
+        this.lowerBound = lowerBound;
     }
 
     /**
      * Retourne la borne inférieure de l'intervalle
+     *
      * @return la borne inférieure de l'intervalle
      */
     public double low (){
-        return LowerBound;
+        return lowerBound;
     }
 
     /**
      *  Retourne la borne supérieure de l'intervalle
+     *
      * @return la borne supérieure de l'intervalle
      */
-    public double high () { return UpperBound; }
+    public double high () { return upperBound; }
 
     /**
      * Retourne la taille de l'intervalle
+     *
      * @return la taille de l'intervalle
      */
     public double size() {
-        return UpperBound-LowerBound;
+        return upperBound - lowerBound;
     }
 
     /**
-     * vérifie si une valeur est contenue dans l'interval ou non (à implémenter par les sous-clases)
+     * vérifie si une valeur est contenue dans l'interval ou non
+     *
      * @param v Valeur à vérifier
-     * @return vrai si la valeur est contenue dans l'intervalle
+     * @return vrai si la valeur est contenue dans l'intervalle, faux sinon
      */
     public abstract boolean contains (double v);
 
     /**
-     * permet de comparer si un obljet donné correspond à l'interval
-     * lance une exception pour assurer qu'aucunes sou-classe ne la redéfinira
-     * fait appelle au super pour la comparaison
+     * Lève une exception car la méthode equals ne peut pas être appelée par un intervalle
+     *
      * @param obj objet (interval généralement) à évaluer
      * @throws UnsupportedOperationException si une sous-classe la redéfinit.
      */
+    //TODO il me semble qu'elle doit pas faire appel au super justement
     @Override
     public final boolean equals(Object obj) {
-        super.equals(obj);
+
+        //super.equals(obj);
         throw new UnsupportedOperationException(); }
 
     /**
-     *  Retourne une array contenant le hashcode de l'interval
-     *  Cette méthode lève l'exception UnsupportedOperationException pour garantir qu'aucune sous-classe ne les redéfinira
+     * Lève une exception car la méthode hashCode ne peut pas être applée par un intervalle
      *
-     *  @throws UnsupportedOperationException si une super-classe la redéfinit
-     * @return une array contenant le hashcode de l'interval
+     * @throws UnsupportedOperationException si une super-classe la redéfinit
      */
+    //TODO il me semble qu'elle doit pas faire appel au super justement
     @Override
     public final int hashCode (){
-        super.hashCode();
+        //super.hashCode();
         throw new UnsupportedOperationException(); }
 
     }

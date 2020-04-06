@@ -47,6 +47,7 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
      * Retourne les coordonnées horizontales dont l'azimuth vaut azDeg et la hauteur altDeg
      * @return les coordonnées horizontales dont l'azimuth vaut azDeg et la hauteur altDeg
      */
+    //TODO enlever la ligne de retourne
     public static HorizontalCoordinates ofDeg(double azDeg, double altDeg) {
 
         Preconditions.checkInInterval(INTERVAL_LONG_DEG, azDeg);
@@ -132,6 +133,7 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
      * @return la distance angulaire séparant deux points de coordonnées
      */
     public double angularDistanceTo(HorizontalCoordinates that){
+        //TODO on peut faire des retours à la ligne + aérer non?
         return Math.acos(Math.sin(that.alt())*Math.sin(this.alt())+Math.cos(that.alt())*Math.cos(this.alt())*Math.cos(this.az()-that.az())); }
 
     /**
@@ -142,7 +144,6 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
     @Override
     public String toString () {
         return String.format(Locale.ROOT,"(az=%.4f°, alt=%.4f°)",azDeg(),altDeg()); }
-
 
 
 

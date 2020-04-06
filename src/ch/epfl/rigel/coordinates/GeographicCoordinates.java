@@ -32,6 +32,7 @@ public final class GeographicCoordinates  extends SphericalCoordinates{
      * @throws IllegalArgumentException si lonDeg n'est pas inclus entre [-180 deg, 180 deg[
      * @return IllegalArgumentException si latDeg n'est pas inclus entre [-90 deg, 90 deg]
      */
+    //TODO corriger le return & throws
     public static GeographicCoordinates ofDeg(double lonDeg, double latDeg){
 
         Preconditions.checkArgument(INTERVAL_LONG_RAD.contains(Angle.ofDeg(lonDeg)));
@@ -108,6 +109,6 @@ public final class GeographicCoordinates  extends SphericalCoordinates{
      */
     @Override
     public String toString(){
-    return String.format(Locale.ROOT, "(lon=%.4f°, lat=%.4f°)", lonDeg(), latDeg()); }
+        return String.format(Locale.ROOT, "(lon=%.4f°, lat=%.4f°)", lonDeg(), latDeg()); }
 
 }

@@ -12,6 +12,7 @@ import java.util.Locale;
  * @author Yassine Abdennadher (299273)
  * @author Juliette Aerni (296670)
  */
+//TODO corriger la description de classe
 
 public final class EclipticCoordinates extends SphericalCoordinates{
 
@@ -29,6 +30,8 @@ public final class EclipticCoordinates extends SphericalCoordinates{
      * @throws IllegalArgumentException si lonDeg n'est pas inclus entre [0°, 360°[
      * @return IllegalArgumentException si latDeg n'est pas inclus entre [-90 deg, 90 deg]
      */
+
+    //TODO corriger le return & le throws
     public static EclipticCoordinates of(double lon, double lat){
 
         Preconditions.checkArgument(INTERVAL_LONG_RAD.contains(lon));
