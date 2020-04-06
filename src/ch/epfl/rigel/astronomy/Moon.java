@@ -1,10 +1,10 @@
 package ch.epfl.rigel.astronomy;
 
-import ch.epfl.rigel.Preconditions;
-import ch.epfl.rigel.coordinates.EquatorialCoordinates;
-import ch.epfl.rigel.math.ClosedInterval;
+        import ch.epfl.rigel.Preconditions;
+        import ch.epfl.rigel.coordinates.EquatorialCoordinates;
+        import ch.epfl.rigel.math.ClosedInterval;
 
-import java.util.Locale;
+        import java.util.Locale;
 /**
  * Une Lune
  * @author Yassine Abdennadher (299273)
@@ -13,7 +13,7 @@ import java.util.Locale;
 public final class Moon extends CelestialObject {
 
     private final float phase;
-    private final ClosedInterval INTERVAL_PHASE= ClosedInterval.of(0,1);
+    private final static ClosedInterval INTERVAL_PHASE = ClosedInterval.of(0,1);
 
 
     /**
@@ -23,32 +23,22 @@ public final class Moon extends CelestialObject {
      * @param angularSize   taille angulaire
      * @param magnitude     magnitude
      * @param phase phase donnée
-
+     *
      * @throws IllegalArgumentException si la taille angulaire est négative et si la phase n'appartiemt pas à l'intervalle (0,1)
      * @throws NullPointerException     si le nom ou la position equatoriale sont nuls
      */
     public Moon(EquatorialCoordinates equatorialPos, float angularSize, float magnitude, float phase) {
         super("Lune",equatorialPos,angularSize,magnitude);
-        this.phase = phase;
-        Preconditions.checkInInterval(INTERVAL_PHASE,phase); }
+
+        Preconditions.checkInInterval(INTERVAL_PHASE,phase);
+        this.phase = phase; }
 
     /**
-     * La classe Moon redéfinit la méthode info pour que la phase apparaisse après le nom, entre parenthèses et exprimé en pourcent, avec une décimale.
-     * @return une chaine de caractères.
+     * La classe Moon redéfinit la méthode info pour que la phase apparaisse après le nom et exprimée en pourcent, avec une décimale.
+     *
+     * @return une chaine de caractères de type : Lune (x.x%)
      */
     @Override
     public String info(){
-        return String.format(Locale.ROOT,"Lune (%.1f%%)",phase*100);
-
-    }
-
-
-
-
-
-
-
-
-
-
+        return String.format(Locale.ROOT,"Lune (%.1f%%)",phase*100); }
 }

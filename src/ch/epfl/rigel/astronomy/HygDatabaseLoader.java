@@ -30,6 +30,7 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
     /**
      * Charge les étoiles et/ou asterism du flot d'entrée et les ajoute au catalogue en cours de construction du bâtisseur
      * ou lève une IOException s'il y a une erreur
+     *
      * @param inputStream Flot d'entrée contenant des asterism et/ou des étoiles
      * @param builder Catalogue en cours de construction
      *
@@ -38,14 +39,12 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
     @Override
     public  void load(InputStream inputStream, StarCatalogue.Builder builder) throws IOException {
         try ( BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,US_ASCII))){
-
             String line;
             bufferedReader.readLine();
 
             while ((line = bufferedReader.readLine()) != null) {
                 String[] parts= line.split(",");
                 int hipparcosId= parts[HIP].isEmpty()? 0 : Integer.parseInt(parts[HIP]);
-
                 String con = parts[CON];
                 String bayer = parts[BAYER].isEmpty()? "?": parts[BAYER];
                 String name = parts[PROPER].isEmpty()? bayer+ " " + con: parts[PROPER];
@@ -56,14 +55,7 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
                 EquatorialCoordinates coordinates = EquatorialCoordinates.of(rared,decred);
 
                 Star star = new Star(hipparcosId,name,coordinates,(float) magnitude,(float) colorIndex);
-                builder.addStar(star);
-
-            }
+                builder.addStar(star); }
         }
     }
-
-
-
-
-
 }

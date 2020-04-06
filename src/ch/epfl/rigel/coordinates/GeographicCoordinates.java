@@ -21,7 +21,6 @@ public final class GeographicCoordinates  extends SphericalCoordinates{
 
 
     private GeographicCoordinates(double lonDeg, double latDeg){
-
         super(Angle.ofDeg(lonDeg),Angle.ofDeg(latDeg)); }
 
     /**
