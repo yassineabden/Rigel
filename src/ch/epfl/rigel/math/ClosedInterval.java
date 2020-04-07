@@ -21,6 +21,7 @@ public final class ClosedInterval extends Interval {
      *
      * @param low borne inférieure
      * @param high borne supérieure
+     *
      * @throws IllegalArgumentException si la borne inférieur est plus grande ou égale à la borne supérieur
      * @return l'intervalle fermé construit
      */
@@ -33,6 +34,7 @@ public final class ClosedInterval extends Interval {
      * Méthode de construction d'un intervalle fermé symmetrique autour de zéro d'une taille donée
      *
      * @param size la taille de l'intervalle
+     *
      * @throws IllegalArgumentException si la taille est inférieure ou égale à zéro
      * @return l'intervalle fermé construit
      */
@@ -45,12 +47,11 @@ public final class ClosedInterval extends Interval {
      * Vérifie qu'une valeur est contenue dans l'intervalle
      *
      * @param v valeur à vérifier
+     *
      * @return vraie si la valeur est dans l'intervalle, faux sinon
      */
     @Override
-    public boolean contains(double v) {
-
-       return v >= low() && v <= high(); }
+    public boolean contains(double v) { return v >= low() && v <= high(); }
 
 
 
@@ -58,15 +59,15 @@ public final class ClosedInterval extends Interval {
      * Ecrêtage d'une valeur à l'intervalle, empêche la valeur d'être en dehors de l'interval
      *
      * @param v valeur à ecrêter
+     *
      * @return la valeure après ecrêtage
      */
     public double clip (double v) {
 
-        if ((! contains(v)) && v > high()) {
-            v = high(); }
-        if ((! contains(v)) && v < low()) {
-            v = low(); }
-      return v; }
+        if ((! contains(v)) && v > high())  v = high();
+        if ((! contains(v)) && v < low()) v = low();
+
+        return v; }
 
     /**
      * Transforme en string l'intervalle

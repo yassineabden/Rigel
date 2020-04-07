@@ -22,8 +22,7 @@ public abstract class Interval {
     protected Interval (double lowerBound , double upperBound){
 
         this.upperBound = upperBound;
-        this.lowerBound = lowerBound;
-    }
+        this.lowerBound = lowerBound; }
 
     /**
      * Retourne la borne inférieure de l'intervalle
@@ -65,9 +64,7 @@ public abstract class Interval {
      * @throws UnsupportedOperationException si une sous-classe la redéfinit.
      */
     @Override
-    public final boolean equals(Object obj) {
-
-        throw new UnsupportedOperationException(); }
+    public final boolean equals(Object obj) { throw new UnsupportedOperationException(); }
 
     /**
      * Lève une exception car la méthode hashCode ne peut pas être applée par un intervalle
@@ -75,9 +72,7 @@ public abstract class Interval {
      * @throws UnsupportedOperationException si une super-classe la redéfinit
      */
     @Override
-    public final int hashCode (){
-
-        throw new UnsupportedOperationException(); }
+    public final int hashCode (){ throw new UnsupportedOperationException(); }
 
     }
 

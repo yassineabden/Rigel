@@ -15,80 +15,90 @@ import java.util.function.Function;
 
 public final class EclipticToEquatorialConversion implements Function<EclipticCoordinates,EquatorialCoordinates> {
 
-        private final double cosOblik;
-        private final double sinOblik;
-        private final double oblik;
-        private final Polynomial obliquity;
+    private final double cosObliq, sinObliq;
+
+    //TODO on l'utilise que dans le constructeur mais comme ça il est déjé fait non?
+    private final Polynomial OBLIQUITY = Polynomial.of(Angle.ofArcsec(0.00181), -Angle.ofArcsec(0.0006), -Angle.ofArcsec(46.815),
+                                           Angle.ofDMS(23, 26, 21.45));
+
+
 
     /**
      * Constructeurs de coordonées , définit le moment d'observation pour la conversion
+     *
      * @param when moment d'observation pour la conversion
      */
-        public EclipticToEquatorialConversion(ZonedDateTime when){
-        this.obliquity = Polynomial.of(Angle.ofArcsec(0.00181),-Angle.ofArcsec(0.0006),-Angle.ofArcsec(46.815),
-                Angle.ofDMS(23,26,21.45));
-        this.oblik = obliquity.at(Epoch.J2000.julianCenturiesUntil(when));
-        this.cosOblik= Math.cos(oblik);
-        this.sinOblik= Math.sin(oblik); }
+    public EclipticToEquatorialConversion(ZonedDateTime when) {
+
+        double obliquity = OBLIQUITY.at(Epoch.J2000.julianCenturiesUntil(when));
+        this.cosObliq = Math.cos(obliquity);
+        this.sinObliq = Math.sin(obliquity);
+    }
 
     /**
      * Effectue la conversion de coordonées ecliptiques en coordonées équatoriales
      *
      * @param ecl les coordonnées ecliptiques à converser
+     *
      * @return les coordonées conversées en coordonées équatoriales
      */
     @Override
-        public EquatorialCoordinates apply(EclipticCoordinates ecl){
-            double alpha= Angle.normalizePositive(Math.atan2(Math.sin(ecl.lon())* cosOblik- Math.tan(ecl.lat())*sinOblik,Math.cos(ecl.lon())));
-            double delta= Math.asin(Math.sin(ecl.lat())*cosOblik+Math.cos(ecl.lat())*sinOblik*Math.sin(ecl.lon())) ;
-            return EquatorialCoordinates.of(alpha,delta); }
+    public EquatorialCoordinates apply(EclipticCoordinates ecl) {
+
+        double ra = Angle.normalizePositive(Math.atan2(
+                        Math.sin(ecl.lon()) * cosObliq - Math.tan(ecl.lat()) * sinObliq,
+                        Math.cos(ecl.lon())));
+        double decl = Math.asin(Math.sin(ecl.lat()) * cosObliq +
+                        Math.cos(ecl.lat())*sinObliq*Math.sin(ecl.lon()));
+
+        return EquatorialCoordinates.of(ra, decl); }
 
     /**
-     * TODO Vérifer
-     * @param obj
-     * @return
+     * Lance une exception car on ne peut pas utilié cette méthode avec une conversion de coordonées
+     *
+     * @throws UnsupportedOperationException car car cette méthode de peut pas être appelée pour une conversion de coordonées
      */
     @Override
-        public final boolean equals(Object obj) {
-            throw new UnsupportedOperationException(); }
+    public int hashCode() {throw new UnsupportedOperationException(); }
 
     /**
-     * TODO Vérifer
-     * @return
+     * Lance une exception car on ne peut pas utilié cette méthode avec une conversion de coordonées
+     *
+     * @throws UnsupportedOperationException car car cette méthode de peut pas être appelée pour une conversion de coordonées
      */
     @Override
-    public final int hashCode (){
-        throw new UnsupportedOperationException(); }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public boolean equals(Object obj) {throw new UnsupportedOperationException(); }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
