@@ -18,8 +18,8 @@ public final class Sun extends CelestialObject {
     /**
      * Unique constructeur visible dans le package.
      *
-     * @param eclipticPos position exprimé en cordonnées écliptique
-     * @param equatorialPos position exprimé en cordonnées equatoriales
+     * @param eclipticPos position exprimé en coordonnées écliptique
+     * @param equatorialPos position exprimé en coordonnées equatoriales
      * @param angularSize   taille angulaire
      * @param meanAnomaly   anomalie moyenne
      *

@@ -17,7 +17,7 @@ public final class Asterism  {
      *
      * @param stars liste d'étoiles appartenant à l'asterisms
      *
-     * @throws IllegalArgumentException si la liste d'étoiles est vide.
+     * @throws IllegalArgumentException si la liste d'étoiles est vide
      */
     public Asterism(List<Star> stars){
 
@@ -27,40 +27,10 @@ public final class Asterism  {
     /**
      * Retourne la liste d'étoiles contenues dans l'astersims
      *
-     *  @return la liste des étoiles formant l'astérisme.
+     *  @return la liste d'étoiles formant l'astérisme
      */
     public List<Star> stars(){
         return stars;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

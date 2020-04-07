@@ -17,9 +17,6 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
     private static final RightOpenInterval INTERVAL_LONG_RAD = RightOpenInterval.of(0,Angle.TAU);
     private static final ClosedInterval INTERVAL_LAT_RAD = ClosedInterval.symmetric(Math.PI);
 
-    private static final RightOpenInterval INTERVAL_LONG_DEG = RightOpenInterval.of(0, 360);
-    private static final ClosedInterval INTERVAL_LAT_DEG = ClosedInterval.symmetric(180);
-
 
     private HorizontalCoordinates(double lon, double lat) {
         super(lon, lat);
@@ -30,6 +27,7 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
      *
      * @param az l'azimuth qui correspond à la longitude pour les coordonnées horizontales en radians
      * @param alt la hauteur qui correspond à la hauteur pour les coordonnées horizontales en radians
+     *
      * @return les coordonnées horizontales dont l'azimuth vaut az et la hauteur alt.
      */
     public static HorizontalCoordinates of(double az, double alt) {
@@ -44,14 +42,14 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
      *
      * @param azDeg l'azimuth qui correspond à la longitude pour les coordonnées horizontales en degrés
      * @param altDeg la hauteur qui correspond à la hauteur pour les coordonnées horizontales en degrés
-     * Retourne les coordonnées horizontales dont l'azimuth vaut azDeg et la hauteur altDeg
+     *
      * @return les coordonnées horizontales dont l'azimuth vaut azDeg et la hauteur altDeg
      */
-    //TODO enlever la ligne de retourne
+
     public static HorizontalCoordinates ofDeg(double azDeg, double altDeg) {
 
-        Preconditions.checkInInterval(INTERVAL_LONG_DEG, azDeg);
-        Preconditions.checkInInterval(INTERVAL_LAT_DEG, altDeg);
+        Preconditions.checkInInterval(INTERVAL_LONG_RAD, Angle.ofDeg(azDeg));
+        Preconditions.checkInInterval(INTERVAL_LAT_RAD, Angle.ofDeg(altDeg));
 
         return new HorizontalCoordinates(Angle.ofDeg(azDeg),Angle.ofDeg(altDeg)); }
 
@@ -81,6 +79,7 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
      * @param e Chaine de caractères correspondant au point cardinal Est
      * @param s Chaine de caractères correspondant au point cardinal Sud
      * @param w Chaine de caractères correspondant au point cardinal Ouest
+     *
      * @return une chaine correspondant à l'octant dans lequel se trouve l'azimuth du récepteur.
      */
     public String azOctantName(String n, String e, String s, String w) {
@@ -130,11 +129,14 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
      * Calcule la distance angulaire entre le récepteur et le point donné en argument
      *
      * @param that Point qui a une longitude et une latitude
+     *
      * @return la distance angulaire séparant deux points de coordonnées
      */
     public double angularDistanceTo(HorizontalCoordinates that){
-        //TODO on peut faire des retours à la ligne + aérer non?
-        return Math.acos(Math.sin(that.alt())*Math.sin(this.alt())+Math.cos(that.alt())*Math.cos(this.alt())*Math.cos(this.az()-that.az())); }
+
+        return Math.acos(Math.sin(that.alt())
+                *Math.sin(this.alt())+Math.cos(that.alt())
+                *Math.cos(this.alt())*Math.cos(this.az()-that.az())); }
 
     /**
      * Transforme en string les coordonées horizontales

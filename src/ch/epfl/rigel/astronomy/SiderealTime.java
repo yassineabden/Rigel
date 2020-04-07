@@ -23,11 +23,11 @@ public final class SiderealTime {
     private SiderealTime(){}
 
     /**
-     * Calcul le temps sidéral en radians à Greewich d'un instant donné
+     * Calcul le temps sidéral de Greewich en radians d'un couple date/heure donné
      *
      * @param when instant donné
      *
-     * @return temps sidéral, normalisé, en radians à Greenwich de l'instant donné
+     * @return temps sidéral, normalisé, de Greenwich en radians d'un couple date/heure donné
      */
     public static double greenwich(ZonedDateTime when){
 
@@ -41,18 +41,18 @@ public final class SiderealTime {
         return Angle.normalizePositive(Angle.ofHr(sGHr)); }
 
     /**
-     * Calcul le temps sidéral d'un endroit donnée à un instant donné
+     * Calcul le temps sidéral d'un endroit et d'un couple date/heure donnés
      *
      * @param when instant donné
      * @param where Endroit donné
      *
-     * @return temps sidéral, normalisé, en radians de l'endroit donné à l'instant donné
+     * @return temps sidéral en radians d'un endroit et d'un couple date/heure donnés (normalisé)
      */
     public static double local(ZonedDateTime when, GeographicCoordinates where){
 
         return Angle.normalizePositive(greenwich(when) + where.lon()); }
 
-    }
+}
 
 
 

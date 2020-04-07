@@ -20,20 +20,18 @@ public enum Epoch {
     private final static double MILLIS_SEC_TO_DAYS = 1.0/Duration.ofDays(1).toMillis();
     private final static double DAYS_TO_JULIAN_CENTURY = (1.0/36525);
 
-    //TODO j'ai enlevé le private car intelliJ me disait que ça servait à rien
     Epoch(ZonedDateTime of) {
     epoch = of;
    }
 
     /**
-
-     * Calcul le nombre de jours précis entre une des époque et l'instant donné
+     * Calcul le nombre de jours précis entre l'époque et l'instant donné
      *
      * @param when instant donné
      *
      * @return Nombre de jours entre l'époque et le temps demandé
      */
-   public  double daysUntil(ZonedDateTime when){
+   public double daysUntil(ZonedDateTime when){
 
        return (this.epoch.until(when, ChronoUnit.MILLIS))* MILLIS_SEC_TO_DAYS; }
 

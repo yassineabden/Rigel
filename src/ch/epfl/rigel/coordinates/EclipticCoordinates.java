@@ -8,11 +8,11 @@ import ch.epfl.rigel.math.RightOpenInterval;
 import java.util.Locale;
 
 /**
- * Des coordonnées géographiques
+ * Des coordonnées écliptiques
  * @author Yassine Abdennadher (299273)
  * @author Juliette Aerni (296670)
  */
-//TODO corriger la description de classe
+
 
 public final class EclipticCoordinates extends SphericalCoordinates{
 
@@ -27,15 +27,16 @@ public final class EclipticCoordinates extends SphericalCoordinates{
      *
      * @param lon longitude en radians
      * @param lat latitude en radians
+     *
      * @throws IllegalArgumentException si lonDeg n'est pas inclus entre [0°, 360°[
-     * @return IllegalArgumentException si latDeg n'est pas inclus entre [-90 deg, 90 deg]
+     * @throws  IllegalArgumentException si latDeg n'est pas inclus entre [-90 deg, 90 deg]
+     * @return des coordonnées écliptiques
      */
 
-    //TODO corriger le return & le throws
     public static EclipticCoordinates of(double lon, double lat){
 
-        Preconditions.checkArgument(INTERVAL_LONG_RAD.contains(lon));
-        Preconditions.checkArgument(INTERVAL_LAT_RAD.contains(lat));
+        Preconditions.checkInInterval(INTERVAL_LONG_RAD,lon);
+        Preconditions.checkInInterval(INTERVAL_LAT_RAD,lat);
 
          return new EclipticCoordinates(lon,lat); }
 
@@ -43,6 +44,7 @@ public final class EclipticCoordinates extends SphericalCoordinates{
      * Vérifie qu'un angle est une logitude valide, contenue entre [0°, 360°[
      *
      * @param lonDeg longitude en degré à vérifier
+     *
      * @return vrai si l'angle est valide, faux sinon
      */
     public static boolean isValidLonDeg(double lonDeg){
@@ -53,6 +55,7 @@ public final class EclipticCoordinates extends SphericalCoordinates{
      * Vérifie qu'un angle est une latitude valide, contenue entre [-90 °, 90 °]
      *
      * @param latDeg latitude en degré à vérifier
+     *
      * @return vrai si l'angle est valide, faux sinon
      */
     public static boolean isValidLatDeg(double latDeg){
@@ -81,7 +84,7 @@ public final class EclipticCoordinates extends SphericalCoordinates{
 
 
     /**
-     *  Retourne la latitude en radian
+     * Retourne la latitude en radian
      *
      * @return latitude en radian
      */
@@ -107,8 +110,7 @@ public final class EclipticCoordinates extends SphericalCoordinates{
      */
     @Override
     public String toString(){
-    return(String.format(Locale.ROOT, "(λ=%.4f°, β=%.4f°)", lonDeg(), latDeg()));
-    }
+        return(String.format(Locale.ROOT, "(λ=%.4f°, β=%.4f°)", lonDeg(), latDeg())); }
 
 
 }

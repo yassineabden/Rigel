@@ -20,14 +20,13 @@ public final class Star extends CelestialObject {
      * Construcetur d'une étoile
      *
      * @param name          nom de l'objet céleste
-     * @param equatorialPos Position de l'objet en cordonées equatoriales
+     * @param equatorialPos Position de l'objet en coordonées equatoriales
      * @param magnitude     magnitude
      *
-     * @throws IllegalArgumentException si le numéro d'hipparcos est négatif
-     * @throws IllegalArgumentException si lindice de couleur n'est pas compris dans l'intervalle [-0.5, 5.5]
+     * @throws IllegalArgumentException si le numéro d'hipparcos est négatif ou si l'indice de couleur n'est pas compris dans l'intervalle [-0.5, 5.5]
      * @throws NullPointerException si le nom ou la position equatoriale sont nuls
      */
-   public  Star(int hipparcosId, String name, EquatorialCoordinates equatorialPos, float magnitude, float colorIndex) {
+    public  Star(int hipparcosId, String name, EquatorialCoordinates equatorialPos, float magnitude, float colorIndex) {
     super(name, equatorialPos,0f,magnitude);
 
         Preconditions.checkInInterval(COLOR_INTERVAL, colorIndex);
@@ -41,15 +40,15 @@ public final class Star extends CelestialObject {
      *
      * @return numéro d'Hipparcos, un int
      */
-    //TODO il faut faire une copie défensive ? (les tests le vérifie pas)
-   public int hipparcosId(){return hipparcosId;}
+
+    public int hipparcosId(){return hipparcosId;}
 
     /**
      * Calcul la couleur de la température de l'étoile en Kelvin
      *
      * @return la couleur de la température en Kelvin à l'entier inférieur le plus proche
      */
-   public int colorTemperature(){
+    public int colorTemperature(){
 
        double c = 0.92*colorIndex;
        double T = 4600*(1/(c+1.7) + 1/(c+0.62));

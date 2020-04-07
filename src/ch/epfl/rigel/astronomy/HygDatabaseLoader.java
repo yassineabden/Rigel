@@ -38,6 +38,7 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
      */
     @Override
     public  void load(InputStream inputStream, StarCatalogue.Builder builder) throws IOException {
+
         try ( BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,US_ASCII))){
             String line;
             bufferedReader.readLine();
@@ -50,7 +51,7 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
                 String name = parts[PROPER].isEmpty()? bayer+ " " + con: parts[PROPER];
                 double rared = Double.parseDouble(parts[RARAD]);
                 double decred = Double.parseDouble(parts[DECRAD]);
-                double magnitude = parts[MAG].isEmpty()? 0: Double.parseDouble(parts[MAG]);
+                double magnitude = parts[MAG].isEmpty()? 0 : Double.parseDouble(parts[MAG]);
                 double colorIndex = parts[CI].isEmpty()? 0 : Double.parseDouble(parts[CI]);
                 EquatorialCoordinates coordinates = EquatorialCoordinates.of(rared,decred);
 

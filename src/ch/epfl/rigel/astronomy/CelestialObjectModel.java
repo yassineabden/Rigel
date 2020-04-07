@@ -13,13 +13,13 @@ import ch.epfl.rigel.coordinates.EclipticToEquatorialConversion;
 public interface CelestialObjectModel<O> {
 
     /**
-     * Retourne l'objet modélisé par le modèle pour un nombre de jour et une une conversion de coordonées ecliptique en coordonées équatoriales données
+     * Retourne l'objet modélisé par le modèle pour un nombre de jours et une une conversion de coordonées ecliptique en coordonées équatoriales données
      *
      * @param daysSinceJ2010 nombre de jour après J2010
      * @param eclipticToEquatorialConversion conversion de coordonées ecliptique en cpordonées équatoriale donée
      *
      * @return objects modélisé après le nombre de jours données et la conversion de coordonées ecliptique en cpordonées équatoriales
      */
-    //TODO IntelliJ dit que public et abstract c'est redondant pour une enum mais c'est précisé dans le cours
+
     public abstract O at(double daysSinceJ2010, EclipticToEquatorialConversion eclipticToEquatorialConversion);
 }

@@ -33,6 +33,7 @@ public enum AsterismLoader implements StarCatalogue.Loader {
      */
     @Override
     public void load(InputStream inputStream, StarCatalogue.Builder builder) throws IOException {
+
         try ( BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,US_ASCII))){
 
             List<Star> starsBuilded = builder.stars();

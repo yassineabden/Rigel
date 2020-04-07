@@ -8,7 +8,6 @@ import static java.lang.Math.floor;
 
 /**
  * Un intervalle semi-ouvert à droite
- *
  * @author Yassine Abdennadher (299273)
  * @author Juliette Aerni (296670)
  */
@@ -24,8 +23,8 @@ public final class RightOpenInterval extends Interval {
      * @param low  borne inférieur
      * @param high borne supérieur
      *
-     * @return intervalle semi-ouvert construit
      * @throws IllegalArgumentException si la borne inférieur est plus grande ou égale à la borne supérieur
+     * @return intervalle semi-ouvert construit
      */
     public static RightOpenInterval of(double low, double high) {
 
@@ -33,12 +32,12 @@ public final class RightOpenInterval extends Interval {
         return new RightOpenInterval(low, high); }
 
     /**
-     * Méthode de construction d'un intervallesemi-ouvert, symmetrique autour de zéro de taille donnée
+     * Méthode de construction d'un intervalle semi-ouvert, symmetrique autour de zéro de taille donnée
      *
      * @param size taille de l'intervalle
      *
+     * @throws IllegalArgumentException si la borne inférieur est plus grande ou égale à la borne supérieur
      * @return l'intervalle semi ouvert construit
-     * @throws IllegalArgumentException si la taille est inférieur ou égale à zéro
      */
     public static RightOpenInterval symmetric(double size) {
 

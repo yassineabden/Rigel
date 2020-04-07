@@ -33,19 +33,18 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
             30.1985, 1.7673, 131.879, 62.20, -6.87);
 
     private final String name;
-    private final double periodRevol, lonAtJ2010, lonAtPerigee, excOrbite, orbitAxis, orbitIncl, lonOrbitalNode, angularSize, magnitude;
-
+    private final double periodRevol, lonAtJ2010, lonAtPerigee, excOrbite, orbitAxis,
+            orbitIncl, lonOrbitalNode, angularSize, magnitude;
+    // Sinus et cosinus de l'inclinaison de l'orbite, vitesse angulaire moyenne
     private final double cos_i, sin_i, avAngularVelocity;
-    //TODO c'est quoi le mieux?
-    private final static double AV_ANGULAR_VELOCITY = Angle.TAU/365.242191 ;
 
     /**
      * Liste contenant toute les planètes
      */
     public static List<PlanetModel> ALL = Arrays.asList(PlanetModel.values());
 
-    //TODO on laisse le private?
-    private PlanetModel(String name, double periodRevol, double longAtJ2010, double longAtPerigee, double excOrbite, double orbitAxis,
+
+    PlanetModel(String name, double periodRevol, double longAtJ2010, double longAtPerigee, double excOrbite, double orbitAxis,
                         double inclinationOfOrbiteAtEcl, double lonOrbitalNode, double angularSize, double magnitude){
 
         this.name = name;
@@ -63,10 +62,10 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         avAngularVelocity = Angle.TAU / 365.242191*periodRevol; }
 
     /**
-     * Retourne la planète après un nombre de jours données et une conversion de coordonéées ecliptic en cooroonées équatoriales
+     * Retourne la planète après un nombre de jours donné et une conversion de coordonéées ecliptiques en coordoonées équatoriales
      *
-     * @param daysSinceJ2010 nombre de jour après J2010
-     * @param eclipticToEquatorialConversion conversion de coordonées à appliquer
+     * @param daysSinceJ2010 nombre de jours après J2010
+     * @param eclipticToEquatorialConversion conversion de coordonnées à appliquer
      *
      * @return la nouvelle planète
      */
@@ -85,7 +84,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
 
         double radiusProjOnEcliptic = radiusToSun * Math.cos(helioEclLat);
         double helioEclLon = Math.atan2(Math.sin(helioMinusNode)*cos_i, Math.cos(helioMinusNode))
-                                        + lonOrbitalNode;
+                + lonOrbitalNode;
 
         // Calcul les données pour la Terre
         double earthM = EARTH.avAngularVelocity*daysSinceJ2010 + EARTH.lonAtJ2010 - EARTH.lonAtPerigee;
@@ -112,7 +111,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
                                                 Math.atan2( latDenom,
                                                         radiusProjOnEcliptic - earthR * Math.cos(helioEclLon - earthL))); }
 
-        // Calcul le reste des coordonées, la phase et la nouvelle magnitue
+        // Calcul le reste des coordonées, la phase et la nouvelle magnitude
         double newLat = Math.atan((radiusProjOnEcliptic * Math.tan(helioEclLat) * Math.sin(lon - helioEclLon))
                                   / latDenom);
         EquatorialCoordinates newEqCoord = eclipticToEquatorialConversion.
@@ -121,8 +120,6 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         double phaseSqrt = Math.sqrt((1 + Math.cos(lon-helioLon)) /2);
         double newMagnitude = magnitude + 5 * Math.log10(radiusToSun*earthDistance / phaseSqrt);
 
-        return new Planet(name, newEqCoord, (float) (newAngularSize), (float) (newMagnitude));
-
-    }
+        return new Planet(name, newEqCoord, (float) (newAngularSize), (float) (newMagnitude)); }
 }
 

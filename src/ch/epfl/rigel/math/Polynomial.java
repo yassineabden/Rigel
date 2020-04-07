@@ -9,7 +9,6 @@ import ch.epfl.rigel.Preconditions;
  */
 public final class Polynomial {
 
-
     private final double[] coefficients;
 
 
@@ -44,7 +43,7 @@ public final class Polynomial {
     public double at(double x) {
 
         double polAtx = 0;
-        // Polynôme évalué en x au moyen de la form de Horner
+        // Polynôme évalué en x au moyen de la forme de Horner
         for (double coefficient : coefficients) {
             polAtx = polAtx * x + coefficient; }
         return polAtx; }
@@ -63,14 +62,14 @@ public final class Polynomial {
         for (double c : coefficients) {
             if (c != 0) {
 
-                if (power != 0 && c > 0) sb.append("+");
+                if (power != coefficients.length-1 && c > 0) sb.append("+");
 
                 if (c != 1.0 && c != -1.0) sb.append(c);
                 else if (c < 0) sb.append("-");
 
-                if (power != coefficients.length -1){
+                if (power != 0){
                     sb.append("x");
-                    if(power != coefficients.length -2){
+                    if(power != 1){
                         sb.append("^").append(power); } }
                 }
             power--;
@@ -80,7 +79,7 @@ public final class Polynomial {
 
 
     /**
-     * Lance une exception car on ne peut pas utilié cette méthode avec un polynôme immuable
+     * Lance une exception car on ne peut pas utiliser cette méthode avec un polynôme immuable
      *
      * @param obj object à évaluer
      *
@@ -90,7 +89,7 @@ public final class Polynomial {
     public final boolean equals(Object obj) { throw new UnsupportedOperationException(); }
 
     /**
-     * Lance une exception car on ne peut pas utilié cette méthode avec un polynôme immuable
+     * Lance une exception car on ne peut pas utiliser cette méthode avec un polynôme immuable
      *
      * @throws UnsupportedOperationException car cette méthode ne peut pas être appelée pour un polynôme
      */

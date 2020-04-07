@@ -17,7 +17,7 @@ public final class StereographicProjection implements Function<HorizontalCoordin
     private final double  cosLat, sinLat;
 
     /**
-     * Constructeur public qui retourne la projection stéréographique centrée en center.
+     * Constructeur public qui retourne la projection stéréographique centrée en center
      *
      * @param center coordonnées horizontales
      */
@@ -27,13 +27,15 @@ public final class StereographicProjection implements Function<HorizontalCoordin
         sinLat = Math.sin(center.lat()); }
 
     /**
-     * Détermine les coordonnées cartésiennes de la projection du point de coordonnées horizontales donné en arguments.
+     * Détermine les coordonnées cartésiennes de la projection du point de coordonnées horizontales donnés en arguments
      *
      * @param azAlt un point exprimé en coordonnées horizontales
-     * @return les coordonnées cartésiennes de la projection du point de coordonnées horizontales donné en arguments
+     *
+     * @return les coordonnées cartésiennes de la projection du point de coordonnées horizontales donnés en arguments
      */
     @Override
     public CartesianCoordinates apply(HorizontalCoordinates azAlt) {
+
         double cLat =Math.cos(azAlt.lat());
         double sLat = Math.sin(azAlt.lat());
 
@@ -44,29 +46,33 @@ public final class StereographicProjection implements Function<HorizontalCoordin
         return  CartesianCoordinates.of(d*cLat*sLon, d*(sLat*cosLat - cLat*sinLat*cLon)); }
 
     /**
-     * Détermine les coordonnées horizontales du point dont la projection est le point de coordonnées cartésiennes.
+     * Détermine les coordonnées horizontales du point dont la projection est le point de coordonnées cartésiennes
      *
      * @param xy un point exprimé en coordonnées cartésiennes
+     *
      * @return les coordonnées horizontales du point dont la projection est le point de coordonnées cartésiennes
      */
     public HorizontalCoordinates inverseApply(CartesianCoordinates xy){
+
         double p = Math.sqrt(xy.x()*xy.x() + xy.y()*xy.y());
         double sin_c = (2*p)/(p*p + 1);
         double cos_c = (1 - p*p)/ (p*p + 1);
 
-        double az = Angle.normalizePositive(Math.atan2(xy.x()*sin_c , (p*cosLat*cos_c - xy.y()*sinLat*sin_c) ) + center.lon());
+        double az = Angle.normalizePositive(Math.atan2(xy.x()*sin_c,
+                    (p*cosLat*cos_c - xy.y()*sinLat*sin_c) ) + center.lon());
         double alt = Math.asin(cos_c*sinLat + (xy.y()*sin_c*cosLat)/ p);
 
         return HorizontalCoordinates.of(az,alt); }
 
     /**
-     * Détermine le centre du cercle sur lequel on projette un parallèle passant par un point
-     * L'ordonnée du centre du cerle peut être infinie
+     * Détermine le centre du cercle sur lequel on projette un parallèle passant par un point (l'ordonnée du centre du cerle peut être infinie)
      *
      * @param hor point appartenant au parallèle
+     *
      * @return centre du cerle de projection du parallèle
      */
     public CartesianCoordinates circleCenterForParallel(HorizontalCoordinates hor){
+
         double sLat = Math.sin(hor.lat());
 
         return CartesianCoordinates.of(0.0,(cosLat)/(sinLat+ sLat)); }
@@ -75,9 +81,11 @@ public final class StereographicProjection implements Function<HorizontalCoordin
      * Détermine le rayon du cercle de projection d'un parallèle déterminé par un point
      *
      * @param parallel coordonées horizontales d'un point du parralèle
+     *
      * @return Rayon de projection du parallèle qui peut être infini
      */
     public double circleRadiusForParallel(HorizontalCoordinates parallel){
+
         double cLat =Math.cos(parallel.lat());
         double sLat = Math.sin(parallel.lat());
 
@@ -102,21 +110,22 @@ public final class StereographicProjection implements Function<HorizontalCoordin
     @Override
     public String toString() {
         return  String.format(Locale.ROOT, "Centre de StereographicProjection (%.4f, %.4f) ", center.az(),center.alt()); }
+
     /**
-     *Cette méthode lève l'exception UnsupportedOperationException pour garantir qu'aucune sous-classe ne les redéfinira
+     * Cette méthode lève l'exception UnsupportedOperationException lorsqu'on fait appel à celle-ci
      *
      * @param obj Objet arbitraire
-     * @throws UnsupportedOperationException si une super-classe la redéfinit.
+     *
+     * @throws UnsupportedOperationException si cette méthode est appelée
      */
-
     @Override
     public boolean equals(Object obj) {
         throw new UnsupportedOperationException(); }
 
     /**
-     * Cette méthode lève l'exception UnsupportedOperationException pour garantir qu'aucune sous-classe ne les redéfinira
+     * Cette méthode lève l'exception UnsupportedOperationException lorsqu'on fait appel à celle-ci
      *
-     * @throws UnsupportedOperationException si une super-classe la redéfinit.
+     * @throws UnsupportedOperationException si cette méthode est appelée
      */
 
     @Override

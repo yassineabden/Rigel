@@ -10,8 +10,7 @@ import ch.epfl.rigel.math.Angle;
 
 abstract class SphericalCoordinates {
 
-    private final double longitude;
-    private final double latitude;
+    private final double longitude,latitude;;
 
     /**
      * Constructeur de la classe
@@ -19,8 +18,8 @@ abstract class SphericalCoordinates {
      * @param lat Latitude
      */
     SphericalCoordinates(double lon, double lat){
-        this.latitude =lat;
-        this.longitude =lon; }
+        latitude =lat;
+        longitude =lon; }
 
     /**
      * Retourne la longitude
@@ -51,9 +50,10 @@ abstract class SphericalCoordinates {
     double latDeg () { return Angle.toDeg(latitude);}
 
     /**
-     *Cette méthode lève l'exception UnsupportedOperationException pour garantir qu'aucune sous-classe ne les redéfinira
+     * Cette méthode lève l'exception UnsupportedOperationException pour garantir qu'aucune sous-classe ne les redéfinira
      *
      * @param obj Objet arbitraire
+     *
      * @throws UnsupportedOperationException si une super-classe la redéfinit.
      */
     @Override

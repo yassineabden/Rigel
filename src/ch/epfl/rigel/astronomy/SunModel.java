@@ -22,10 +22,10 @@ public enum SunModel implements CelestialObjectModel<Sun> {
     final private static double ANGULAR_DIAMETER =  Angle.ofDeg(0.533128);
 
     /**
-     * Retourne le soleil après un jnombre de jour donnés et une conversion de coordonées ecliptic en coordonées équatoriales
+     * Retourne le soleil après un nombre de jours donnés et une conversion de coordonées ecliptiques en coordonnées équatoriales
      *
-     * @param daysSinceJ2010 nombre de jour après J2010 double
-     * @param eclipticToEquatorialConversion conversion de coordonées ecliptic en coordonées équatoriales
+     * @param daysSinceJ2010 nombre de jours après J2010 double
+     * @param eclipticToEquatorialConversion conversion de coordonées ecliptiques en coordonnées équatoriales
      *
      * @return le nouveau soleil
      */

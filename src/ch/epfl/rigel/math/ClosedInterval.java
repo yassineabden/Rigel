@@ -64,9 +64,8 @@ public final class ClosedInterval extends Interval {
      */
     public double clip (double v) {
 
-        if ((! contains(v)) && v > high())  v = high();
-        if ((! contains(v)) && v < low()) v = low();
-
+        if (v > high()) v = high();
+        if (v < low()) v = low();
         return v; }
 
     /**
@@ -79,20 +78,7 @@ public final class ClosedInterval extends Interval {
 
         return String.format(Locale.ROOT,"[%.2f , %.2f]",low(),high()); }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-        }
+}
 
 
 

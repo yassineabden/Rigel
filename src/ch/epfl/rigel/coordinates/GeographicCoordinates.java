@@ -35,15 +35,16 @@ public final class GeographicCoordinates  extends SphericalCoordinates{
      */
     public static GeographicCoordinates ofDeg(double lonDeg, double latDeg){
 
-        Preconditions.checkArgument(INTERVAL_LONG_RAD.contains(Angle.ofDeg(lonDeg)));
-        Preconditions.checkArgument(INTERVAL_LAT_RAD.contains(Angle.ofDeg(latDeg)));
+        Preconditions.checkInInterval(INTERVAL_LONG_RAD,Angle.ofDeg(lonDeg));
+        Preconditions.checkInInterval(INTERVAL_LAT_RAD,Angle.ofDeg(latDeg));
 
         return new GeographicCoordinates(Angle.ofDeg(lonDeg),Angle.ofDeg(latDeg)); }
 
     /**
-     * Vérifie qu'un angle est une logitude valide, contenue entre [-180 deg, 180 deg[
+     * Vérifie que la longitude est contenue entre [-180 deg, 180 deg[
      *
      * @param lonDeg longitude en degré à vérifier
+     *
      * @return vrai si l'angle est valide, faux sinon
      */
     public static boolean isValidLonDeg(double lonDeg){
@@ -51,9 +52,10 @@ public final class GeographicCoordinates  extends SphericalCoordinates{
     }
 
     /**
-     * Vérifie qu'un angle est une latitude valide, contenue entre [-90 deg, 90 deg]
+     * Vérifie que la latitude est contenue entre [-90 deg, 90 deg]
      *
      * @param latDeg latitude en degré à vérifier
+     *
      * @return vrai si l'angle est valide, faux sinon
      */
     public static boolean isValidLatDeg(double latDeg){

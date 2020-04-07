@@ -8,8 +8,7 @@ package ch.epfl.rigel.math;
 
 public abstract class Interval {
 
-    private final double upperBound;
-    private final double lowerBound;
+    private final double upperBound,lowerBound;
 
 
     /**

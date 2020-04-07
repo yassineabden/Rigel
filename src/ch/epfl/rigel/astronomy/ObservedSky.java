@@ -47,8 +47,8 @@ public final class ObservedSky {
                 Planet p = planetModel.at(daysSinceJ2010, eclipticToEquatorialConversion);
                 planet.add(p);
             } }
-        coordinatesMap.put(planet,listToArray(planet));
-        coordinatesMap.put(starCatalogue.stars(),listToArray(starCatalogue.stars()));
+        //coordinatesMap.put(planet,listToArray(planet));
+        //coordinatesMap.put(starCatalogue.stars(),listToArray(starCatalogue.stars()));
         planets= List.copyOf(planet);
         celestialObjectCartesianCoordinates=Collections.unmodifiableMap(coordinatesMap);
     }
@@ -89,7 +89,7 @@ public final class ObservedSky {
 
     //TODO
     public CelestialObject objectClosestTo(CartesianCoordinates cartesianCoordinates,double distance){
-
+    return null;
     }
 
 

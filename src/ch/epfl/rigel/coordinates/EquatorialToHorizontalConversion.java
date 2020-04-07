@@ -15,10 +15,8 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
 
     private final double cosLat,sinLat, localSideralTime;
 
-
-
     /**
-     * Constructeur de conversion de coordonées équatoriale en coordonées horizontales à un instant et un lieu donnés
+     * Constructeur de conversion de coordonnées équatoriales en coordonnées horizontales à un instant et un lieu donnés
      *
      * @param when instant auquel la transfomartion est appliquée
      * @param where lieu de référence
@@ -30,11 +28,11 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
         localSideralTime = SiderealTime.local(when,where); }
 
     /**
-     * Effectue la conversion de coordonées équatoriales à des coordonées horizontales
+     * Effectue la conversion de coordonnées équatoriales en des coordonnées horizontales
      *
-     * @param equ coordonées équatoriales à transformer
+     * @param equ coordonnées équatoriales à transformer
      *
-     * @return les coordonées horizontales transformées
+     * @return les coordonnées horizontales transformées
      */
     @Override
     public HorizontalCoordinates apply(EquatorialCoordinates equ) {
@@ -52,17 +50,18 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
         return HorizontalCoordinates.of(az,alt); }
 
     /**
-     * Lance une exception car on ne peut pas utilié cette méthode avec une conversion de coordonées
+     * Lance une exception car on ne peut pas utiliser cette méthode avec une conversion de coordonnées
      *
-     * @throws UnsupportedOperationException car car cette méthode de peut pas être appelée pour une conversion de coordonées
+     * @throws UnsupportedOperationException car cette méthode ne peut pas être appelée pour une conversion de coordonnées
      */
     @Override
     public int hashCode() {throw new UnsupportedOperationException(); }
 
     /**
-     * Lance une exception car on ne peut pas utilié cette méthode avec une conversion de coordonées
+     * Lance une exception car on ne peut pas utiliser cette méthode avec une conversion de coordonnées
+     * @param obj objet arbitraire
      *
-     * @throws UnsupportedOperationException car car cette méthode de peut pas être appelée pour une conversion de coordonées
+     * @throws UnsupportedOperationException car cette méthode ne peut pas être appelée pour une conversion de coordonnées
      */
     @Override
     public boolean equals(Object obj) {throw new UnsupportedOperationException(); }

@@ -19,7 +19,7 @@ public final class Moon extends CelestialObject {
     /**
      * Unique constructeur visible dans le package.
      *
-     * @param equatorialPos Position de l'objet en cordonées equatoriales
+     * @param equatorialPos Position de l'objet en coordonnées equatoriales
      * @param angularSize   taille angulaire
      * @param magnitude     magnitude
      * @param phase phase donnée

@@ -36,5 +36,4 @@ public final class Preconditions {
 
         if (interval.contains(value)) return value;
         else throw new IllegalArgumentException(); }
-
 }

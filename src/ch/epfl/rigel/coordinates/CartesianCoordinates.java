@@ -15,8 +15,8 @@ public final class CartesianCoordinates {
     private final double x,y;
 
     private CartesianCoordinates(double x, double y){
-    this.x = x;
-    this.y = y;}
+        this.x = x;
+        this.y = y;}
 
     /**
      * Methode de construction de coordonées cartésiennes
@@ -27,7 +27,8 @@ public final class CartesianCoordinates {
      * @return Les coordonées carthésiennes construites
      */
     public static CartesianCoordinates of(double x,double y){
-    return new CartesianCoordinates(x, y); }
+
+        return new CartesianCoordinates(x, y); }
 
     /**
      * Retourne l'abscisse
@@ -44,32 +45,35 @@ public final class CartesianCoordinates {
     public double y(){return y;}
 
     /**
-     * Cette méthode lève l'exception UnsupportedOperationException pour garantir qu'aucune sous-classe ne les redéfinira
      *
-     * @throws UnsupportedOperationException si une super-classe la redéfinit.
+     * Retourne les coordonées sous une forme lisible
+     *
+     * @return les coordonées cartésiennes sous la fomre (x, y)
+     */
+    @Override
+    public String toString() {
+        return String.format(Locale.ROOT,"(%.4f , %.4f)",x(),y()); }
+
+    /**
+     * Cette méthode lève l'exception UnsupportedOperationException lorsqu'on fait appel à celle-ci
+     *
+     * @throws UnsupportedOperationException si cette méthode est appelée
      */
     @Override
     public int hashCode() {
         throw new UnsupportedOperationException(); }
 
     /**
-     *Cette méthode lève l'exception UnsupportedOperationException pour garantir qu'aucune sous-classe ne les redéfinira
+     *Cette méthode lève l'exception UnsupportedOperationException lorsqu'on fait appel à celle-ci
      *
      * @param obj Objet arbitraire
-     * @throws UnsupportedOperationException si une super-classe la redéfinit.
+     *
+     * @throws UnsupportedOperationException si cette méthode est appelée
      */
 
     @Override
     public boolean equals(Object obj) {
         throw new UnsupportedOperationException(); }
 
-    /**
-     *
-     * Retourne les coordonées sous forme lisible
-     *
-     * @return les coordonées carthésiennes sous la fomre (x, y)
-     */
-    @Override
-    public String toString() {
-        return String.format(Locale.ROOT,"(%.4f , %.4f)",x(),y()); }
+
 }

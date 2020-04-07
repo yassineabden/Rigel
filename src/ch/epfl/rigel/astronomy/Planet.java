@@ -12,7 +12,7 @@ import ch.epfl.rigel.coordinates.EquatorialCoordinates;
      * Constructeur de la classe.
      *
      * @param name          nom de l'objet céleste
-     * @param equatorialPos Position de l'objet en cordonées equatoriales
+     * @param equatorialPos Position de l'objet en coordonnées equatoriales
      * @param angularSize   taille angulaire
      * @param magnitude     magnitude
      *

@@ -26,14 +26,15 @@ public final class EquatorialCoordinates extends SphericalCoordinates{
      *
      * @param ra ascension droite  en radians
      * @param dec declinaison en radians
+     *
      * @throws IllegalArgumentException si  l'ascension droite n'est pas inclus entre [0h, 24h[
-     * @return IllegalArgumentException si la declinaison  n'est pas inclus entre [-90 deg, 90 deg]
+     * @throws  IllegalArgumentException si la declinaison  n'est pas inclus entre [-90 deg, 90 deg]
+     * @return des coordonnées équatoriales
      */
-    //TODO corriger le return & le throws
     public static EquatorialCoordinates of(double ra, double dec){
 
-        Preconditions.checkArgument(INTERVAL_RA_RAD.contains(ra));
-        Preconditions.checkArgument(INTERVAL_DEC_RAD.contains(dec));
+        Preconditions.checkInInterval(INTERVAL_RA_RAD,ra);
+        Preconditions.checkInInterval(INTERVAL_DEC_RAD,dec);
 
         return new EquatorialCoordinates(ra,dec); }
 
@@ -41,6 +42,7 @@ public final class EquatorialCoordinates extends SphericalCoordinates{
      * Vérifie qu'une heure est une ascension droite valide, comprise entre [0h, 24h[
      *
      * @param raHr ascension droite en heure
+     *
      * @return vrai si l'heure est valide, faux sinon
      */
     public static boolean isValidRaHr(double raHr){
@@ -51,6 +53,7 @@ public final class EquatorialCoordinates extends SphericalCoordinates{
      * Vérifie qu'un angle est une declinaison valide, contenue entre [-90 deg, 90 deg]
      *
      * @param dec latitude en degré à vérifier
+     *
      * @return vrai si l'angle est valide, faux sinon
      */
     public static boolean isValidDec(double dec){
@@ -82,14 +85,14 @@ public final class EquatorialCoordinates extends SphericalCoordinates{
     }
 
     /**
-     *  Retourne la déclinaison en radian
+     * Retourne la déclinaison en radian
      *
      * @return declinaison en radian
      */
     public double dec(){ return super.lat(); }
 
     /**
-     *  Retourne la déclinaison en degré
+     * Retourne la déclinaison en degré
      *
      * @return declinaison en degré
      */
@@ -104,7 +107,7 @@ public final class EquatorialCoordinates extends SphericalCoordinates{
      */
     @Override
     public String toString(){
-    return String.format(Locale.ROOT, "(ra=%.4fh, dec=%.4f°)", raHr(), decDeg()); }
+        return String.format(Locale.ROOT, "(ra=%.4fh, dec=%.4f°)", raHr(), decDeg()); }
 
 
 }

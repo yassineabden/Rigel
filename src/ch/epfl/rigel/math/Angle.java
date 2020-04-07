@@ -35,8 +35,7 @@ public final class Angle {
 
     public static double normalizePositive(double rad) {
 
-        return INTERVAL_NORMAL_TRIGO.reduce(rad);
-    }
+        return INTERVAL_NORMAL_TRIGO.reduce(rad); }
 
     /**
      * Transforme un angle donné en secondes en radians
@@ -89,6 +88,7 @@ public final class Angle {
      * Transforme un angle donné en heure en radians
      *
      * @param hr heures d'angle données
+     *
      * @return angle en radians
      */
     public static double ofHr (double hr){ return hr*RAD_PER_HR; }

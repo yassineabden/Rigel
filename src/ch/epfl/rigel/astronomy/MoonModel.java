@@ -23,7 +23,7 @@ public enum MoonModel implements CelestialObjectModel<Moon> {
 
     /**
      * @param daysSinceJ2010                 nombre de jour après J2010 double
-     * @param eclipticToEquatorialConversion coordonées équatoriales à J2010
+     * @param eclipticToEquatorialConversion coordonnées équatoriales à J2010
      * @return la lune
      */
     @Override
