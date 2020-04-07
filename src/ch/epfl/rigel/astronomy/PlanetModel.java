@@ -8,7 +8,7 @@ import ch.epfl.rigel.math.Angle;
 import java.util.Arrays;
 import java.util.List;
 /**
- * Enum modélisant une planète
+ * Enumération modélisant une planète
  * @author Yassine Abdennadher (299273)
  * @author Juliette Aerni (296670)
  */
@@ -33,117 +33,96 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
             30.1985, 1.7673, 131.879, 62.20, -6.87);
 
     private final String name;
-    private final double periodRevol;
-    private final double lonAtJ2010;
-    private final double lonAtPerigee;
-    private final double excOrbite;
-    private final double a;
-    private final double orbitIncl;
-    private final double lonOrbitalNode;
-    private final double angularSize;
-    private final double magnitude;
+    private final double periodRevol, lonAtJ2010, lonAtPerigee, excOrbite, orbitAxis, orbitIncl, lonOrbitalNode, angularSize, magnitude;
 
-    private final double cos_i, sin_i;
-
-    public static List<PlanetModel> ALL = Arrays.asList(PlanetModel.values());
-
-    final private static double TROPICAL_YEAR = 365.242191;
+    private final double cos_i, sin_i, avAngularVelocity;
+    //TODO c'est quoi le mieux?
+    private final static double AV_ANGULAR_VELOCITY = Angle.TAU/365.242191 ;
 
     /**
-     *
-     * @param name nom de la planète
-     * @param periodRevol période de révolution
-     * @param longAtJ2010 longitude à J2010
-     * @param longAtPerigee longitude au périgrée
-     * @param excOrbite Excentricité de l'robite
-     * @param a demi grand-axe de l'orbite
-     * @param inclinationOfOrbiteAtEcl Inclinaison de l'orbite à l'écliptique
-     * @param lonOrbitalNode longitude du noeud ascendant
-     * @param angularSize taille angualire
-     * @param magnitude magnitude
+     * Liste contenant toute les planètes
      */
+    public static List<PlanetModel> ALL = Arrays.asList(PlanetModel.values());
 
-    private PlanetModel(String name, double periodRevol, double longAtJ2010, double longAtPerigee, double excOrbite, double a,
+    //TODO on laisse le private?
+    private PlanetModel(String name, double periodRevol, double longAtJ2010, double longAtPerigee, double excOrbite, double orbitAxis,
                         double inclinationOfOrbiteAtEcl, double lonOrbitalNode, double angularSize, double magnitude){
-        this.name=name;
+
+        this.name = name;
         this.periodRevol = periodRevol;
         this.lonAtJ2010 = Angle.ofDeg(longAtJ2010);
         this.lonAtPerigee = Angle.ofDeg(longAtPerigee);
-        this.excOrbite= excOrbite;
-        this.a = a;
+        this.excOrbite = excOrbite;
+        this.orbitAxis = orbitAxis;
         this.orbitIncl = Angle.ofDeg(inclinationOfOrbiteAtEcl);
         cos_i = Math.cos(orbitIncl);
         sin_i = Math.sin(orbitIncl);
         this.lonOrbitalNode = Angle.ofDeg(lonOrbitalNode);
         this.angularSize = Angle.ofArcsec(angularSize);
-        this.magnitude= magnitude;
-
-    }
+        this.magnitude = magnitude;
+        avAngularVelocity = Angle.TAU / 365.242191*periodRevol; }
 
     /**
+     * Retourne la planète après un nombre de jours données et une conversion de coordonéées ecliptic en cooroonées équatoriales
      *
-     * @param daysSinceJ2010 nombre de jour après J2010 double
-     * @param eclipticToEquatorialConversion coordonées équatoriales à J2010
-     * @return la planète
+     * @param daysSinceJ2010 nombre de jour après J2010
+     * @param eclipticToEquatorialConversion conversion de coordonées à appliquer
+     *
+     * @return la nouvelle planète
      */
-
-
     @Override
     public Planet at(double daysSinceJ2010, EclipticToEquatorialConversion eclipticToEquatorialConversion) {
 
-        double meanAnomaly = (Angle.TAU*daysSinceJ2010)/(TROPICAL_YEAR*periodRevol)+ lonAtJ2010 - lonAtPerigee;
+        // Calcul les données pour la planète
+        double meanAnomaly = avAngularVelocity*daysSinceJ2010 + lonAtJ2010 - lonAtPerigee;
         double realAnomaly = meanAnomaly + 2*excOrbite*Math.sin(meanAnomaly);
 
-        double radiusToSun = a*(1-excOrbite*excOrbite) / ( 1 + excOrbite*Math.cos(realAnomaly));
+        double radiusToSun = orbitAxis * (1-excOrbite*excOrbite) /
+                                ( 1 + excOrbite*Math.cos(realAnomaly));
         double helioLon = realAnomaly + lonAtPerigee;
-        double helioEclLat = Math.asin(Math.sin(helioLon - lonOrbitalNode)*sin_i);
+        double helioMinusNode = helioLon - lonOrbitalNode;
+        double helioEclLat = Math.asin(Math.sin(helioMinusNode)*sin_i);
 
-        double radiusProjOnEcliptic = radiusToSun*Math.cos(helioEclLat);
-        double helioEclLon = Math.atan2(Math.sin(helioLon - lonOrbitalNode)*cos_i,
-                                                Math.cos(helioLon - lonOrbitalNode))
+        double radiusProjOnEcliptic = radiusToSun * Math.cos(helioEclLat);
+        double helioEclLon = Math.atan2(Math.sin(helioMinusNode)*cos_i, Math.cos(helioMinusNode))
                                         + lonOrbitalNode;
 
-        double earthM = (Angle.TAU*daysSinceJ2010)/(TROPICAL_YEAR*EARTH.periodRevol) + EARTH.lonAtJ2010 - EARTH.lonAtPerigee;
+        // Calcul les données pour la Terre
+        double earthM = EARTH.avAngularVelocity*daysSinceJ2010 + EARTH.lonAtJ2010 - EARTH.lonAtPerigee;
         double earthV = earthM + 2*EARTH.excOrbite*Math.sin(earthM);
 
-        double earthR = EARTH.a*(1 - EARTH.excOrbite*EARTH.excOrbite) / (1 + EARTH.excOrbite*Math.cos(earthV));
+        double earthR = EARTH.orbitAxis*(1 - EARTH.excOrbite*EARTH.excOrbite) / (1 + EARTH.excOrbite*Math.cos(earthV));
         double earthL = earthV + EARTH.lonAtPerigee;
 
-        double earthDistance= Math.sqrt(earthR*earthR + radiusToSun*radiusToSun - 2*earthR*radiusToSun
-                                        *Math.cos(helioLon-earthL)*Math.cos(helioEclLat));
-        double newAngularSize = angularSize/earthDistance;
+        double earthDistance = Math.sqrt(earthR*earthR + radiusToSun*radiusToSun -
+                                        2*earthR*radiusToSun*Math.cos(helioLon-earthL)*Math.cos(helioEclLat));
+        double newAngularSize = angularSize / earthDistance;
 
         double latDenom = earthR * Math.sin(helioEclLon - earthL);
-        if (periodRevol<1) {
-            double lonInf = Angle.normalizePositive( Math.PI + earthL +
+        double lon;
+
+        if ((periodRevol < 1)) {
+            // Calcul la longitude pour les planètes inférieures
+            lon = Angle.normalizePositive(Math.PI + earthL +
                     Math.atan2(radiusProjOnEcliptic * Math.sin(earthL - helioEclLon),
-                    earthR - radiusProjOnEcliptic * Math.cos(earthL - helioEclLon)));
+                            earthR - radiusProjOnEcliptic * Math.cos(earthL - helioEclLon))); }
+        else {
+            // Calcul la longitude pour les planètes supérieures
+            lon = Angle.normalizePositive(helioEclLon +
+                                                Math.atan2( latDenom,
+                                                        radiusProjOnEcliptic - earthR * Math.cos(helioEclLon - earthL))); }
 
-            double newLat = Math.atan((radiusProjOnEcliptic * Math.tan(helioEclLat) * Math.sin(lonInf - helioEclLon))
-                    / latDenom);
+        // Calcul le reste des coordonées, la phase et la nouvelle magnitue
+        double newLat = Math.atan((radiusProjOnEcliptic * Math.tan(helioEclLat) * Math.sin(lon - helioEclLon))
+                                  / latDenom);
+        EquatorialCoordinates newEqCoord = eclipticToEquatorialConversion.
+                                            apply(EclipticCoordinates.of(lon, newLat));
 
-            EclipticCoordinates eclInf = EclipticCoordinates.of(lonInf, newLat);
-            EquatorialCoordinates eqInf = eclipticToEquatorialConversion.apply(eclInf);
+        double phaseSqrt = Math.sqrt((1 + Math.cos(lon-helioLon)) /2);
+        double newMagnitude = magnitude + 5 * Math.log10(radiusToSun*earthDistance / phaseSqrt);
 
-            double phase = ((1+Math.cos(lonInf-helioLon))/2);
-            double newMagnitude = magnitude+ 5* Math.log10(radiusToSun*earthDistance/Math.sqrt(phase));
+        return new Planet(name, newEqCoord, (float) (newAngularSize), (float) (newMagnitude));
 
-            return new Planet(name, eqInf, (float) (newAngularSize), (float) (newMagnitude));
-
-        } else {
-                double lonSup = Angle.normalizePositive(helioEclLon + Math.atan2(latDenom,
-                        radiusProjOnEcliptic - earthR*Math.cos(helioEclLon - earthL)));
-
-                double newLat1 = Math.atan((radiusProjOnEcliptic*Math.tan(helioEclLat)*Math.sin(lonSup-helioEclLon))
-                        / latDenom);
-
-                EclipticCoordinates eclSup = EclipticCoordinates.of(lonSup,newLat1);
-                EquatorialCoordinates eqSup = eclipticToEquatorialConversion.apply(eclSup);
-
-                double phase = ((1+Math.cos(lonSup-helioLon))/2);
-                double newMagnitude = magnitude+ 5* Math.log10(radiusToSun*earthDistance/Math.sqrt(phase));
-
-            return new Planet(name, eqSup,(float)(newAngularSize),(float)(newMagnitude)); }
     }
 }
 

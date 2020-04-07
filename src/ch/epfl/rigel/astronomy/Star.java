@@ -5,55 +5,54 @@ import ch.epfl.rigel.coordinates.EquatorialCoordinates;
 import ch.epfl.rigel.math.ClosedInterval;
 
 /**
-    * Classe modélisant une étoile
-    *
+    * Une étoile
     * @author Yassine Abdennadher (299273)
     * @author Juliette Aerni (296670)
     */
 public final class Star extends CelestialObject {
 
-
-    private static final ClosedInterval HIPPARCOS_INTERVAL = ClosedInterval.of(-0.5,5.5);
+    private static final ClosedInterval COLOR_INTERVAL = ClosedInterval.of(-0.5,5.5);
     private final int hipparcosId;
     private final float colorIndex;
 
 
     /**
-     * Unique constructeur visible dans le package.
+     * Construcetur d'une étoile
      *
      * @param name          nom de l'objet céleste
      * @param equatorialPos Position de l'objet en cordonées equatoriales
      * @param magnitude     magnitude
-     * @throws IllegalArgumentException si la taille angulaire est négative
-     * @throws NullPointerException     si le nom ou la position equatoriale sont nuls
+     *
+     * @throws IllegalArgumentException si le numéro d'hipparcos est négatif
+     * @throws IllegalArgumentException si lindice de couleur n'est pas compris dans l'intervalle [-0.5, 5.5]
+     * @throws NullPointerException si le nom ou la position equatoriale sont nuls
      */
    public  Star(int hipparcosId, String name, EquatorialCoordinates equatorialPos, float magnitude, float colorIndex) {
     super(name, equatorialPos,0f,magnitude);
 
-    Preconditions.checkInInterval(HIPPARCOS_INTERVAL, colorIndex);
+        Preconditions.checkInInterval(COLOR_INTERVAL, colorIndex);
+        Preconditions.checkArgument(hipparcosId >= 0);
 
-   Preconditions.checkArgument(hipparcosId>=0);
-
-    this.colorIndex = colorIndex;
-    this.hipparcosId = hipparcosId;
-    }
+        this.colorIndex = colorIndex;
+        this.hipparcosId = hipparcosId; }
 
     /**
-     * Retourne le numéro d'Hipparcos
+     * Retourne le numéro d'Hipparcos de l'étoile
      *
      * @return numéro d'Hipparcos, un int
      */
+    //TODO il faut faire une copie défensive ? (les tests le vérifie pas)
    public int hipparcosId(){return hipparcosId;}
 
     /**
-     *Calcul la couleur de la température
+     * Calcul la couleur de la température de l'étoile en Kelvin
      *
-     * @return la coulour de la température, la valeur entière en int
+     * @return la couleur de la température en Kelvin à l'entier inférieur le plus proche
      */
    public int colorTemperature(){
-       double c = 0.92*colorIndex;
-       double T = 4600*(1/(c + 1.7) + 1/(c + 0.62));
 
-       return (int)(Math.floor(T));
-   }
+       double c = 0.92*colorIndex;
+       double T = 4600*(1/(c+1.7) + 1/(c+0.62));
+
+       return (int)(Math.floor(T)); }
 }
