@@ -42,15 +42,14 @@ public enum AsterismLoader implements StarCatalogue.Loader {
             for (Star star  : starsBuilded)
                 hipToStar.put(star.hipparcosId(), star);
 
-            bufferedReader.readLine();
             String a;
             while ((a = bufferedReader.readLine()) != null){
 
                 String [] stars = a.split(",");
                 List<Star>  aStars = new ArrayList<>(stars.length);
 
-                for (String n : stars)
-                    aStars.add(hipToStar.get(Integer.parseInt(n)));
+                for (String hipparcosId : stars){
+                    aStars.add(hipToStar.get(Integer.parseInt(hipparcosId))); }
 
                 builder.addAsterism(new Asterism(aStars)); }
         }
