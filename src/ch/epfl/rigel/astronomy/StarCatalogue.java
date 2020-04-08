@@ -172,7 +172,7 @@ public final class StarCatalogue {
          * @param builder     Catalogue en cours de construction
          * @throws IOException S'il y a une erreur d'entrée /sortie
          */
-        public abstract void load(InputStream inputStream, Builder builder) throws IOException;
+        void load(InputStream inputStream, Builder builder) throws IOException;
     }
 
 }

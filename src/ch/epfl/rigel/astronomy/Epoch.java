@@ -21,8 +21,7 @@ public enum Epoch {
     private final static double DAYS_TO_JULIAN_CENTURY = (1.0/36525);
 
     Epoch(ZonedDateTime of) {
-    epoch = of;
-   }
+        epoch = of; }
 
     /**
      * Calcul le nombre de jours précis entre l'époque et l'instant donné
