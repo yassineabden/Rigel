@@ -1,10 +1,13 @@
 package ch.epfl.rigel.astronomy;
 
 
-
 import ch.epfl.rigel.coordinates.EquatorialCoordinates;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 import static java.nio.charset.StandardCharsets.US_ASCII;
 /**
  * Chargeur de catalogue HYG

@@ -2,7 +2,6 @@ package ch.epfl.rigel.astronomy;
 
 import ch.epfl.rigel.coordinates.*;
 
-import javax.management.ImmutableDescriptor;
 import java.time.ZonedDateTime;
 import java.util.*;
 

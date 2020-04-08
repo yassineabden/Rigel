@@ -1,7 +1,5 @@
 package ch.epfl.rigel.coordinates;
 
-import java.lang.reflect.UndeclaredThrowableException;
-import java.util.HashMap;
 import java.util.Locale;
 
 /**
