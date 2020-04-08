@@ -62,7 +62,7 @@ public final class Angle {
 
          Preconditions.checkInInterval(INTERVAL_SEC_MIN, min);
          Preconditions.checkInInterval(INTERVAL_SEC_MIN,sec);
-         return ofDeg(deg) + min/ 60 + ofArcsec(sec); }
+         return ofDeg(deg + (min +( sec/ 60))/60); }
 
     /**
      * Transforme un angle donné en degré en radian
