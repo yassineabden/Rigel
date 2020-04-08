@@ -16,7 +16,7 @@ public final class ObservedSky {
     private final CartesianCoordinates sunCoord;
     private final Moon moon;
     private final CartesianCoordinates moonCoord;
-    private final List<Planet> planets;
+    //private final List<Planet> planets;
     private final Map<List<CelestialObject>,double[]> celestialObjectCartesianCoordinates;
 
 
@@ -40,19 +40,19 @@ public final class ObservedSky {
 
 
         // Toutes les planètes sauf la Terre
-        List <Planet> planet = new ArrayList<>(PlanetModel.ALL.size()-1);
+        List<CelestialObject> planet = new ArrayList<>(PlanetModel.ALL.size()-1);
+        List<CelestialObject> stars = List.copyOf(starCatalogue.stars());
 
         for (PlanetModel planetModel: PlanetModel.ALL ) {
             if (planetModel != PlanetModel.EARTH){
                 Planet p = planetModel.at(daysSinceJ2010, eclipticToEquatorialConversion);
                 planet.add(p);
             } }
-        //coordinatesMap.put(planet,listToArray(planet));
-        //coordinatesMap.put(starCatalogue.stars(),listToArray(starCatalogue.stars()));
-        planets= List.copyOf(planet);
+        coordinatesMap.put(planet,listToArray(planet));
+        coordinatesMap.put(stars,listToArray(stars));
+        //planets= List.copyOf(planet);
         celestialObjectCartesianCoordinates=Collections.unmodifiableMap(coordinatesMap);
     }
-
 
 
 
@@ -62,10 +62,9 @@ public final class ObservedSky {
 
     private double[] listToArray (List<CelestialObject> list){
         double [] array= new double[2*list.size()];
-        EquatorialToHorizontalConversion equatorialToHorizontalConversion = new EquatorialToHorizontalConversion(observTime,observPosition);
         int i=0;
         for (CelestialObject c: list){
-            CartesianCoordinates coordinates = stereographicProjection.apply(equatorialToHorizontalConversion.apply(c.equatorialPos()));
+            CartesianCoordinates coordinates = applyFromObject(c);
             array[i]= coordinates.x();
             array[i+1]=coordinates.y();
             i+=2; }
@@ -77,8 +76,8 @@ public final class ObservedSky {
     public Moon moon(){ return moon; }
     public CartesianCoordinates moonPosition(){ return moonCoord;}
 
-    public List <Planet> planets() {return planets;}
-    public double [] planetsPositions() {return celestialObjectCartesianCoordinates.get(planets);}
+   // public List <Planet> planets() {return planets;}
+    //public double [] planetsPositions() {return celestialObjectCartesianCoordinates.get(planets);}
 
     public List<Star> stars(){ return starCatalogue.stars();}
     public double [] starsPositions(){ return celestialObjectCartesianCoordinates.get(starCatalogue.stars());}
