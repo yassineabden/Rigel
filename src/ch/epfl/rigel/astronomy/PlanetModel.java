@@ -111,8 +111,6 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
                                                         radiusProjOnEcliptic - earthR * Math.cos(helioEclLon - earthL)));
 
 
-
-
         // Calcul le reste des coordonées, la phase et la nouvelle magnitude
         double newLat = Math.atan((radiusProjOnEcliptic * Math.tan(helioEclLat) * Math.sin(lon - helioEclLon))
                                   / latDenom);

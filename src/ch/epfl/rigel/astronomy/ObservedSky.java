@@ -15,10 +15,8 @@ public final class ObservedSky {
     private final CartesianCoordinates sunCoord;
     private final Moon moon;
     private final CartesianCoordinates moonCoord;
-    //private final List<Planet> planets;
-    private final Map<List<CelestialObject>,double[]> celestialObjectCartesianCoordinates;
-
-
+    private final List<Planet> planets;
+    private final Map<CartesianCoordinates,CelestialObject> celestialObjectToCoordinates;
 
 
     public ObservedSky(ZonedDateTime observTime, GeographicCoordinates observPosition, StereographicProjection stereographicProjection, StarCatalogue starCatalogue) {
@@ -30,36 +28,38 @@ public final class ObservedSky {
         double daysSinceJ2010= Epoch.J2010.daysUntil(observTime);
 
         EclipticToEquatorialConversion eclipticToEquatorialConversion = new EclipticToEquatorialConversion(observTime);
-        Map<List<CelestialObject>,double[]> coordinatesMap = new HashMap<>();
+        Map<CartesianCoordinates,CelestialObject> coordinatesMap = new HashMap<>();
 
         sun = SunModel.SUN.at(daysSinceJ2010,eclipticToEquatorialConversion);
         moon = MoonModel.MOON.at(daysSinceJ2010,eclipticToEquatorialConversion);
         sunCoord= applyFromObject(sun);
         moonCoord= applyFromObject(moon);
+        coordinatesMap.put(sunCoord,sun);
+        coordinatesMap.put(moonCoord,moon);
 
-
-        // Toutes les planètes sauf la Terre
-        List<CelestialObject> planet = new ArrayList<>(PlanetModel.ALL.size()-1);
-        List<CelestialObject> stars = List.copyOf(starCatalogue.stars());
+        List<Planet> planet = new ArrayList<>(PlanetModel.ALL.size()-1);
+        List<Star> stars = List.copyOf(starCatalogue.stars());
 
         for (PlanetModel planetModel: PlanetModel.ALL ) {
             if (planetModel != PlanetModel.EARTH){
                 Planet p = planetModel.at(daysSinceJ2010, eclipticToEquatorialConversion);
+                CartesianCoordinates coordinates=applyFromObject(p);
                 planet.add(p);
-            } }
-        coordinatesMap.put(planet,listToArray(planet));
-        coordinatesMap.put(stars,listToArray(stars));
-        //planets= List.copyOf(planet);
-        celestialObjectCartesianCoordinates=Collections.unmodifiableMap(coordinatesMap);
+                coordinatesMap.put(coordinates,p); }
+        }
+        for (Star s: stars){
+            CartesianCoordinates coordinates= applyFromObject(s);
+            coordinatesMap.put(coordinates,s); }
+
+        planets= List.copyOf(planet);
+        celestialObjectToCoordinates =Collections.unmodifiableMap(coordinatesMap);
     }
 
-
-
-    private CartesianCoordinates applyFromObject ( CelestialObject celestialObject){
+    private CartesianCoordinates applyFromObject(CelestialObject celestialObject){
         EquatorialToHorizontalConversion equatorialToHorizontalConversion = new EquatorialToHorizontalConversion(observTime,observPosition);
         return stereographicProjection.apply(equatorialToHorizontalConversion.apply(celestialObject.equatorialPos())); }
 
-    private double[] listToArray (List<CelestialObject> list){
+    private double[] listToArray (List<? extends CelestialObject> list){
         double [] array= new double[2*list.size()];
         int i=0;
         for (CelestialObject c: list){
@@ -69,26 +69,49 @@ public final class ObservedSky {
             i+=2; }
         return array; }
 
+
     public Sun sun(){ return sun; }
     public CartesianCoordinates sunPosition(){ return sunCoord;}
 
     public Moon moon(){ return moon; }
     public CartesianCoordinates moonPosition(){ return moonCoord;}
 
-   // public List <Planet> planets() {return planets;}
-    //public double [] planetsPositions() {return celestialObjectCartesianCoordinates.get(planets);}
+    public List <Planet> planets() {return planets;}
+
+    public double [] planetsPositions() {return listToArray(planets);}
 
     public List<Star> stars(){ return starCatalogue.stars();}
-    public double [] starsPositions(){ return celestialObjectCartesianCoordinates.get(starCatalogue.stars());}
+
+    public double [] starsPositions(){ return listToArray(starCatalogue.stars()); }
 
     public Set<Asterism> asterisms(){ return starCatalogue.asterisms();}
 
     public List<Integer> asterismIndices(Asterism asterism){ return starCatalogue.asterismIndices(asterism) ;}
 
-    //TODO
-    public CelestialObject objectClosestTo(CartesianCoordinates cartesianCoordinates,double distance){
-    return null;
+
+    public Optional<CelestialObject> objectClosestTo(CartesianCoordinates cartesianCoordinates,double distance){
+        double x0 = cartesianCoordinates.x();
+        double y0 = cartesianCoordinates.y();
+        double min = Double.MAX_VALUE;
+        double minDistance = 0.0;
+        Optional<CelestialObject> cc = Optional.empty();
+        for (CartesianCoordinates c: celestialObjectToCoordinates.keySet()){
+            if (!(Math.abs(c.x()-x0)>=distance|| Math.abs(c.y()-y0)>= distance)){
+                minDistance = Math.sqrt((c.x()-x0)*(c.x()-x0) - (c.y()-y0)*(c.y()-y0));
+                if (minDistance<min && minDistance<distance)
+                    min=minDistance;
+                    cc = Optional.of(celestialObjectToCoordinates.get(c)); }
+        }
+        return (min==Double.MAX_VALUE)? Optional.empty(): cc;
     }
+
+
+
+
+
+
+
+
 
 
 }
