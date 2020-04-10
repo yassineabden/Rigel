@@ -22,6 +22,7 @@ public final class Star extends CelestialObject {
      * @param name          nom de l'objet céleste
      * @param equatorialPos Position de l'objet en coordonées equatoriales
      * @param magnitude     magnitude
+     * @param colorIndex
      *
      * @throws IllegalArgumentException si le numéro d'hipparcos est négatif ou si l'indice de couleur n'est pas compris dans l'intervalle [-0.5, 5.5]
      * @throws NullPointerException si le nom ou la position equatoriale sont nuls
