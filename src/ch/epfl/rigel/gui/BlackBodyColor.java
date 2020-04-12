@@ -43,7 +43,7 @@ public class BlackBodyColor {
      * @throws IllegalArgumentException si la température donée n'est pas comprise dans
      * @return la couleur correspondant à la température donnée
      */
-    public Color colorForTemperature (float kelvin){
+    public static Color colorForTemperature (float kelvin){
 
         Preconditions.checkArgument(ColorCatalogue.CATALOGUE.isValidKelvinTemperature(kelvin));
         return ColorCatalogue.CATALOGUE.kelvinToColor(kelvin); }

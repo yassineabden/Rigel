@@ -95,12 +95,15 @@ public final class ObservedSky {
         double min = Double.MAX_VALUE;
         double minDistance = 0.0;
         Optional<CelestialObject> cc = Optional.empty();
-        for (CartesianCoordinates c: celestialObjectToCoordinates.keySet()){
-            if (!(Math.abs(c.x()-x0)>=distance|| Math.abs(c.y()-y0)>= distance)){
-                minDistance = Math.sqrt((c.x()-x0)*(c.x()-x0) - (c.y()-y0)*(c.y()-y0));
-                if (minDistance<min && minDistance<distance)
-                    min=minDistance;
-                    cc = Optional.of(celestialObjectToCoordinates.get(c)); }
+        for (CartesianCoordinates c: celestialObjectToCoordinates.keySet()) {
+            if (!(Math.abs(c.x() - x0) >= distance || Math.abs(c.y() - y0) >= distance)) {
+                minDistance = Math.sqrt((c.x() - x0) * (c.x() - x0) - (c.y() - y0) * (c.y() - y0));
+                // est ce mieux de calculer distance*distance
+                if (minDistance < min && minDistance < distance) {
+                    min = minDistance;
+                    cc = Optional.of(celestialObjectToCoordinates.get(c));
+                }
+            }
         }
         return (min==Double.MAX_VALUE)? Optional.empty(): cc;
     }
