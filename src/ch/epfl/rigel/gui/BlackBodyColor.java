@@ -48,13 +48,6 @@ public class BlackBodyColor {
         Preconditions.checkArgument(ColorCatalogue.CATALOGUE.isValidKelvinTemperature(kelvin));
         return ColorCatalogue.CATALOGUE.kelvinToColor(kelvin); }
 
-    /**
-        //TODO à tester -> je l'ai mis dans l'enum
-        private float validKelvinTemprature (float kelvin){
-            float temp = Math.round(kelvin/100);
-            return temp*100;
-        }
-     */
 
     /**
      * Test ENUM
@@ -62,16 +55,17 @@ public class BlackBodyColor {
     private enum ColorCatalogue{
 
         CATALOGUE;
-        private  Map < Float, Color> kelvinToColor;
-        private  RightOpenInterval KELVIN_TEMPERATURE = RightOpenInterval.of(1,6);
-        private  RightOpenInterval DEG  = RightOpenInterval.of(10,15);
-        private  RightOpenInterval  COLOR_RGB = RightOpenInterval.of(80,87);
+        private final Map < Integer, Color> kelvinToColor;
+        //TODO pourquoi c'est illegal d'accéder à des éléments static dans le constructeur d'une enum?
+        private final  RightOpenInterval KELVIN_TEMPERATURE = RightOpenInterval.of(1,6);
+        private final  RightOpenInterval DEG  = RightOpenInterval.of(10,15);
+        private final  RightOpenInterval COLOR_RGB = RightOpenInterval.of(80,87);
         private String deg = "10deg";
 
 
          ColorCatalogue (){
 
-            Map <Float, Color> kelvinToColorMap = new HashMap<>();
+            Map <Integer, Color> kelvinToColorMap = new HashMap<>();
 
             try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(ColorCatalogue.class.getResourceAsStream("/bbr_color.txt"), US_ASCII))) {
                 String line;
@@ -81,14 +75,15 @@ public class BlackBodyColor {
                         if (line.regionMatches((int)DEG.low(), deg, 0, (int)DEG.size())){
                             // ne regarde que les lignes contenant "10deg" à la position donée et transforme les kelvin en
                             // float et la temperature en instance de Color
-                            float kelvinTemp = Float.parseFloat(line.substring((int)KELVIN_TEMPERATURE.low(),(int)KELVIN_TEMPERATURE.high()));
+
+                            int  kelvinTemp = Integer.parseInt(line.substring((int)KELVIN_TEMPERATURE.low(),(int)KELVIN_TEMPERATURE.high()));
                             Color colorFX = Color.web(line.substring((int)COLOR_RGB.low(), (int)COLOR_RGB.high()));
 
                             kelvinToColorMap.put(kelvinTemp,colorFX); }
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new UncheckedIOException(e);
             }
             kelvinToColor = Collections.unmodifiableMap(kelvinToColorMap);
         }
@@ -98,8 +93,8 @@ public class BlackBodyColor {
         private boolean isValidKelvinTemperature(float kelvin) { return kelvinToColor.containsKey(validKelvinTemprature(kelvin)); }
 
         //TODO à tester
-        private float validKelvinTemprature (float kelvin){
-            float temp = Math.round(kelvin/100);
+        private int validKelvinTemprature (float kelvin){
+            int temp = Math.round(kelvin/100);
             return temp*100; }
 
     }

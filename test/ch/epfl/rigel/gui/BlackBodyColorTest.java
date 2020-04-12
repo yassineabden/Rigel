@@ -25,9 +25,9 @@ public class BlackBodyColorTest {
         assertEquals(Color.web("#ff3800"), BlackBodyColor.colorForTemperature(1049));
         assertEquals(Color.web("#ff8912"), BlackBodyColor.colorForTemperature(1951));
 
-        assertThrows(IllegalArgumentException.class, ()-> BlackBodyColor.colorForTemperature((float)40_000.00001d));
-        assertThrows(IllegalArgumentException.class, () -> BlackBodyColor.colorForTemperature(999));
-        assertThrows(IllegalArgumentException.class, () -> BlackBodyColor.colorForTemperature(40001));
+        assertThrows(IllegalArgumentException.class, ()-> BlackBodyColor.colorForTemperature((float)200));
+        assertThrows(IllegalArgumentException.class, () -> BlackBodyColor.colorForTemperature(41000));
+       // assertThrows(IllegalArgumentException.class, () -> BlackBodyColor.colorForTemperature(40001));
 
 
 

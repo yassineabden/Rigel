@@ -105,7 +105,7 @@ public final class ObservedSky {
                 }
             }
         }
-        return (min==Double.MAX_VALUE)? Optional.empty(): cc;
+        return (min==Double.MAX_VALUE) ? Optional.empty(): cc;
     }
 
 
