@@ -1,6 +1,7 @@
 package ch.epfl.rigel.gui;
 
 import ch.epfl.rigel.Preconditions;
+import ch.epfl.rigel.math.ClosedInterval;
 import ch.epfl.rigel.math.RightOpenInterval;
 import javafx.scene.paint.Color;
 
@@ -20,20 +21,10 @@ public class BlackBodyColor {
 
     //TODO comme j'ai fait une enum il y a pas besoin
     private static ColorCatalogue colorCatalogue;
+    private final static ClosedInterval TEMPERATURE_RANGE = ClosedInterval.of(1000, 40000);
 
-    /**
-     * classe non instanciable mais je peux faire ça ou pas?
-     */
-    private BlackBodyColor(){
-       //TODO comme j'ai fait une enum il y a pas besoin
-        /**
-        try (InputStream bbrColor = BlackBodyColor.class.getResourceAsStream("/bbr_color.txt")){
-            colorCatalogue = new ColorCatalogue(bbrColor);
-        }catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-         */
-    }
+
+    private BlackBodyColor(){ }
 
     /**
      * Retourne la couleur correspondant à la température donnée
@@ -45,7 +36,7 @@ public class BlackBodyColor {
      */
     public static Color colorForTemperature (float kelvin){
 
-        Preconditions.checkArgument(ColorCatalogue.CATALOGUE.isValidKelvinTemperature(kelvin));
+        Preconditions.checkInInterval(TEMPERATURE_RANGE,kelvin);
         return ColorCatalogue.CATALOGUE.kelvinToColor(kelvin); }
 
 
@@ -57,11 +48,10 @@ public class BlackBodyColor {
         CATALOGUE;
         private final Map < Integer, Color> kelvinToColor;
         //TODO pourquoi c'est illegal d'accéder à des éléments static dans le constructeur d'une enum?
-        private final  RightOpenInterval KELVIN_TEMPERATURE = RightOpenInterval.of(1,6);
-        private final  RightOpenInterval DEG  = RightOpenInterval.of(10,15);
-        private final  RightOpenInterval COLOR_RGB = RightOpenInterval.of(80,87);
+        private final RightOpenInterval KELVIN_TEMPERATURE = RightOpenInterval.of(1,6);
+        private final RightOpenInterval DEG  = RightOpenInterval.of(10,15);
+        private final RightOpenInterval COLOR_RGB = RightOpenInterval.of(80,87);
         private String deg = "10deg";
-
 
          ColorCatalogue (){
 
@@ -90,50 +80,10 @@ public class BlackBodyColor {
 
         private Color kelvinToColor(float kelvin) { return kelvinToColor.get(validKelvinTemprature(kelvin)); }
 
-        private boolean isValidKelvinTemperature(float kelvin) { return kelvinToColor.containsKey(validKelvinTemprature(kelvin)); }
-
         //TODO à tester
         private int validKelvinTemprature (float kelvin){
             int temp = Math.round(kelvin/100);
             return temp*100; }
 
     }
-
-/**
-    private class ColorCatalogue{
-
-        private  Map < Float, Color> kelvinToColor;
-        private  RightOpenInterval KELVIN_TEMPERATURE = RightOpenInterval.of(1,6);
-        private  RightOpenInterval DEG  = RightOpenInterval.of(10,15);
-        private  RightOpenInterval  COLOR_RGB = RightOpenInterval.of(80,87);
-        private String deg = "10deg";
-
-
-        private ColorCatalogue(InputStream inputStream) throws IOException {
-
-            Map <Float, Color> kelvinToColorMap = new HashMap<>();
-
-            try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, US_ASCII))) {
-                String line;
-
-                while ((line = bufferedReader.readLine()) != null) {
-
-                    if (! line.startsWith("#")){
-                        //ne regarde que les lignes ne commençant pas part "#", ce sont des commentaires
-                         if (line.regionMatches((int)DEG.low(), deg, 0, (int)DEG.size())){
-                            // ne regarde que les lignes contenant "10deg" à la position donée et transforme les kelvin en
-                             // float et la temperature en instance de Color
-                             float kelvinTemp = Float.parseFloat(line.substring((int)KELVIN_TEMPERATURE.low(),(int)KELVIN_TEMPERATURE.high()));
-                             Color colorFX = Color.web(line.substring((int)COLOR_RGB.low(), (int)COLOR_RGB.high()));
-
-                            kelvinToColorMap.put(kelvinTemp,colorFX); }
-                    }
-                 }
-             }
-            kelvinToColor = Collections.unmodifiableMap(kelvinToColorMap);
-        }
-
-
-    }
- */
 }
