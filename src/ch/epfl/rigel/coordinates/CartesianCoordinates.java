@@ -57,7 +57,7 @@ public final class CartesianCoordinates {
      *
      * @throws UnsupportedOperationException si cette méthode est appelée
      */
-    @Override
+   @Override
     public int hashCode() {
         throw new UnsupportedOperationException(); }
 
