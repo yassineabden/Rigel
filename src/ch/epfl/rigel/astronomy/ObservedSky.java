@@ -16,7 +16,7 @@ public final class ObservedSky {
     private final Moon moon;
     private final CartesianCoordinates moonCoord;
     private final List<Planet> planets;
-    private final Map<CartesianCoordinates,CelestialObject> celestialObjectToCoordinates;
+    private final Map<CelestialObject,CartesianCoordinates> celestialObjectToCoordinates;
 
 
     public ObservedSky(ZonedDateTime observTime, GeographicCoordinates observPosition, StereographicProjection stereographicProjection, StarCatalogue starCatalogue) {
@@ -28,14 +28,14 @@ public final class ObservedSky {
         double daysSinceJ2010= Epoch.J2010.daysUntil(observTime);
 
         EclipticToEquatorialConversion eclipticToEquatorialConversion = new EclipticToEquatorialConversion(observTime);
-        Map<CartesianCoordinates,CelestialObject> coordinatesMap = new HashMap<>();
+        Map<CelestialObject,CartesianCoordinates> coordinatesMap = new HashMap<>();
 
         sun = SunModel.SUN.at(daysSinceJ2010,eclipticToEquatorialConversion);
         moon = MoonModel.MOON.at(daysSinceJ2010,eclipticToEquatorialConversion);
         sunCoord= applyFromObject(sun);
         moonCoord= applyFromObject(moon);
-        coordinatesMap.put(sunCoord,sun);
-        coordinatesMap.put(moonCoord,moon);
+        coordinatesMap.put(sun,sunCoord);
+        coordinatesMap.put(moon,moonCoord);
 
         List<Planet> planet = new ArrayList<>(PlanetModel.ALL.size()-1);
         List<Star> stars = List.copyOf(starCatalogue.stars());
@@ -45,11 +45,11 @@ public final class ObservedSky {
                 Planet p = planetModel.at(daysSinceJ2010, eclipticToEquatorialConversion);
                 CartesianCoordinates coordinates=applyFromObject(p);
                 planet.add(p);
-                coordinatesMap.put(coordinates,p); }
+                coordinatesMap.put(p,coordinates); }
         }
         for (Star s: stars){
             CartesianCoordinates coordinates= applyFromObject(s);
-            coordinatesMap.put(coordinates,s); }
+            coordinatesMap.put(s,coordinates); }
 
         planets= List.copyOf(planet);
         celestialObjectToCoordinates =Collections.unmodifiableMap(coordinatesMap);
@@ -95,13 +95,14 @@ public final class ObservedSky {
         double min = Double.MAX_VALUE;
         double minDistance = 0.0;
         Optional<CelestialObject> cc = Optional.empty();
-        for (CartesianCoordinates c: celestialObjectToCoordinates.keySet()) {
+        for (CelestialObject celestialObject: celestialObjectToCoordinates.keySet()) {
+             CartesianCoordinates c = celestialObjectToCoordinates.get(celestialObject);
             if (!(Math.abs(c.x() - x0) >= distance || Math.abs(c.y() - y0) >= distance)) {
                 minDistance = Math.sqrt((c.x() - x0) * (c.x() - x0) - (c.y() - y0) * (c.y() - y0));
                 // est ce mieux de calculer distance*distance
                 if (minDistance < min && minDistance < distance) {
                     min = minDistance;
-                    cc = Optional.of(celestialObjectToCoordinates.get(c));
+                    cc = Optional.of(celestialObjectToCoordinates.get(celestialObject));
                 }
             }
         }
