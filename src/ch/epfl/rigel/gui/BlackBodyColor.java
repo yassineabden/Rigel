@@ -6,6 +6,7 @@ import ch.epfl.rigel.math.RightOpenInterval;
 import javafx.scene.paint.Color;
 
 import java.io.*;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +20,7 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 public class BlackBodyColor {
 
 
-    private final static Map < Integer, Color> colorMap = colorMap();
+    private final static Map < Integer, Color> colorMap = Collections.unmodifiableMap(colorMap("/bbr_color.txt"));
     private final static RightOpenInterval DEG = RightOpenInterval.of(10,15);
     private final static RightOpenInterval COLOR_RGB = RightOpenInterval.of(80,87);
 
@@ -49,22 +50,20 @@ public class BlackBodyColor {
         return (int) (kelvin - 1000) / 100; }
 
 
-    private static Map <Integer, Color> colorMap(){
+    private static Map <Integer, Color> colorMap(String fileName){
 
         Map <Integer, Color> kelvinToColorMap = new HashMap<>();
 
-        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(BlackBodyColor.class.getResourceAsStream("/bbr_color.txt"), US_ASCII))) {
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(BlackBodyColor.class.getResourceAsStream(fileName), US_ASCII))) {
             String line;
             int i = 0;
             while ((line = bufferedReader.readLine()) != null) {
+
                 if (! line.startsWith("#")){
                     //ne regarde que les lignes ne commençant pas part "#", ce sont des commentaires
 
                     if (line.regionMatches((int)DEG.low(), "10deg", 0, (int)DEG.size())){
-                        // ne regarde que les lignes contenant "10deg" à la position donée et transforme les kelvin en
-                        // float et la temperature en instance de Color
-
-                       // int  kelvinTemp = Integer.parseInt(line.substring((int)KELVIN_TEMPERATURE.low(),(int)KELVIN_TEMPERATURE.high()));
+                        // ne regarde que les lignes contenant "10deg" à la position donée et transforme en instance de Color
 
                         Color colorFX = Color.web(line.substring((int)COLOR_RGB.low(), (int)COLOR_RGB.high()));
                         kelvinToColorMap.put(i,colorFX);
@@ -78,53 +77,4 @@ public class BlackBodyColor {
 
     }
 
-
-
-     /**
-
-
-    private enum ColorCatalogue{
-
-        CATALOGUE;
-        private final Map < Integer, Color> kelvinToColor;
-        //TODO pourquoi c'est illegal d'accéder à des éléments static dans le constructeur d'une enum?
-        private final RightOpenInterval KELVIN_TEMPERATURE = RightOpenInterval.of(1,6);
-        private final RightOpenInterval DEG  = RightOpenInterval.of(10,15);
-        private final RightOpenInterval COLOR_RGB = RightOpenInterval.of(80,87);
-        private String deg = "10deg";
-
-         ColorCatalogue (){
-
-            Map <Integer, Color> kelvinToColorMap = new HashMap<>();
-
-            try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(ColorCatalogue.class.getResourceAsStream("/bbr_color.txt"), US_ASCII))) {
-                String line;
-                while ((line = bufferedReader.readLine()) != null) {
-                    if (! line.startsWith("#")){
-                        //ne regarde que les lignes ne commençant pas part "#", ce sont des commentaires
-                        if (line.regionMatches((int)DEG.low(), deg, 0, (int)DEG.size())){
-                            // ne regarde que les lignes contenant "10deg" à la position donée et transforme les kelvin en
-                            // float et la temperature en instance de Color
-
-                            int  kelvinTemp = Integer.parseInt(line.substring((int)KELVIN_TEMPERATURE.low(),(int)KELVIN_TEMPERATURE.high()));
-                            Color colorFX = Color.web(line.substring((int)COLOR_RGB.low(), (int)COLOR_RGB.high()));
-
-                            kelvinToColorMap.put(kelvinTemp,colorFX); }
-                    }
-                }
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            kelvinToColor = Collections.unmodifiableMap(kelvinToColorMap);
-        }
-
-        private Color kelvinToColor(float kelvin) { return kelvinToColor.get(validKelvinTemprature(kelvin)); }
-
-        //TODO à tester
-        private int validKelvinTemprature (float kelvin){
-            int temp = Math.round(kelvin/100);
-            return temp*100; }
-
-    }
-      */
 }

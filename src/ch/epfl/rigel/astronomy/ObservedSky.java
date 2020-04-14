@@ -17,7 +17,7 @@ public final class ObservedSky {
     private final CartesianCoordinates moonCoord;
     private final List<Planet> planets;
     //private final Map <CelestialObject,CartesianCoordinates> celestialObjectToCoordinates;
-    private final Map <Objects , double[]> objectsToCoordinates;
+    private final Map < Objects , double[]> objectsToCoordinates;
 
     public ObservedSky(ZonedDateTime observTime, GeographicCoordinates observPosition, StereographicProjection stereographicProjection, StarCatalogue starCatalogue) {
 
@@ -41,7 +41,9 @@ public final class ObservedSky {
         //coordinatesMap.put(moon,moonCoord);
 
         planets = List.copyOf(planetsList(daysSinceJ2010,eclipticToEquatorialConversion));
+
         coordMap.put(Objects.PLANETS, coordinatesInArray(planets));
+
         List<Star> stars = List.copyOf(starCatalogue.stars());
         coordMap.put(Objects.STARS, coordinatesInArray(stars));
         objectsToCoordinates = Collections.unmodifiableMap(coordMap);
@@ -70,8 +72,8 @@ public final class ObservedSky {
             }
         }
         return planet;
-
     }
+
     private CartesianCoordinates applyFromObject(CelestialObject celestialObject){
 
         EquatorialToHorizontalConversion equatorialToHorizontalConversion = new EquatorialToHorizontalConversion(observTime,observPosition);
@@ -106,6 +108,7 @@ public final class ObservedSky {
 
 
     public Sun sun(){ return sun; }
+
     public CartesianCoordinates sunPosition(){
         //return sunCoord;
         CartesianCoordinates coord = CartesianCoordinates.of(objectsToCoordinates.get(Objects.SUN)[0], objectsToCoordinates.get(Objects.SUN)[1]);
@@ -124,14 +127,14 @@ public final class ObservedSky {
         //TODO faire copie défensive
           return objectsToCoordinates.get(Objects.PLANETS) ; }
 
-    public List<Star> stars(){ return starCatalogue.stars();}
+    public List<Star> stars(){ return starCatalogue.stars(); }
 
     public double [] starsPositions(){
         //return coordinatesInArray(starCatalogue.stars());
         //TODO faire copie défensive
-        return objectsToCoordinates.get(Objects.STARS) ;}
+        return objectsToCoordinates.get(Objects.STARS); }
 
-    public Set<Asterism> asterisms(){ return starCatalogue.asterisms();}
+    public Set<Asterism> asterisms(){ return starCatalogue.asterisms(); }
 
     public List<Integer> asterismIndices(Asterism asterism){ return starCatalogue.asterismIndices(asterism) ;}
 
@@ -144,9 +147,11 @@ public final class ObservedSky {
         double objectDistance;
 
         Optional<CelestialObject> cc = Optional.empty();
+
         for (Objects object : Objects.ALL) {
             double[] coord = objectsToCoordinates.get(object);
-            for (int i = 0; i < coord.length; i = +2) {
+
+            for (int i = 0; i < coord.length; i = i+2) {
                 double x = coord[i];
                 double y = coord[i + 1];
 
