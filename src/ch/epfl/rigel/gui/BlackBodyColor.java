@@ -19,8 +19,13 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
  */
 public class BlackBodyColor {
 
-    //TODO comme j'ai fait une enum il y a pas besoin
-    private static ColorCatalogue colorCatalogue;
+
+    private final static Map < Integer, Color> kelvinToColor = kelvinToColorMap();
+    private final static RightOpenInterval KELVIN_TEMPERATURE = RightOpenInterval.of(1,6);
+    private final static RightOpenInterval DEG  = RightOpenInterval.of(10,15);
+    private final static RightOpenInterval COLOR_RGB = RightOpenInterval.of(80,87);
+    private final static String deg = "10deg";
+
     private final static ClosedInterval TEMPERATURE_RANGE = ClosedInterval.of(1000, 40000);
 
 
@@ -40,7 +45,36 @@ public class BlackBodyColor {
         return ColorCatalogue.CATALOGUE.kelvinToColor(kelvin); }
 
 
-    /**
+    private static Map <Integer, Color> kelvinToColorMap(){
+
+        Map <Integer, Color> kelvinToColorMap = new HashMap<>();
+
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(ColorCatalogue.class.getResourceAsStream("/bbr_color.txt"), US_ASCII))) {
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                if (! line.startsWith("#")){
+                    //ne regarde que les lignes ne commençant pas part "#", ce sont des commentaires
+                    if (line.regionMatches((int)DEG.low(), deg, 0, (int)DEG.size())){
+                        // ne regarde que les lignes contenant "10deg" à la position donée et transforme les kelvin en
+                        // float et la temperature en instance de Color
+
+                        int  kelvinTemp = Integer.parseInt(line.substring((int)KELVIN_TEMPERATURE.low(),(int)KELVIN_TEMPERATURE.high()));
+
+                        Color colorFX = Color.web(line.substring((int)COLOR_RGB.low(), (int)COLOR_RGB.high()));
+
+                        kelvinToColorMap.put(kelvinTemp,colorFX); }
+                }
+            }
+            return kelvinToColorMap;
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+
+    }
+
+
+
+     /**
      * Test ENUM
      */
     private enum ColorCatalogue{
