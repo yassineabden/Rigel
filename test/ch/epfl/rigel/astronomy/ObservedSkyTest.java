@@ -38,20 +38,9 @@ public class ObservedSkyTest {
 
     @Test
     void isObjectClosestTo(){
-        /*assertEquals("Tau Phe",
+        assertEquals("Tau Phe",
                 sky.objectClosestTo(stereo.apply(new EquatorialToHorizontalConversion(time,geographicCoordinates)
-                        .apply(EquatorialCoordinates.of(0.004696959812148989,-0.861893035343076))),0.1).get().name());*/
-
-
-
-
-
-
-
-
-
-
-
+                        .apply(EquatorialCoordinates.of(0.004696959812148989,-0.861893035343076))),0.1).get().name());
 
         assertEquals(Optional.empty(),
                 sky.objectClosestTo(stereo.apply(new EquatorialToHorizontalConversion(time,geographicCoordinates)

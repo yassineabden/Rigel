@@ -27,7 +27,7 @@ public class BlackBodyColorTest {
 
         assertThrows(IllegalArgumentException.class, ()-> BlackBodyColor.colorForTemperature((float)200));
         assertThrows(IllegalArgumentException.class, () -> BlackBodyColor.colorForTemperature(41000));
-       // assertThrows(IllegalArgumentException.class, () -> BlackBodyColor.colorForTemperature(40001));
+        assertThrows(IllegalArgumentException.class, () -> BlackBodyColor.colorForTemperature(40001));
 
 
 
