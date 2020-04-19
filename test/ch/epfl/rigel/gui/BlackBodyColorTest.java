@@ -10,8 +10,8 @@ public class BlackBodyColorTest {
 
     @Test
     void isColorForTemparatureValid(){
-        assertEquals(Color.web("#c8d9ff"),BlackBodyColor.colorForTemperature((float)10500d));
 
+        assertEquals(Color.web("#c8d9ff"),BlackBodyColor.colorForTemperature((float)10500d));
 
         assertEquals(Color.web("#ff3800"), BlackBodyColor.colorForTemperature(1000));
         assertEquals(Color.web("#ff8912"), BlackBodyColor.colorForTemperature(2000));
