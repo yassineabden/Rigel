@@ -6,6 +6,7 @@ import ch.epfl.rigel.math.RightOpenInterval;
 import javafx.scene.paint.Color;
 
 import java.io.*;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,15 +25,7 @@ public class BlackBodyColor {
     private final static ClosedInterval TEMPERATURE_RANGE = ClosedInterval.of(1000, 40000);
 
 
-    private final static Map < Integer, Color> COLOR_MAP;
-    static {
-        try {
-            //TODO c'est quoi la diff entre copyOf et unmodifiableMap ?
-            COLOR_MAP = Map.copyOf(colorMap("/bbr_color.txt"));
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
+    private final static Map < Integer, Color> COLOR_MAP =colorMap("/bbr_color.txt");
 
 
     private BlackBodyColor(){}
@@ -58,7 +51,7 @@ public class BlackBodyColor {
         return (int) (kelvin - 1000) / 100; }
 
 
-    private static Map <Integer, Color> colorMap(String fileName) throws IOException {
+    private static Map <Integer, Color> colorMap(String fileName)  {
 
         Map<Integer, Color> kelvinToColorMap = new HashMap<>();
 
@@ -78,8 +71,9 @@ public class BlackBodyColor {
                     }
                 }
             }
-            return kelvinToColorMap;
-
+            return Collections.unmodifiableMap(kelvinToColorMap);
+        }catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
     }
 
