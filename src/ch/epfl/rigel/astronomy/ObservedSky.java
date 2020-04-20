@@ -84,7 +84,7 @@ public final class ObservedSky {
         return array; }
 
     private CelestialObject indexOfCoordinatesToObject (Objects object, int index){
-       //TODO pour debug si jamais
+
         if(index % 2 != 0) System.out.println("ObservedSky.indexOfCoordinatesToObject - mauvais index");
 
         switch (object){
@@ -225,6 +225,7 @@ public final class ObservedSky {
             private final static List<Objects> ALL = Arrays.asList(Objects.values());
 
         }
+
 
 
     }
