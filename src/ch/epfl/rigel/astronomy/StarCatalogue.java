@@ -143,8 +143,8 @@ public final class StarCatalogue {
          * @throws IOException s'il y a une erreur d'entrée/sortie
          */
         public Builder loadFrom(InputStream inputStream, Loader loader) throws IOException {
-
             loader.load(inputStream, this);
+
             return this; }
 
 

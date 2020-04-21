@@ -1,9 +1,12 @@
 package ch.epfl.rigel.gui;
 
 import ch.epfl.rigel.astronomy.ObservedSky;
+import ch.epfl.rigel.astronomy.Planet;
 import ch.epfl.rigel.coordinates.CartesianCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import ch.epfl.rigel.coordinates.StereographicProjection;
+import ch.epfl.rigel.math.Angle;
+import ch.epfl.rigel.math.ClosedInterval;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -17,9 +20,10 @@ public final class SkyCanvasPainter {
 
     private final Canvas canvas;
     private final GraphicsContext graphicsContext;
+    private final static ClosedInterval PLANETS_MAGNITUDE = ClosedInterval.of(-2,5);
 
     private final static HorizontalCoordinates EQUATOR = HorizontalCoordinates.ofDeg(180,0);
-   /**
+   /*
     private final static HorizontalCoordinates NORTH_TEXT = HorizontalCoordinates.of(0,-0.5);
     private final static HorizontalCoordinates NORTH_EAST_TEXT = HorizontalCoordinates.of(45,-0.5);
     private final static HorizontalCoordinates EAST_TEXT = HorizontalCoordinates.of(90,-0.5);
@@ -76,7 +80,25 @@ public final class SkyCanvasPainter {
 
     }
 
-    public void drawPlanets(){}
+    public void drawPlanets(ObservedSky sky, StereographicProjection stereographicProjection, Transform planeToCanvas){
+
+        planeToCanvas.transform2DPoints(sky.planetsPositions(),0,sky.planetsPositions(),0,sky.planetsPositions().length/2);
+
+        for (int i = 0; i < sky.planetsPositions().length ; i+=2) {
+
+            for (Planet p : sky.planets()) {
+                double mDash = PLANETS_MAGNITUDE.clip(p.magnitude());
+                double f = (99 - 17 * mDash) / 140;
+                double d = f * stereographicProjection.applyToAngle(Angle.ofDeg(0.5));
+                double dTransformed = transformedDiameter(planeToCanvas, d);
+
+                Point2D planetCoord = transformCoord(planeToCanvas,sky.planetsPositions()[i],sky.planetsPositions()[i+1]);
+                graphicsContext.setFill(Color.LIGHTGRAY);
+                graphicsContext.fillOval(planetCoord.getX(),planetCoord.getY(),dTransformed,dTransformed);
+            }
+
+        }
+    }
 
     public void drawSun(ObservedSky sky, StereographicProjection stereographicProjection, Transform planeToCanvas){
 
@@ -109,6 +131,15 @@ public final class SkyCanvasPainter {
 
     public void drawMoon(ObservedSky sky, StereographicProjection stereographicProjection, Transform planeToCanvas){
 
+        double d = stereographicProjection.applyToAngle(sky.moon().angularSize());
+
+        Point2D moonD = planeToCanvas.deltaTransform(new Point2D(d,0));
+        double dTransformed = transformedDiameter(planeToCanvas,d);
+
+        Point2D moonCoord = transformCarthesianCoord(planeToCanvas,sky.moonPosition());
+
+        graphicsContext.setFill(Color.WHITE);
+        graphicsContext.fillOval(moonCoord.getX(),moonCoord.getY(),dTransformed,dTransformed);
     }
 
 
