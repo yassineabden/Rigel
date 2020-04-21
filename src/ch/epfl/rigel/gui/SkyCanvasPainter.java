@@ -1,60 +1,127 @@
 package ch.epfl.rigel.gui;
 
-import ch.epfl.rigel.astronomy.CelestialObject;
 import ch.epfl.rigel.astronomy.ObservedSky;
 import ch.epfl.rigel.coordinates.CartesianCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import ch.epfl.rigel.coordinates.StereographicProjection;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import javafx.scene.transform.Scale;
 import javafx.scene.transform.Transform;
-import javafx.scene.transform.Translate;
 
-import java.awt.geom.Point2D;
-
-import static javafx.scene.input.KeyCode.T;
+import java.util.Arrays;
+import java.util.List;
 
 public final class SkyCanvasPainter {
 
     private final Canvas canvas;
     private final GraphicsContext graphicsContext;
-    private final  Transform transformation;
 
+    private final static HorizontalCoordinates EQUATOR = HorizontalCoordinates.ofDeg(180,0);
+   /**
+    private final static HorizontalCoordinates NORTH_TEXT = HorizontalCoordinates.of(0,-0.5);
+    private final static HorizontalCoordinates NORTH_EAST_TEXT = HorizontalCoordinates.of(45,-0.5);
+    private final static HorizontalCoordinates EAST_TEXT = HorizontalCoordinates.of(90,-0.5);
+    private final static HorizontalCoordinates SOUTH_EAST_TEXT = HorizontalCoordinates.of(135,-0.5);
+    private final static HorizontalCoordinates SOUTH_TEXT = HorizontalCoordinates.of(180,-0.5);
+    private final static HorizontalCoordinates SOUTH_WEST_TEXT = HorizontalCoordinates.of(225,-0.5);
+    private final static HorizontalCoordinates WEST_TEXT = HorizontalCoordinates.of(270,-0.5);
+    private final static HorizontalCoordinates NORTH_WEST_TEXT = HorizontalCoordinates.of(315,-0.5);
+*/
+    private enum CardinalPoints{
+        NORTH_TEXT (HorizontalCoordinates.of(0,-0.5)),
+        NORTH_EAST_TEXT (HorizontalCoordinates.of(45,-0.5)),
+        EAST_TEXT (HorizontalCoordinates.of(90,-0.5)),
+        SOUTH_EAST_TEXT (HorizontalCoordinates.of(135,-0.5)),
+        SOUTH_TEXT (HorizontalCoordinates.of(180,-0.5)),
+        SOUTH_WEST_TEXT (HorizontalCoordinates.of(225,-0.5)),
+        WEST_TEXT (HorizontalCoordinates.of(270,-0.5)),
+        NORTH_WEST_TEXT (HorizontalCoordinates.of(315,-0.5));
+
+        private final HorizontalCoordinates coordinates;
+        private final static List<CardinalPoints> ALL = Arrays.asList(CardinalPoints.values());
+
+        CardinalPoints(HorizontalCoordinates coordinates) {
+            this.coordinates = coordinates; }
+
+    }
 
     public SkyCanvasPainter(Canvas canvas) {
         this.canvas = canvas;
         graphicsContext = canvas.getGraphicsContext2D();
-        transformation = Transform.affine(1300, 0,0,-1300,- (canvas.getWidth()/2), - (canvas.getHeight()/2));
     }
 
 
     public void clear(){
         graphicsContext.clearRect(0,0,canvas.getWidth(),canvas.getWidth()); }
 
-    public void drawStars(ObservedSky sky, StereographicProjection stereographicProjection, Transform transform) {
+    public void drawStars(ObservedSky sky, StereographicProjection stereographicProjection, Transform planeToCanvas) {
     }
-    public void drawHorizon (StereographicProjection stereographicProjection, Transform transform){
-        HorizontalCoordinates equator = HorizontalCoordinates.ofDeg(180,0);
-        double equatorRadius = stereographicProjection.circleRadiusForParallel(equator);
-        CartesianCoordinates eqCoord = stereographicProjection.circleCenterForParallel(equator);
+
+    public void drawHorizon (StereographicProjection stereographicProjection, Transform planeToCanvas){
 
         graphicsContext.setFill(Color.RED);
         graphicsContext.setLineWidth(2.0);
-        graphicsContext.lineTo();
 
+        Point2D equator = transformCarthesianCoord(planeToCanvas, stereographicProjection.circleCenterForParallel(EQUATOR));
+        double equatorD = transformedDiameter(planeToCanvas, stereographicProjection.circleRadiusForParallel(EQUATOR));
+        graphicsContext.strokeOval(equator.getX(),equator.getY(),equatorD,equatorD);
+
+        for ( CardinalPoints cardinalPoint : CardinalPoints.ALL) {
+            Point2D cardinalOnCanvas = transformCarthesianCoord(planeToCanvas,stereographicProjection.apply(cardinalPoint.coordinates));
+            String name = cardinalPoint.coordinates.azOctantName("N","E","S","W");
+            graphicsContext.fillText(name,cardinalOnCanvas.getX(),cardinalOnCanvas.getY());
+        }
+
+    }
+
+    public void drawPlanets(){}
+
+    public void drawSun(ObservedSky sky, StereographicProjection stereographicProjection, Transform planeToCanvas){
+
+        double d  = stereographicProjection.applyToAngle(sky.sun().angularSize());
+
+        //vecteur diamètre du soleil
+        Point2D sunD = planeToCanvas.deltaTransform(new Point2D(d, 0));
+        double dTransformed = transformedDiameter(planeToCanvas,d);
+
+        Point2D sunCoord = transformCarthesianCoord(planeToCanvas,sky.sunPosition());
+
+        double sunX = sunCoord.getX();
+        double sunY = sunCoord.getY();
+
+        // premier cercle à 25% d'opacité
+        graphicsContext.setFill(Color.YELLOW.deriveColor(0,0,1,0.25));
+        graphicsContext.fillOval(sunX,sunY,dTransformed*2.2,dTransformed*2.2);
+
+
+        //deuxième disque
+        graphicsContext.setFill(Color.YELLOW);
+        graphicsContext.fillOval(sunX,sunY,dTransformed+2,dTransformed+2);
+
+        //troisième  disque
+        graphicsContext.setFill(Color.WHITE);
+        graphicsContext.fillOval(sunX,sunY, dTransformed, dTransformed);
 
     }
 
 
+    public void drawMoon(ObservedSky sky, StereographicProjection stereographicProjection, Transform planeToCanvas){
+
+    }
 
 
+    private Point2D transformCarthesianCoord(Transform planeToCanvas, CartesianCoordinates coordinates){
+        return planeToCanvas.transform(coordinates.x(), coordinates.y());
+    }
 
+    private Point2D transformCoord(Transform planeToCanvas, double x, double y){
+        return planeToCanvas.transform(x, y);
+    }
 
-
-
-
-
+    private double transformedDiameter(Transform planeToCanvas, double d){
+        return planeToCanvas.transform(d,0).magnitude();
+    }
 
 }
