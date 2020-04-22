@@ -58,7 +58,11 @@ public final class SkyCanvasPainter {
 
 
     public void clear(){
-        graphicsContext.clearRect(0,0,canvas.getWidth(),canvas.getWidth()); }
+        //graphicsContext.clearRect(0,0,canvas.getWidth(),canvas.getWidth());
+        graphicsContext.setFill(Color.BLACK);
+        graphicsContext.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
+    }
 
     public void drawStars(ObservedSky sky, StereographicProjection stereographicProjection, Transform planeToCanvas) {
     }
@@ -70,7 +74,7 @@ public final class SkyCanvasPainter {
 
         Point2D equator = transformCarthesianCoord(planeToCanvas, stereographicProjection.circleCenterForParallel(EQUATOR));
         double equatorD = transformedDiameter(planeToCanvas, stereographicProjection.circleRadiusForParallel(EQUATOR));
-        graphicsContext.strokeOval(equator.getX(),equator.getY(),equatorD,equatorD);
+        graphicsContext.strokeOval(equator.getX()-equatorD/2,equator.getY()-equatorD/2,equatorD,equatorD);
 
         for ( CardinalPoints cardinalPoint : CardinalPoints.ALL) {
             Point2D cardinalOnCanvas = transformCarthesianCoord(planeToCanvas,stereographicProjection.apply(cardinalPoint.coordinates));
@@ -105,7 +109,6 @@ public final class SkyCanvasPainter {
         double d  = stereographicProjection.applyToAngle(sky.sun().angularSize());
 
         //vecteur diamètre du soleil
-        Point2D sunD = planeToCanvas.deltaTransform(new Point2D(d, 0));
         double dTransformed = transformedDiameter(planeToCanvas,d);
 
         Point2D sunCoord = transformCarthesianCoord(planeToCanvas,sky.sunPosition());
@@ -115,16 +118,16 @@ public final class SkyCanvasPainter {
 
         // premier cercle à 25% d'opacité
         graphicsContext.setFill(Color.YELLOW.deriveColor(0,0,1,0.25));
-        graphicsContext.fillOval(sunX,sunY,dTransformed*2.2,dTransformed*2.2);
+        graphicsContext.fillOval(sunX-(dTransformed*2.2)/2,sunY-(dTransformed*2.2)/2,dTransformed*2.2,dTransformed*2.2);
 
 
         //deuxième disque
         graphicsContext.setFill(Color.YELLOW);
-        graphicsContext.fillOval(sunX,sunY,dTransformed+2,dTransformed+2);
+        graphicsContext.fillOval(sunX-(dTransformed+2)/2,sunY-(dTransformed+2)/2,dTransformed+2,dTransformed+2);
 
         //troisième  disque
         graphicsContext.setFill(Color.WHITE);
-        graphicsContext.fillOval(sunX,sunY, dTransformed, dTransformed);
+        graphicsContext.fillOval(sunX-dTransformed/2,sunY-dTransformed/2, dTransformed, dTransformed);
 
     }
 
@@ -133,13 +136,12 @@ public final class SkyCanvasPainter {
 
         double d = stereographicProjection.applyToAngle(sky.moon().angularSize());
 
-        Point2D moonD = planeToCanvas.deltaTransform(new Point2D(d,0));
         double dTransformed = transformedDiameter(planeToCanvas,d);
 
         Point2D moonCoord = transformCarthesianCoord(planeToCanvas,sky.moonPosition());
 
         graphicsContext.setFill(Color.WHITE);
-        graphicsContext.fillOval(moonCoord.getX(),moonCoord.getY(),dTransformed,dTransformed);
+        graphicsContext.fillOval(moonCoord.getX()-dTransformed/2,moonCoord.getY()-dTransformed/2,dTransformed,dTransformed);
     }
 
 
@@ -152,7 +154,7 @@ public final class SkyCanvasPainter {
     }
 
     private double transformedDiameter(Transform planeToCanvas, double d){
-        return planeToCanvas.transform(d,0).magnitude();
+        return planeToCanvas.deltaTransform(d,0).magnitude();
     }
 
 }
