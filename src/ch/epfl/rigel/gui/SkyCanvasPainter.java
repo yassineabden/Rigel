@@ -78,6 +78,7 @@ public final class SkyCanvasPainter {
         Bounds canvasBound = canvas.getBoundsInLocal();
         for (Asterism a : asterisms) {
             List <Integer> aIndex = sky.asterismIndices(a);
+            graphicsContext.setFill(Color.BLUE);
             graphicsContext.beginPath();
             for (Integer index : aIndex) {
                 Point2D starCoord = transformCoord(planeToCanvas,starPositions[index*2],starPositions[index*2 + 1]);
@@ -88,6 +89,7 @@ public final class SkyCanvasPainter {
                     graphicsContext.moveTo(starCoord.getX(),starCoord.getY());
                 }
             }
+            //Fait retourner le trait d'asterism à la première étoile
             Point2D star1Coord = transformCoord(planeToCanvas,starPositions[0],starPositions[1]);
             if (canvasBound.contains(star1Coord)) {
                 graphicsContext.lineTo(star1Coord.getX(), star1Coord.getY());

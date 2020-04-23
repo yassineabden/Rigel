@@ -31,7 +31,7 @@ public final class DrawSky extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         try (InputStream hs = resourceStream("/hygdata_v3.csv")){
-            System.out.print(hs);
+
             StarCatalogue catalogue = new StarCatalogue.Builder()
                     .loadFrom(hs, HygDatabaseLoader.INSTANCE).build();
 
@@ -40,7 +40,7 @@ public final class DrawSky extends Application {
             GeographicCoordinates where =
                     GeographicCoordinates.ofDeg(6.57, 46.52);
             HorizontalCoordinates projCenter =
-                    HorizontalCoordinates.ofDeg(277, -23);
+                    HorizontalCoordinates.ofDeg(180, 45);
             StereographicProjection projection =
                     new StereographicProjection(projCenter);
             ObservedSky sky =
@@ -55,8 +55,10 @@ public final class DrawSky extends Application {
 
             painter.clear();
 
-            //painter.drawPlanets(sky, projection, planeToCanvas);
+            painter.drawStars(sky,projection,planeToCanvas);
+            painter.drawPlanets(sky, projection, planeToCanvas);
             painter.drawMoon(sky,projection,planeToCanvas);
+            painter.drawSun(sky,projection,planeToCanvas);
 
             WritableImage fxImage =
                     canvas.snapshot(null, null);
