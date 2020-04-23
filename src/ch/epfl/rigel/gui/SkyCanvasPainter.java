@@ -79,6 +79,7 @@ public final class SkyCanvasPainter {
         for (Asterism a : asterisms) {
             List <Integer> aIndex = sky.asterismIndices(a);
             graphicsContext.setFill(Color.BLUE);
+            graphicsContext.setLineWidth(1.0);
             graphicsContext.beginPath();
             for (Integer index : aIndex) {
                 Point2D starCoord = transformCoord(planeToCanvas,starPositions[index*2],starPositions[index*2 + 1]);
