@@ -65,7 +65,8 @@ public final class ObservedSky {
                 Planet p = planetModel.at(daysSinceJ2010, eclipticToEquatorialConversion);
                 planet.add(p); }
         }
-        return planet; }
+        return planet;
+    }
 
     // Calcule les coordonnées après la projection
     private CartesianCoordinates applyFromObject(CelestialObject celestialObject){
@@ -81,7 +82,8 @@ public final class ObservedSky {
             array[i]= coordinates.x();
             array[i+1]= coordinates.y();
             i+=2; }
-        return array; }
+        return array;
+    }
 
     private CelestialObject indexOfCoordinatesToObject (Objects object, int index){
 

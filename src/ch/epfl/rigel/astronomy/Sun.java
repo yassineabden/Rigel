@@ -31,7 +31,8 @@ public final class Sun extends CelestialObject {
 
         Objects.requireNonNull(eclipticPos);
         this.meanAnomaly = meanAnomaly;
-        this.eclipticPos = eclipticPos; }
+        this.eclipticPos = eclipticPos;
+    }
 
     /**
      * Retourne la position écliptique.
