@@ -22,8 +22,12 @@ public enum NamedTimeAccelerator {
     }
 
     public String getName(){
-        String.format(name, )
-        return name;}
 
-    public
+        return null;}
+
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

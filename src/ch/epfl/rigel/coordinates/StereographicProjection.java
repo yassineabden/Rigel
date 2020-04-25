@@ -24,7 +24,8 @@ public final class StereographicProjection implements Function<HorizontalCoordin
     public  StereographicProjection(HorizontalCoordinates center){
         this.center = center;
         cosLat = Math.cos(center.lat());
-        sinLat = Math.sin(center.lat()); }
+        sinLat = Math.sin(center.lat());
+    }
 
     /**
      * Détermine les coordonnées cartésiennes de la projection du point de coordonnées horizontales donnés en arguments
@@ -43,7 +44,8 @@ public final class StereographicProjection implements Function<HorizontalCoordin
         double sLon = Math.sin(azAlt.lon()-center.lon());
 
         double d = 1.0 / (1+sLat*sinLat + cosLat*cLat*cLon);
-        return  CartesianCoordinates.of(d*cLat*sLon, d*(sLat*cosLat - cLat*sinLat*cLon)); }
+        return  CartesianCoordinates.of(d*cLat*sLon, d*(sLat*cosLat - cLat*sinLat*cLon));
+    }
 
     /**
      * Détermine les coordonnées horizontales du point dont la projection est le point de coordonnées cartésiennes
@@ -54,21 +56,21 @@ public final class StereographicProjection implements Function<HorizontalCoordin
      */
     public HorizontalCoordinates inverseApply(CartesianCoordinates xy){
 
-        double az, alt;
-        if (xy.y() ==0 && xy.x()==0) {
-            az = center.lon();
-            alt = center.lat();
-        } else {
+        if (xy.y() ==0 && xy.x()==0) return HorizontalCoordinates.of(center.lon(),center.lat());
 
-        double p = Math.sqrt(xy.x() * xy.x() + xy.y() * xy.y());
-        double sin_c = (2 * p) / (p * p + 1);
-        double cos_c = (1 - p * p) / (p * p + 1);
+        else {
 
-        az = Angle.normalizePositive(Math.atan2(xy.x() * sin_c,
-                (p * cosLat * cos_c - xy.y() * sinLat * sin_c)) + center.lon());
-        alt = Math.asin(cos_c * sinLat + (xy.y() * sin_c * cosLat) / p); }
+            double p = Math.hypot(xy.x(), xy.y());
+            double sin_c = (2 * p) / (p * p + 1);
+            double cos_c = (1 - p * p) / (p * p + 1);
 
-        return HorizontalCoordinates.of(az,alt); }
+            double az = Angle.normalizePositive(Math.atan2(xy.x() * sin_c,
+                                                 (p * cosLat * cos_c - xy.y() * sinLat * sin_c)) + center.lon());
+            double alt = Math.asin(cos_c * sinLat + (xy.y() * sin_c * cosLat) / p);
+
+            return HorizontalCoordinates.of(az, alt);
+        }
+    }
 
     /**
      * Détermine le centre du cercle sur lequel on projette un parallèle passant par un point (l'ordonnée du centre du cerle peut être infinie)
@@ -79,9 +81,8 @@ public final class StereographicProjection implements Function<HorizontalCoordin
      */
     public CartesianCoordinates circleCenterForParallel(HorizontalCoordinates hor){
 
-        double sLat = Math.sin(hor.lat());
-
-        return CartesianCoordinates.of(0.0,(cosLat)/(sinLat+ sLat)); }
+        return CartesianCoordinates.of(0.0,(cosLat)/(sinLat+ Math.sin(hor.lat())));
+    }
 
     /**
      * Détermine le rayon du cercle de projection d'un parallèle déterminé par un point
@@ -95,7 +96,8 @@ public final class StereographicProjection implements Function<HorizontalCoordin
         double cLat =Math.cos(parallel.lat());
         double sLat = Math.sin(parallel.lat());
 
-        return (cLat / (sLat + sinLat)); }
+        return (cLat / (sLat + sinLat));
+    }
 
     /**
      * Calcul du diamètre projeté d'une sphère de taille angulaire donnée  centrée au centre de projection, en admettant que celui-ci soit sur l'horizon
@@ -104,8 +106,7 @@ public final class StereographicProjection implements Function<HorizontalCoordin
      *
      * @return diamètre projeté
      */
-    public double applyToAngle(double rad){
-        return 2*Math.tan(rad/4); }
+    public double applyToAngle(double rad){ return 2*Math.tan(rad/4); }
 
     /**
      * Retourne une chaîne de caractères
@@ -115,7 +116,8 @@ public final class StereographicProjection implements Function<HorizontalCoordin
 
     @Override
     public String toString() {
-        return  String.format(Locale.ROOT, "Centre de StereographicProjection (%.4f, %.4f) ", center.az(),center.alt()); }
+        return  String.format(Locale.ROOT, "Centre de StereographicProjection (%.4f, %.4f) ", center.az(),center.alt());
+    }
 
     /**
      * Cette méthode lève l'exception UnsupportedOperationException lorsqu'on fait appel à celle-ci
@@ -126,7 +128,8 @@ public final class StereographicProjection implements Function<HorizontalCoordin
      */
     @Override
     public boolean equals(Object obj) {
-        throw new UnsupportedOperationException(); }
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * Cette méthode lève l'exception UnsupportedOperationException lorsqu'on fait appel à celle-ci
@@ -136,5 +139,6 @@ public final class StereographicProjection implements Function<HorizontalCoordin
 
     @Override
     public int hashCode() {
-        throw new  UnsupportedOperationException(); }
+        throw new  UnsupportedOperationException();
+    }
 }

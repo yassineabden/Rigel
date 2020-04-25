@@ -56,14 +56,18 @@ public final class Angle {
      * @param sec secondes de l'angle donné
      *
      * @throws IllegalArgumentException si les secondes où les minutes ne sont pas contenues dans l'intervalle [0,60[
+     * @throws IllegalArgumentException si l'angle est négatif
+     *
      * @return l'angle transformé en radians
      */
      public static double ofDMS (int deg, int min, double sec){
 
          Preconditions.checkInInterval(INTERVAL_SEC_MIN, min);
          Preconditions.checkInInterval(INTERVAL_SEC_MIN,sec);
-         Preconditions.checkArgument(deg>=0);
-         return ofDeg(deg + (min +( sec/ 60))/60); }
+         Preconditions.checkArgument(deg >= 0);
+
+         return ofDeg(deg + (min +( sec/ 60))/60);
+     }
 
     /**
      * Transforme un angle donné en degré en radian
