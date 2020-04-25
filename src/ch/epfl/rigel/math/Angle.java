@@ -62,6 +62,7 @@ public final class Angle {
 
          Preconditions.checkInInterval(INTERVAL_SEC_MIN, min);
          Preconditions.checkInInterval(INTERVAL_SEC_MIN,sec);
+         Preconditions.checkArgument(deg>=0);
          return ofDeg(deg + (min +( sec/ 60))/60); }
 
     /**

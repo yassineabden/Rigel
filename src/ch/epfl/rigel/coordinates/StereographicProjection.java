@@ -36,7 +36,7 @@ public final class StereographicProjection implements Function<HorizontalCoordin
     @Override
     public CartesianCoordinates apply(HorizontalCoordinates azAlt) {
 
-        double cLat =Math.cos(azAlt.lat());
+        double cLat = Math.cos(azAlt.lat());
         double sLat = Math.sin(azAlt.lat());
 
         double cLon = Math.cos(azAlt.lon()-center.lon());
@@ -54,13 +54,19 @@ public final class StereographicProjection implements Function<HorizontalCoordin
      */
     public HorizontalCoordinates inverseApply(CartesianCoordinates xy){
 
-        double p = Math.sqrt(xy.x()*xy.x() + xy.y()*xy.y());
-        double sin_c = (2*p)/(p*p + 1);
-        double cos_c = (1 - p*p)/ (p*p + 1);
+        double az, alt;
+        if (xy.y() ==0 && xy.x()==0) {
+            az = center.lon();
+            alt = center.lat();
+        } else {
 
-        double az = Angle.normalizePositive(Math.atan2(xy.x()*sin_c,
-                    (p*cosLat*cos_c - xy.y()*sinLat*sin_c) ) + center.lon());
-        double alt = Math.asin(cos_c*sinLat + (xy.y()*sin_c*cosLat)/ p);
+        double p = Math.sqrt(xy.x() * xy.x() + xy.y() * xy.y());
+        double sin_c = (2 * p) / (p * p + 1);
+        double cos_c = (1 - p * p) / (p * p + 1);
+
+        az = Angle.normalizePositive(Math.atan2(xy.x() * sin_c,
+                (p * cosLat * cos_c - xy.y() * sinLat * sin_c)) + center.lon());
+        alt = Math.asin(cos_c * sinLat + (xy.y() * sin_c * cosLat) / p); }
 
         return HorizontalCoordinates.of(az,alt); }
 
