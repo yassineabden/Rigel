@@ -22,7 +22,6 @@ public final class SkyCanvasPainter {
     private final GraphicsContext graphicsContext;
 
     private final static ClosedInterval MAGNITUDE = ClosedInterval.of(-2,5);
-
     private final static HorizontalCoordinates EQUATOR = HorizontalCoordinates.ofDeg(180,0);
 
 
@@ -62,13 +61,14 @@ public final class SkyCanvasPainter {
                 double x = starsOnCanvas[2*index], y = starsOnCanvas[2*index + 1];
 
                 //todo je fais une attribution dans la condition pour faire le contains qu'une fois mais ça se fait?
-                if(lastStarInBounds == true || (lastStarInBounds = canvasBound.contains(new Point2D(x, y)))){
+                if((lastStarInBounds == true) || ((lastStarInBounds = canvasBound.contains(new Point2D(x, y))))){
+
                     graphicsContext.lineTo(x, y);
                     } else {
                     graphicsContext.moveTo(x, y);
                 }
             }
-            //Fait retourner le trait d'asterism à la première étoile
+            //Fait retourner le trait d'asterism à la première étoile - peut -être meilleur moyen de le faire?
             double x0 = starsOnCanvas[0], y0 = starsOnCanvas[1];
             if (lastStarInBounds == true || canvasBound.contains(new Point2D(x0, y0))){
                 graphicsContext.lineTo(x0, y0);
@@ -78,15 +78,16 @@ public final class SkyCanvasPainter {
         }
 
         //dessine les étoiles
-       int i = 0;
-        for (Star s : stars) {
-
-            double dTransformed = diameterWithMagnitude(s,projection,planeToCanvas);
-            Color starColor = BlackBodyColor.colorForTemperature( s.colorTemperature());
-            graphicsContext.setFill(starColor);
-            graphicsContext.fillOval(starsOnCanvas[2*i]-dTransformed/2, starsOnCanvas[2*i + 1]-dTransformed/2, dTransformed,dTransformed);
-            i += 2;
-        }
+        drawBlackBody(starsOnCanvas,sky.stars(),projection,planeToCanvas);
+//       int i = 0;
+//        for (Star s : stars) {
+//
+//            double dTransformed = diameterWithMagnitude(s,projection,planeToCanvas);
+//            Color starColor = BlackBodyColor.colorForTemperature( s.colorTemperature());
+//            graphicsContext.setFill(starColor);
+//            graphicsContext.fillOval(starsOnCanvas[2*i]-dTransformed/2, starsOnCanvas[2*i + 1]-dTransformed/2, dTransformed,dTransformed);
+//            i += 2;
+//        }
 
     }
 
@@ -109,18 +110,17 @@ public final class SkyCanvasPainter {
 
     public void drawPlanets(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas){
 
-        double []planetsOnCanvas = new double[sky.planetsPositions().length];
+        double [] planetsOnCanvas = new double[sky.planetsPositions().length];
         planeToCanvas.transform2DPoints(sky.planetsPositions(),0,planetsOnCanvas,0,planetsOnCanvas.length);
-        graphicsContext.setFill(Color.LIGHTGRAY);
+       // graphicsContext.setFill(Color.LIGHTGRAY);
 
-        int i = 0;
-        for (Planet p : sky.planets()) {
-            double dTransformed = diameterWithMagnitude(p,projection,planeToCanvas);
-            graphicsContext.fillOval(planetsOnCanvas[2*i]- dTransformed/2,planetsOnCanvas[2*i + 1]- dTransformed/2,dTransformed,dTransformed);
-            i += 2;
-        }
-
-
+        drawBlackBody(planetsOnCanvas,sky.planets(),projection,planeToCanvas);
+//        int i = 0;
+//        for (Planet p : sky.planets()) {
+//            double dTransformed = diameterWithMagnitude(p,projection,planeToCanvas);
+//            graphicsContext.fillOval(planetsOnCanvas[2*i]- dTransformed/2,planetsOnCanvas[2*i + 1]- dTransformed/2,dTransformed,dTransformed);
+//            i += 2;
+//        }
     }
 
     public void drawSun(ObservedSky sky, StereographicProjection stereographicProjection, Transform planeToCanvas){
@@ -164,6 +164,7 @@ public final class SkyCanvasPainter {
     }
 
     private void drawBlackBody (double [] positionsOnCanvas, List< ? extends CelestialObject> list, StereographicProjection projection, Transform planeToCanvas){
+
         int i = 0;
         for (CelestialObject celestialObject : list) {
             double dTransformed = diameterWithMagnitude(celestialObject,projection,planeToCanvas);
@@ -186,14 +187,10 @@ public final class SkyCanvasPainter {
         double d = f * projection.applyToAngle(Angle.ofDeg(0.5));
         return diameterOnCanvas(d, planeToCanvas);
     }
+
     private Point2D carthesianCoordOnCanvas(Transform planeToCanvas, CartesianCoordinates coordinates){
 
         return planeToCanvas.transform(coordinates.x(), coordinates.y());
-    }
-
-    private Point2D coordOnCanvas(Transform planeToCanvas, double x, double y){
-
-        return planeToCanvas.transform(x, y);
     }
 
     private double diameterOnCanvas( double d, Transform planeToCanvas){
