@@ -9,6 +9,7 @@ import java.time.ZonedDateTime;
  * @author Yassine Abdennadher (299273)
  * @author Juliette Aerni (296670)
  */
+
 @FunctionalInterface
 public interface TimeAccelerator {
 
@@ -19,6 +20,7 @@ public interface TimeAccelerator {
         return (simulatedTime, nanoSeconds) -> simulatedTime.plusNanos(alpha*nanoSeconds);
 
     }
+
     public static TimeAccelerator discrete (int lambda, Duration steps) {
         long r = 5;
         long variation = (long) Math.floor(lambda*5);
