@@ -50,39 +50,15 @@ public class BlackBodyColor {
     private static int tempToIndex (float kelvin) {return (int) (kelvin - 1000) / 100;}
 
 
-
     private static List <Color> colorList(String fileName)  {
 
         try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(BlackBodyColor.class.getResourceAsStream(fileName), US_ASCII))) {
-
-
 
             return bufferedReader.lines()
                     .filter(l -> ( !l.startsWith("#") &&  (l.regionMatches((int) DEG.low(), "10deg", 0, (int) DEG.size()))))
                     .map(l -> Color.web(l.substring((int) COLOR_RGB.low(), (int) COLOR_RGB.high())))
                     .collect(Collectors.toUnmodifiableList());
 
-
-
-/*
-           String line;
-            int i = 0;
-            while ((line = bufferedReader.readLine()) != null) {
-                if (!line.startsWith("#")) {
-                    //ne regarde que les lignes ne commençant pas part "#", ce sont des commentaires
-
-                    if (line.regionMatches((int) DEG.low(), "10deg", 0, (int) DEG.size())) {
-                        // ne regarde que les lignes contenant "10deg" à la position donée et transforme en instance de Color
-
-                        Color colorFX = Color.web(line.substring((int) COLOR_RGB.low(), (int) COLOR_RGB.high()));
-                        kelvinToColorMap.put(i, colorFX);
-                        i++;
-                    }
-                }
-            }
-            return Collections.unmodifiableMap(kelvinToColorMap);
-
- */
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

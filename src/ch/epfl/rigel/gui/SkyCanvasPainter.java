@@ -42,7 +42,7 @@ public final class SkyCanvasPainter {
     public void drawStars(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas) {
 
         List <Star> stars = sky.stars();
-        double [] starsOnCanvas = new double [sky.starsPositions().length];
+        double [] starsOnCanvas = sky.starsPositions();
         planeToCanvas.transform2DPoints(sky.starsPositions(),0, starsOnCanvas,0,starsOnCanvas.length);
         Set<Asterism> asterisms = sky.asterisms();
 
@@ -55,7 +55,7 @@ public final class SkyCanvasPainter {
             List <Integer> aIndex = sky.asterismIndices(a);
             graphicsContext.beginPath();
             //todo à vérifier s'il faut true ou false au début
-            boolean lastStarInBounds = false;
+            boolean lastStarInBounds = true;
 
             for (Integer index : aIndex) {
                 double x = starsOnCanvas[2*index], y = starsOnCanvas[2*index + 1];
@@ -71,15 +71,6 @@ public final class SkyCanvasPainter {
 
         //dessine les étoiles
         drawBlackBody(starsOnCanvas,sky.stars(),projection,planeToCanvas);
-//       int i = 0;
-//        for (Star s : stars) {
-//
-//            double dTransformed = diameterWithMagnitude(s,projection,planeToCanvas);
-//            Color starColor = BlackBodyColor.colorForTemperature( s.colorTemperature());
-//            graphicsContext.setFill(starColor);
-//            graphicsContext.fillOval(starsOnCanvas[2*i]-dTransformed/2, starsOnCanvas[2*i + 1]-dTransformed/2, dTransformed,dTransformed);
-//            i += 2;
-//        }
 
     }
 
@@ -102,17 +93,10 @@ public final class SkyCanvasPainter {
     public void drawPlanets(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas){
 
         double [] planetsOnCanvas = sky.planetsPositions();
-        //planeToCanvas.transform2DPoints(sky.planetsPositions(),0,planetsOnCanvas,0,planetsOnCanvas.length);
-        planeToCanvas.transform2DPoints(sky.planetsPositions(),0,planetsOnCanvas,0,sky.planetsPositions().length);
-       // graphicsContext.setFill(Color.LIGHTGRAY);
+        planeToCanvas.transform2DPoints(sky.planetsPositions(),0,planetsOnCanvas,0,planetsOnCanvas.length);
 
         drawBlackBody(planetsOnCanvas,sky.planets(),projection,planeToCanvas);
-//        int i = 0;
-//        for (Planet p : sky.planets()) {
-//            double dTransformed = diameterWithMagnitude(p,projection,planeToCanvas);
-//            graphicsContext.fillOval(planetsOnCanvas[2*i]- dTransformed/2,planetsOnCanvas[2*i + 1]- dTransformed/2,dTransformed,dTransformed);
-//            i += 2;
-//        }
+
     }
 
     public void drawSun(ObservedSky sky, StereographicProjection stereographicProjection, Transform planeToCanvas){
@@ -159,13 +143,13 @@ public final class SkyCanvasPainter {
         int i = 0;
         for (CelestialObject celestialObject : list) {
             double dTransformed = diameterWithMagnitude(celestialObject,projection,planeToCanvas);
-            if ( celestialObject.equals(Star.class)){
+            //todo à vérifier si c'est bien ou pas
+            if ( celestialObject instanceof Star){
                 Color starColor = BlackBodyColor.colorForTemperature((( Star)(celestialObject)).colorTemperature());
                 graphicsContext.setFill(starColor);
             }else {
                 graphicsContext.setFill(Color.GRAY);
             }
-
             graphicsContext.fillOval(positionsOnCanvas[2*i]- dTransformed/2,positionsOnCanvas[2*i + 1]- dTransformed/2,dTransformed,dTransformed);
             i += 2;
         }
