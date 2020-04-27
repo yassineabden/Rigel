@@ -43,6 +43,7 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
     public  void load(InputStream inputStream, StarCatalogue.Builder builder) throws IOException {
 
         try ( BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,US_ASCII))){
+
             String line;
             bufferedReader.readLine();
 
@@ -52,7 +53,6 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
                 String con = parts[CON];
                 String bayer = parts[BAYER].isEmpty()? "?": parts[BAYER];
                 String name = parts[PROPER].isEmpty()? bayer+ " " + con: parts[PROPER];
-                System.out.print(name);
                 double rared = Double.parseDouble(parts[RARAD]);
                 double decred = Double.parseDouble(parts[DECRAD]);
                 double magnitude = parts[MAG].isEmpty()? 0 : Double.parseDouble(parts[MAG]);

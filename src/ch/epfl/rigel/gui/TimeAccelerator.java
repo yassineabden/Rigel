@@ -14,17 +14,15 @@ import java.time.ZonedDateTime;
 public interface TimeAccelerator {
 
 
-    abstract ZonedDateTime adjust(ZonedDateTime simulatedTime, long nanoSeconds);
+     ZonedDateTime adjust(ZonedDateTime simulatedTime, long nanoSeconds);
 
-    public static TimeAccelerator continuous(int alpha) {
+     static TimeAccelerator continuous(int alpha) {
         return (simulatedTime, nanoSeconds) -> simulatedTime.plusNanos(alpha*nanoSeconds);
 
     }
 
-    public static TimeAccelerator discrete (int lambda, Duration steps) {
-        long r = 5;
-        long variation = (long) Math.floor(lambda*5);
-        return ((simulatedTime, nanoSeconds) -> simulatedTime.plusNanos(steps.toNanos()*(long)Math.floor(lambda*nanoSeconds)));
+     static TimeAccelerator discrete (long lambda, Duration step) {
+         return ((simulatedTime, nanoSeconds) -> simulatedTime.plus(step.multipliedBy((long) (lambda*nanoSeconds/1_000_000_000))));
     }
 
 

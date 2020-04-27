@@ -22,7 +22,10 @@ import java.io.InputStream;
 import java.time.ZonedDateTime;
 
 public final class DrawSky extends Application {
-    public static void main(String[] args) { launch(args); }
+    StarCatalogue.Builder builder = new StarCatalogue.Builder();
+    public static void main(String[] args) {
+        launch(args);
+    }
 
     private InputStream resourceStream(String resourceName) {
         return getClass().getResourceAsStream(resourceName);
@@ -30,42 +33,49 @@ public final class DrawSky extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        try (InputStream hs = resourceStream("/hygdata_v3.csv")){
+        try (InputStream hs = resourceStream("/hygdata_v3.csv")) {
 
-            StarCatalogue catalogue = new StarCatalogue.Builder()
+
+            StarCatalogue catalogue = builder
                     .loadFrom(hs, HygDatabaseLoader.INSTANCE).build();
-
-            ZonedDateTime when =
-                    ZonedDateTime.parse("2020-02-17T20:15:00+01:00");
-            GeographicCoordinates where =
-                    GeographicCoordinates.ofDeg(6.57, 46.52);
-            HorizontalCoordinates projCenter =
-                    HorizontalCoordinates.ofDeg(180, 45);
-            StereographicProjection projection =
-                    new StereographicProjection(projCenter);
-            ObservedSky sky =
-                    new ObservedSky(when, where, projection, catalogue);
-
-            Canvas canvas =
-                    new Canvas(800, 600);
-            Transform planeToCanvas =
-                    Transform.affine(1300, 0, 0, -1300, 400, 300);
-            SkyCanvasPainter painter =
-                    new SkyCanvasPainter(canvas);
-
-            painter.clear();
-
-            painter.drawStars(sky,projection,planeToCanvas);
-           // painter.drawPlanets(sky, projection, planeToCanvas);
-           // painter.drawMoon(sky,projection,planeToCanvas);
-           // painter.drawSun(sky,projection,planeToCanvas);
-
-            WritableImage fxImage =
-                    canvas.snapshot(null, null);
-            BufferedImage swingImage =
-                    SwingFXUtils.fromFXImage(fxImage, null);
-            ImageIO.write(swingImage, "png", new File("sky.png"));
         }
-        Platform.exit();
+            try (InputStream as = resourceStream("/asterisms.txt")) {
+                StarCatalogue catalogue = builder
+                        .loadFrom(as, AsterismLoader.INSTANCE)
+                        .build();
+
+                ZonedDateTime when =
+                        ZonedDateTime.parse("2020-02-17T20:15:00+01:00");
+                GeographicCoordinates where =
+                        GeographicCoordinates.ofDeg(6.57, 46.52);
+                HorizontalCoordinates projCenter =
+                        HorizontalCoordinates.ofDeg(180, 45);
+                StereographicProjection projection =
+                        new StereographicProjection(projCenter);
+                ObservedSky sky =
+                        new ObservedSky(when, where, projection, catalogue);
+
+                Canvas canvas =
+                        new Canvas(800, 600);
+                Transform planeToCanvas =
+                        Transform.affine(1300, 0, 0, -1300, 400, 300);
+                SkyCanvasPainter painter =
+                        new SkyCanvasPainter(canvas);
+
+                painter.clear();
+
+                painter.drawStars(sky, projection, planeToCanvas);
+                // painter.drawPlanets(sky, projection, planeToCanvas);
+                // painter.drawMoon(sky,projection,planeToCanvas);
+                // painter.drawSun(sky,projection,planeToCanvas);
+
+
+                WritableImage fxImage =
+                        canvas.snapshot(null, null);
+                BufferedImage swingImage =
+                        SwingFXUtils.fromFXImage(fxImage, null);
+                ImageIO.write(swingImage, "png", new File("sky.png"));
+            }
+            Platform.exit();
+        }
     }
-}

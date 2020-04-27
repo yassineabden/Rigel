@@ -43,7 +43,7 @@ public final class SkyCanvasPainter {
 
         List <Star> stars = sky.stars();
         double [] starsOnCanvas = sky.starsPositions();
-        planeToCanvas.transform2DPoints(sky.starsPositions(),0, starsOnCanvas,0,starsOnCanvas.length);
+        planeToCanvas.transform2DPoints(sky.starsPositions(),0, starsOnCanvas,0,starsOnCanvas.length/2);
         Set<Asterism> asterisms = sky.asterisms();
 
         //Dessine les asterisms
@@ -150,7 +150,7 @@ public final class SkyCanvasPainter {
             }else {
                 graphicsContext.setFill(Color.GRAY);
             }
-            graphicsContext.fillOval(positionsOnCanvas[2*i]- dTransformed/2,positionsOnCanvas[2*i + 1]- dTransformed/2,dTransformed,dTransformed);
+            graphicsContext.fillOval(positionsOnCanvas[i]- dTransformed/2,positionsOnCanvas[i + 1]- dTransformed/2,dTransformed,dTransformed);
             i += 2;
         }
     }
