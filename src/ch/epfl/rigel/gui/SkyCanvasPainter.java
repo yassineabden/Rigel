@@ -60,20 +60,12 @@ public final class SkyCanvasPainter {
             for (Integer index : aIndex) {
                 double x = starsOnCanvas[2*index], y = starsOnCanvas[2*index + 1];
 
-                //todo je fais une attribution dans la condition pour faire le contains qu'une fois mais ça se fait?
-                if((lastStarInBounds == true) || ((lastStarInBounds = canvasBound.contains(new Point2D(x, y))))){
-
+                if(lastStarInBounds || ((lastStarInBounds = canvasBound.contains(new Point2D(x, y))))){
                     graphicsContext.lineTo(x, y);
                     } else {
                     graphicsContext.moveTo(x, y);
                 }
             }
-            //Fait retourner le trait d'asterism à la première étoile - peut -être meilleur moyen de le faire?
-            double x0 = starsOnCanvas[0], y0 = starsOnCanvas[1];
-            if (lastStarInBounds == true || canvasBound.contains(new Point2D(x0, y0))){
-                graphicsContext.lineTo(x0, y0);
-            }
-            //pas besoin de dessiner sinon
             graphicsContext.stroke();
         }
 
@@ -104,14 +96,14 @@ public final class SkyCanvasPainter {
             HorizontalCoordinates cardinalPointCoord = HorizontalCoordinates.ofDeg(deg, -0.5);
             Point2D cardinalOnCanvas = carthesianCoordOnCanvas(planeToCanvas, stereographicProjection.apply(cardinalPointCoord));
             graphicsContext.fillText(cardinalPointCoord.azOctantName("N","E", "S","W"),cardinalOnCanvas.getX(),cardinalOnCanvas.getY());
-
         }
     }
 
     public void drawPlanets(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas){
 
-        double [] planetsOnCanvas = new double[sky.planetsPositions().length];
-        planeToCanvas.transform2DPoints(sky.planetsPositions(),0,planetsOnCanvas,0,planetsOnCanvas.length);
+        double [] planetsOnCanvas = sky.planetsPositions();
+        //planeToCanvas.transform2DPoints(sky.planetsPositions(),0,planetsOnCanvas,0,planetsOnCanvas.length);
+        planeToCanvas.transform2DPoints(sky.planetsPositions(),0,planetsOnCanvas,0,sky.planetsPositions().length);
        // graphicsContext.setFill(Color.LIGHTGRAY);
 
         drawBlackBody(planetsOnCanvas,sky.planets(),projection,planeToCanvas);
@@ -154,7 +146,6 @@ public final class SkyCanvasPainter {
     public void drawMoon(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas){
 
         double d = projection.applyToAngle(sky.moon().angularSize());
-
         double dTransformed = diameterOnCanvas(d, planeToCanvas);
 
         Point2D moonCoord = carthesianCoordOnCanvas(planeToCanvas,sky.moonPosition());

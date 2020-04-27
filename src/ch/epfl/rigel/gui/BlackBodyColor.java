@@ -6,9 +6,7 @@ import ch.epfl.rigel.math.RightOpenInterval;
 import javafx.scene.paint.Color;
 
 import java.io.*;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
@@ -24,7 +22,7 @@ public class BlackBodyColor {
     private final static RightOpenInterval COLOR_RGB = RightOpenInterval.of(80,87);
     private final static ClosedInterval TEMPERATURE_RANGE = ClosedInterval.of(1000, 40000);
 
-    private final static Map < Integer, Color> COLOR_MAP = colorMap("/bbr_color.txt");
+    private final static List < Color> COLOR_LIST = colorList("/bbr_color.txt");
 
 
     private BlackBodyColor(){}
@@ -40,7 +38,7 @@ public class BlackBodyColor {
     public static Color colorForTemperature (float kelvin){
 
         Preconditions.checkInInterval(TEMPERATURE_RANGE,kelvin);
-        return COLOR_MAP.get(tempToIndex(validKelvinTemprature(kelvin)));
+        return COLOR_LIST.get(tempToIndex(validKelvinTemprature(kelvin)));
     }
 
     private static int validKelvinTemprature (float kelvin){
@@ -49,28 +47,25 @@ public class BlackBodyColor {
         return temp*100;
     }
 
-    private static int tempToIndex (float kelvin){
-        return (int) (kelvin - 1000) / 100;
-    }
+    private static int tempToIndex (float kelvin) {return (int) (kelvin - 1000) / 100;}
 
 
-    private static Map <Integer, Color> colorMap(String fileName)  {
 
-        Map<Integer, Color> kelvinToColorMap = new HashMap<>();
+    private static List <Color> colorList(String fileName)  {
 
         try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(BlackBodyColor.class.getResourceAsStream(fileName), US_ASCII))) {
 
 
-            //todo - pourquoi est-ce que je peux pas utiliser le toMap
-//       bufferedReader.lines()
-//                        .filter(l -> ( !l.startsWith("#") &&  (l.regionMatches((int) DEG.low(), "10deg", 0, (int) DEG.size()))))
-//                       .map(l -> l.substring((int) COLOR_RGB.low(), (int) COLOR_RGB.high()))
-//               .collect(Collectors.toCollection())
+
+            return bufferedReader.lines()
+                    .filter(l -> ( !l.startsWith("#") &&  (l.regionMatches((int) DEG.low(), "10deg", 0, (int) DEG.size()))))
+                    .map(l -> Color.web(l.substring((int) COLOR_RGB.low(), (int) COLOR_RGB.high())))
+                    .collect(Collectors.toUnmodifiableList());
 
 
 
-
-          /*  String line;
+/*
+           String line;
             int i = 0;
             while ((line = bufferedReader.readLine()) != null) {
                 if (!line.startsWith("#")) {
@@ -84,8 +79,10 @@ public class BlackBodyColor {
                         i++;
                     }
                 }
-            }*/
+            }
             return Collections.unmodifiableMap(kelvinToColorMap);
+
+ */
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
