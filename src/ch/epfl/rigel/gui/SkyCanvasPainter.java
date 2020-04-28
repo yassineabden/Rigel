@@ -50,19 +50,21 @@ public final class SkyCanvasPainter {
         Bounds canvasBound = canvas.getBoundsInLocal();
         graphicsContext.setFill(Color.BLUE);
         graphicsContext.setLineWidth(1.0);
+
         for (Asterism a : asterisms) {
 
             List <Integer> aIndex = sky.asterismIndices(a);
             graphicsContext.beginPath();
+
             //todo à vérifier s'il faut true ou false au début
             boolean lastStarInBounds = true;
 
             for (Integer index : aIndex) {
                 double x = starsOnCanvas[2*index], y = starsOnCanvas[2*index + 1];
 
-                if(lastStarInBounds || ((lastStarInBounds = canvasBound.contains(new Point2D(x, y))))){
+                if(lastStarInBounds || (lastStarInBounds = canvasBound.contains(new Point2D(x, y)))) {
                     graphicsContext.lineTo(x, y);
-                    } else {
+                }else {
                     graphicsContext.moveTo(x, y);
                 }
             }

@@ -1,9 +1,6 @@
 package ch.epfl.rigel.gui;
 
-import ch.epfl.rigel.astronomy.AsterismLoader;
-import ch.epfl.rigel.astronomy.HygDatabaseLoader;
-import ch.epfl.rigel.astronomy.ObservedSky;
-import ch.epfl.rigel.astronomy.StarCatalogue;
+import ch.epfl.rigel.astronomy.*;
 import ch.epfl.rigel.coordinates.GeographicCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import ch.epfl.rigel.coordinates.StereographicProjection;
@@ -35,9 +32,10 @@ public final class DrawSky extends Application {
     public void start(Stage primaryStage) throws Exception {
         try (InputStream hs = resourceStream("/hygdata_v3.csv")) {
 
+            builder.loadFrom(hs, HygDatabaseLoader.INSTANCE);
 
-            StarCatalogue catalogue = builder
-                    .loadFrom(hs, HygDatabaseLoader.INSTANCE).build();
+           // StarCatalogue catalogue = builder
+            //        .loadFrom(hs, HygDatabaseLoader.INSTANCE).build();
         }
             try (InputStream as = resourceStream("/asterisms.txt")) {
                 StarCatalogue catalogue = builder
