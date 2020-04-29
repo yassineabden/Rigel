@@ -48,7 +48,7 @@ public final class SkyCanvasPainter {
 
         //Dessine les asterisms
         Bounds canvasBound = canvas.getBoundsInLocal();
-        graphicsContext.setFill(Color.BLUE);
+        graphicsContext.setStroke(Color.BLUE);
         graphicsContext.setLineWidth(1.0);
 
         for (Asterism a : asterisms) {
@@ -63,6 +63,7 @@ public final class SkyCanvasPainter {
                 double x = starsOnCanvas[2*index], y = starsOnCanvas[2*index + 1];
 
                 if(lastStarInBounds || (lastStarInBounds = canvasBound.contains(new Point2D(x, y)))) {
+                    System.out.println("asterisms");
                     graphicsContext.lineTo(x, y);
                 }else {
                     graphicsContext.moveTo(x, y);
