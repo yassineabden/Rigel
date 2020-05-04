@@ -7,66 +7,84 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Date;
 
 public final class DateTimeBean {
 
-    private final ObjectProperty<LocalDate> date = new SimpleObjectProperty<>();
-    private final ObjectProperty<LocalTime> time = new SimpleObjectProperty<>();
-    private final ObjectProperty<ZoneId> zone = new SimpleObjectProperty<>();
-    private ZonedDateTime zonedDateTime = ZonedDateTime.of(getDate(),getTime(),getZone());
+    private ObjectProperty<LocalDate> date = new SimpleObjectProperty<>();
+    private ObjectProperty<LocalTime> time = new SimpleObjectProperty<>();
+    private ObjectProperty<ZoneId> zone = new SimpleObjectProperty<>();
 
+    /**
+     *
+     * @return
+     */
     public ObjectProperty<LocalDate> dateProperty(){ return date; }
 
+    /**
+     *
+     * @return
+     */
     public LocalDate getDate(){ return date.get(); }
 
+    /**
+     *
+     * @param newLocalDate
+     */
     public void setDate( LocalDate newLocalDate){ date.setValue(newLocalDate); }
 
+    /**
+     *
+     * @return
+     */
     public ObjectProperty<LocalTime> timeProperty(){ return time; }
 
+    /**
+     *
+     * @return
+     */
     public LocalTime getTime(){ return time.get(); }
 
+    /**
+     *
+     * @param newLocalTime
+     */
     public void setTime ( LocalTime newLocalTime) { time.setValue(newLocalTime); }
 
+    /**
+     *
+     * @return
+     */
     public ObjectProperty<ZoneId> zoneProperty() { return zone; }
 
+    /**
+     *
+     * @return
+     */
     public ZoneId getZone(){ return zone.get(); }
 
+    /**
+     *
+     * @param newZoneId
+     */
     public void setZone(ZoneId newZoneId){  zone.setValue(newZoneId); }
 
-    public ZonedDateTime getZonedDateTime(){ return zonedDateTime; }
+    /**
+     *
+     * @return
+     */
+    public ZonedDateTime getZonedDateTime(){
+        //return zonedDateTime;
+         return ZonedDateTime.of(getDate(),getTime(),getZone());
+    }
 
-    public void setZonedDateTime(ZonedDateTime zdt){ this.zonedDateTime = zdt; }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    /**
+     *
+     * @param zdt
+     */
+    public void setZonedDateTime(ZonedDateTime zdt){
+        setDate(zdt.toLocalDate());
+        setTime(zdt.toLocalTime());
+        setZone(zdt.getZone());
+        }
 }

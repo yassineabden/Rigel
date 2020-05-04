@@ -27,8 +27,18 @@ public enum NamedTimeAccelerator {
     }
 
     /**
+     * Retourne l'accélérateur de la paire
      *
-     * @return
+     * @return l'accélérateur de la paire
+     */
+    public TimeAccelerator getAccelerator() {
+        return accelerator;
+    }
+
+    /**
+     * Retourne la paire: l'accélérateur et son nom sous forme textuelle
+     *
+     * @return la paire sous forme (nom, accélérateur)
      */
     public String getName(){
 
@@ -37,8 +47,9 @@ public enum NamedTimeAccelerator {
     }
 
     /**
+     * Retourne la paire de l'accélérateur et son nom assococié sous forme textuelle
      *
-     * @return
+     * @return la paire sous forme (nom, accélérateur)
      */
     @Override
     public String toString() {
