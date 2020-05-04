@@ -22,20 +22,19 @@ import java.util.concurrent.Callable;
 
 public final class SkyCanvasManager {
 
-    private final StarCatalogue starCatalogue;
     private final ObserverLocationBean observerLocationBean;
     private final DateTimeBean dateTimeBean;
     private final ViewingParamtersBean viewingParamtersBean;
     private final ObjectBinding<StereographicProjection> projection;
     private final DoubleBinding planeToCanvas;
-    private final ObjectBinding<ObservedSky> observedSky;
+    private final ObservableValue <ObservedSky> observedSky; // Observablevalue
     private final ObjectProperty<Point2D> mousePosition;
     private final ObjectBinding<HorizontalCoordinates> mouseHorizontalPosition;
 
 
 
     public SkyCanvasManager(StarCatalogue starCatalogue, ObserverLocationBean observerLocationBean, DateTimeBean dateTimeBean, ViewingParamtersBean viewingParamtersBean) {
-        this.starCatalogue = starCatalogue;
+
         this.observerLocationBean = observerLocationBean;
         this.dateTimeBean = dateTimeBean;
         this.viewingParamtersBean = viewingParamtersBean;
