@@ -1,30 +1,49 @@
 package ch.epfl.rigel.gui;
 
+import ch.epfl.rigel.coordinates.GeographicCoordinates;
+import ch.epfl.rigel.coordinates.HorizontalCoordinates;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.ObjectBinding;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 
 public final class ObserverLocationBean {
 
-    private final ObjectProperty<Double> lonDeg;
-    private final ObjectProperty<Double> latDeg;
+    private final DoubleProperty lonDeg;
+    private final DoubleProperty latDeg;
+    private final ObservableValue<GeographicCoordinates> coordinates;
+
 
     public ObserverLocationBean() {
-        this.lonDeg = new SimpleObjectProperty<>();
-        this.latDeg = new SimpleObjectProperty<>();
+        this.lonDeg = new SimpleDoubleProperty();
+        this.latDeg = new SimpleDoubleProperty();
+        //todo on peut caster le bind ??
+        coordinates = Bindings.createObjectBinding( ()-> coordinatesProperty().setValue(GeographicCoordinates.ofDeg(getLonDeg(),getLatDeg())) ,lonDeg,latDeg );
     }
 
-    public ObjectProperty<Double> lonDegProperty(){ return lonDeg; }
+    public DoubleProperty lonDegProperty(){ return lonDeg; }
 
     public double getLonDeg(){ return lonDeg.get(); }
 
     public void setLonDeg (double newLonDeg){ latDeg.setValue(newLonDeg); }
 
-    public ObjectProperty<Double> latDegProperty(){ return latDeg; }
+    public DoubleProperty latDegProperty(){ return latDeg; }
 
     public double getLatDeg(){ return latDeg.get(); }
 
     public void setLatDeg (double newLatDeg){ latDeg.setValue(newLatDeg); }
 
+    //todo pas tout compris le délire de observable value
+    public ObservableValue<GeographicCoordinates> coordinatesProperty() {
+        return coordinates;
+    }
+
+    public GeographicCoordinates getCoordinates() {
+        return coordinates();
+    }
 
 
 
