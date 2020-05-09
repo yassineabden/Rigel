@@ -10,10 +10,17 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableDoubleValue;
+import javafx.beans.value.ObservableValue;
+import javafx.geometry.Point2D;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Transform;
 
-import java.awt.*;
+import java.util.Optional;
+
 
 public final class SkyCanvasManager {
 
@@ -21,100 +28,76 @@ public final class SkyCanvasManager {
     private final DateTimeBean dateTimeBean;
     private final ObserverLocationBean observerLocationBean;
     private final ViewingParametersBean viewingParametersBean;
+
     //todo lien ou propriété?
-    private final DoubleProperty mouseAzDeg;
-    private final DoubleProperty mouseAltDeg;
-    private final ObjectProperty<CelestialObject> objectUnderMouse;
+    private final ObservableDoubleValue mouseAzDeg;
+    private final ObservableDoubleValue mouseAltDeg;
+    private final ObjectProperty <Optional <CelestialObject>> objectUnderMouse;
 
-    private final ObjectBinding <StereographicProjection> projection;
-    private final ObjectBinding <Transform> planeToCanvas;
-    private final ObjectBinding <ObservedSky> observedSky;
+    private final ObservableValue <StereographicProjection> projection;
+    private final ObservableValue <Transform> planeToCanvas;
+    private final ObservableValue <ObservedSky> observedSky;
     private final ObjectProperty <CartesianCoordinates> mousePosition;
-    private final ObjectBinding <HorizontalCoordinates> mouseHorizontalPosition;
+    private final ObservableValue <HorizontalCoordinates> mouseHorizontalPosition;
 
 
-
-
-
-    public SkyCanvasManager(StarCatalogue starCatalogue,  DateTimeBean dateTimeBean, ObserverLocationBean observerLocationBean, ViewingParametersBean viewingParametersBean) {
+    public SkyCanvasManager(StarCatalogue starCatalogue,  DateTimeBean dateTimeBean, ObserverLocationBean observerLocationBean, ViewingParametersBean viewingParametersBean) throws NonInvertibleTransformException {
 
         canvas = new Canvas();
         this.dateTimeBean = dateTimeBean;
         this.observerLocationBean = observerLocationBean;
         this.viewingParametersBean = viewingParametersBean;
 
-       //todo dans la lambda on défini ce que ça va être la valeur de projection?
         projection = Bindings.createObjectBinding(()-> ( new StereographicProjection(viewingParametersBean.getCenter())), this.viewingParametersBean.centerProperty());
-       //todo la planeToCanvas était une Transform avant, on doit la faire comme dans l'étape 8 ou juste avec un facteur de dilatation?
+
         // à mettre en méthode
         double dilatation = canvas.getWidth()
-                / projection.get().applyToAngle(viewingParametersBean.getFieldOfViewDeg());
-        // todo je comprends pas pourquoi ça joue pas... je donne bien une Transform non?
-        planeToCanvas = Bindings.createObjectBinding( () -> Transform.affine(dilatation, 0, 0, -dilatation, canvas.getWidth()/2.0, canvas.getHeight()/2.0),
-                this.viewingParametersBean.fieldOfViewDegProperty()
+                / projection.getValue().applyToAngle(viewingParametersBean.getFieldOfViewDeg());
+
+        planeToCanvas = Bindings.createObjectBinding( () -> Transform.affine(dilatation, 0, 0, -dilatation, canvas.getWidth()/2.0, canvas.getHeight()/2.0)
+                ,this.viewingParametersBean.fieldOfViewDegProperty()
                 ,projection );
            // planeToCanvas = Bindings.createObjectBinding(() -> canvas.getWidth()/ projection.get().applyToAngle(viewingParametersBean.getFieldOfViewDeg()))
 
         observedSky = Bindings.createObjectBinding(() -> new ObservedSky(dateTimeBean.getZonedDateTime()
                         ,observerLocationBean.getCoordinates()
-                        ,projection.get()
-                        ,starCatalogue),
-                this.observerLocationBean.coordinatesProperty()
+                        ,projection.getValue()
+                        ,starCatalogue)
+                ,this.observerLocationBean.coordinatesProperty()
                 ,this.dateTimeBean.dateProperty()
                 ,this.dateTimeBean.timeProperty()
                 ,this.dateTimeBean.zoneProperty()
                 ,projection);
-    //todo comment on initialise?
-      mousePosition = new SimpleObjectProperty<>(CartesianCoordinates.of(0,0));
+
+          mousePosition = new SimpleObjectProperty<>(CartesianCoordinates.of(0,0));
+          canvas.setOnMouseMoved( event -> mousePosition.setValue(CartesianCoordinates.of(event.getX(),event.getY())));
+          //todo il faut rajouter planeToCanvas dans les dependecies?
+          //rendre plus joli
+          Point2D newCoord = planeToCanvas.getValue().inverseTransform(mousePosition.get().x(),mousePosition.get().y());
+          mouseHorizontalPosition = Bindings.createObjectBinding(() -> projection.getValue().inverseApply(CartesianCoordinates.of(newCoord.getX(),newCoord.getY()))
+                  ,mousePosition
+                  ,projection
+                  ,planeToCanvas);
+
+          mouseAzDeg = Bindings.createDoubleBinding(() -> mouseHorizontalPosition.getValue().azDeg()
+                  ,mouseHorizontalPosition);
+          mouseAltDeg = Bindings.createDoubleBinding(() -> mouseHorizontalPosition.getValue().altDeg()
+                  ,mouseHorizontalPosition);
+          final Boolean mousePressed;
+          canvas.setOnMousePressed( event -> (mousePressed = event.isPrimaryButtonDown())) ;
 
 
+          /**
+          objectUnderMouse = new SimpleObjectProperty<>();
 
-    }
+          objectUnderMouse.bind(observedSky.getValue().objectClosestTo(CartesianCoordinates.of(newCoord.getX(),newCoord.getY()),10));
 
-
-
-
-
-/**
-    private final ObserverLocationBean observerLocationBean;
-    private final DateTimeBean dateTimeBean;
-    private final ViewingParametersBean viewingParametersBean;
-    private final ObjectBinding<StereographicProjection> projection;
-    //todo observable property
-    private final ObservableValue <Transform> planeToCanvas;
-   // private final DoubleBinding planeToCanvas;
-
-    private final ObservableValue <ObservedSky> observedSky; // Observablevalue
-    private final ObjectProperty<Point2D> mousePosition;
-    private final ObjectBinding<HorizontalCoordinates> mouseHorizontalPosition;
-    private final Canvas canvas;
-
-
-    public SkyCanvasManager(StarCatalogue starCatalogue, ObserverLocationBean observerLocationBean, DateTimeBean dateTimeBean, ViewingParametersBean viewingParametersBean) {
-
-        this.observerLocationBean = observerLocationBean;
-        this.dateTimeBean = dateTimeBean;
-        this.viewingParametersBean = viewingParametersBean;
-        //todo canvas
-        canvas = new Canvas();
-
-        projection = Bindings.createObjectBinding(() -> new StereographicProjection(viewingParametersBean.getCenter()), );
-        planeToCanvas = Bindings.createDoubleBinding(() -> canvas.getWidth()/ projection.get().applyToAngle(viewingParametersBean.getDouble()));
-        observedSky = Bindings.createObjectBinding(()-> new ObservedSky(dateTimeBean.getZonedDateTime(),
-                GeographicCoordinates.ofDeg(observerLocationBean.getLonDeg()
-                ,observerLocationBean.getLatDeg())
-                ,projection.get()
-                ,starCatalogue));
-        mousePosition = new SimpleObjectProperty<>();
-        mouseHorizontalPosition = Bindings.createObjectBinding(()-> projection.get().inverseApply(CartesianCoordinates.of(mousePosition.get().getX(),mousePosition.get().getY())));
-        mousePosition.addListener((observableValue, point2D, t1) -> mousePosition.setValue(t1));
-
+          objectUnderMouse = Bindings.createObjectBinding(() -> observedSky.getValue().objectClosestTo(CartesianCoordinates.of(newCoord.getX(),newCoord.getY()), 10)
+                  ,observedSky
+                  ,planeToCanvas
+                  ,mousePosition);
+*/
 
     }
-
-    public Canvas getCanvas() {
-        return canvas;
-    }
- */
 
 }

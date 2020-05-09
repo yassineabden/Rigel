@@ -14,17 +14,13 @@ public final class ObserverLocationBean {
 
     private final DoubleProperty lonDeg;
     private final DoubleProperty latDeg;
-    //todo assistant avait dit abservable value ça pouvait être une bonne idée mais je capte pas comment
-    //private final ObservableValue <GeographicCoordinates> coordinates;
-    private final ObjectBinding <GeographicCoordinates> coordinates;
+    private final ObservableValue <GeographicCoordinates> coordinates;
+
 
 
     public ObserverLocationBean() {
         this.lonDeg = new SimpleDoubleProperty();
         this.latDeg = new SimpleDoubleProperty();
-        //todo on peut caster le bind ??
-        //coordinates = Bindings.createObjectBinding( ()-> coordinatesProperty().setValue(GeographicCoordinates.ofDeg(getLonDeg(),getLatDeg())) ,lonDeg,latDeg );
-       //todo ça marche comme ça?
         coordinates = Bindings.createObjectBinding(()-> GeographicCoordinates.ofDeg(getLonDeg(),getLatDeg()), lonDeg,latDeg);
     }
 
@@ -40,13 +36,14 @@ public final class ObserverLocationBean {
 
     public void setLatDeg (double newLatDeg){ latDeg.set(newLatDeg); }
 
-    //todo pas tout compris le délire de observable value
     public ObservableValue<GeographicCoordinates> coordinatesProperty() {
         return coordinates;
     }
+
     public GeographicCoordinates getCoordinates() {
-        return coordinates.get();
+        return coordinates.getValue();
     }
+
     public void setCoordinates (GeographicCoordinates geographicCoordinates){
         setLonDeg(geographicCoordinates.lonDeg());
         setLatDeg(geographicCoordinates.latDeg());
