@@ -15,11 +15,17 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableDoubleValue;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Transform;
 
+import javax.swing.text.MutableAttributeSet;
 import java.util.Optional;
+
+import static javafx.scene.input.KeyCode.*;
 
 
 public final class SkyCanvasManager {
@@ -32,7 +38,7 @@ public final class SkyCanvasManager {
     //todo lien ou propriété?
     private final ObservableDoubleValue mouseAzDeg;
     private final ObservableDoubleValue mouseAltDeg;
-    private final ObjectProperty <Optional <CelestialObject>> objectUnderMouse;
+    //private final ObjectProperty <Optional <CelestialObject>> objectUnderMouse;
 
     private final ObservableValue <StereographicProjection> projection;
     private final ObservableValue <Transform> planeToCanvas;
@@ -83,8 +89,47 @@ public final class SkyCanvasManager {
                   ,mouseHorizontalPosition);
           mouseAltDeg = Bindings.createDoubleBinding(() -> mouseHorizontalPosition.getValue().altDeg()
                   ,mouseHorizontalPosition);
-          final Boolean mousePressed;
-          canvas.setOnMousePressed( event -> (mousePressed = event.isPrimaryButtonDown())) ;
+
+          canvas.setOnMousePressed( event -> {
+              if (event.isPrimaryButtonDown())
+                  canvas.requestFocus(); }
+                  ) ;
+
+          canvas.setOnScroll( scrollEvent -> {
+              double x = Math.abs(scrollEvent.getDeltaX());
+              double y = Math.abs(scrollEvent.getDeltaY());
+              double z = Math.max(x,y) == x? scrollEvent.getDeltaX(): scrollEvent.getDeltaY();
+              viewingParametersBean.setFieldOfViewDeg(z);
+          });
+
+          // TODO traiter les cas limites !! ( Poser la question aux assistants)
+          canvas.setOnKeyPressed(keyEvent -> {
+
+              keyEvent.consume();
+
+              switch (keyEvent.getCode()) {
+                  case LEFT:
+                      viewingParametersBean.setCenter( HorizontalCoordinates.ofDeg(viewingParametersBean.getCenter().azDeg()-10,
+                              viewingParametersBean.getCenter().altDeg()));
+                  case RIGHT:
+                      viewingParametersBean.setCenter( HorizontalCoordinates.ofDeg(viewingParametersBean.getCenter().azDeg()+10,
+                              viewingParametersBean.getCenter().altDeg()));
+                  case UP:
+                      viewingParametersBean.setCenter(HorizontalCoordinates.ofDeg(viewingParametersBean.getCenter().azDeg(),
+                              viewingParametersBean.getCenter().altDeg()+5));
+                  case DOWN:
+                      viewingParametersBean.setCenter(HorizontalCoordinates.ofDeg(viewingParametersBean.getCenter().azDeg(),
+                              viewingParametersBean.getCenter().altDeg()-5));
+                  default:
+                      throw new Error();
+              }
+          });
+
+
+
+
+
+
 
 
           /**
