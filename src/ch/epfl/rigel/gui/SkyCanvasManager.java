@@ -54,7 +54,6 @@ public final class SkyCanvasManager {
         skyCanvasPainter = new SimpleObjectProperty<>();
         skyCanvasPainter.set(new SkyCanvasPainter(canvas));
 
-
         projection = Bindings.createObjectBinding(()-> ( new StereographicProjection(viewingParametersBean.getCenter())), this.viewingParametersBean.centerProperty());
 
         // à mettre en méthode
@@ -64,7 +63,6 @@ public final class SkyCanvasManager {
         planeToCanvas = Bindings.createObjectBinding( () -> Transform.affine(dilatation, 0, 0, -dilatation, canvas.getWidth()/2.0, canvas.getHeight()/2.0)
                 ,this.viewingParametersBean.fieldOfViewDegProperty()
                 ,projection );
-           // planeToCanvas = Bindings.createObjectBinding(() -> canvas.getWidth()/ projection.get().applyToAngle(viewingParametersBean.getFieldOfViewDeg()))
 
         observedSky = Bindings.createObjectBinding(() -> new ObservedSky(dateTimeBean.getZonedDateTime()
                         ,observerLocationBean.getCoordinates()
@@ -76,17 +74,24 @@ public final class SkyCanvasManager {
                 ,this.dateTimeBean.zoneProperty()
                 ,projection);
 
-          mousePosition = new SimpleObjectProperty<>(CartesianCoordinates.of(0,0));
-          canvas.setOnMouseMoved( event -> mousePosition.setValue(CartesianCoordinates.of(event.getX(),event.getY())));
+        mousePosition = new SimpleObjectProperty<>(CartesianCoordinates.of(0,0));
+        canvas.setOnMouseMoved( event -> mousePosition.setValue(CartesianCoordinates.of(event.getX(),event.getY())));
+
+        if (mousePosition.get() != null) System.out.println(mousePosition.get().toString());
 
           //todo il faut rajouter planeToCanvas dans les dependecies?
-          //todo ça bug...
-          Point2D newCoord = planeToCanvas.getValue().inverseTransform(mousePosition.get().x(),mousePosition.get().y());
-          mouseHorizontalPosition = Bindings.createObjectBinding(() -> projection.getValue().inverseApply(CartesianCoordinates.of(newCoord.getX(),newCoord.getY()))
+          //todo ça bug... -> est-ce que c'est dans le repère du ciel ou juste en coordHorizontale?
+        /**
+        Point2D newCoord = planeToCanvas.getValue().inverseTransform(mousePosition.get().x(),mousePosition.get().y());
+        mouseHorizontalPosition = Bindings.createObjectBinding(() -> projection.getValue().inverseApply(CartesianCoordinates.of(newCoord.getX(),newCoord.getY()))
                   ,mousePosition
                   ,projection
                   ,planeToCanvas);
-
+        */
+        mouseHorizontalPosition = Bindings.createObjectBinding(() -> projection.getValue().inverseApply(CartesianCoordinates.of(mousePosition.get().x(), mousePosition.get().y()))
+                ,mousePosition
+                ,projection
+                ,planeToCanvas);
           mouseAzDeg = Bindings.createDoubleBinding(() -> mouseHorizontalPosition.getValue().azDeg()
                   ,mouseHorizontalPosition);
           mouseAltDeg = Bindings.createDoubleBinding(() -> mouseHorizontalPosition.getValue().altDeg()
@@ -96,12 +101,22 @@ public final class SkyCanvasManager {
               if (event.isPrimaryButtonDown())
                   canvas.requestFocus(); }
                   ) ;
-
+/**
         objectUnderMouse = Bindings.createObjectBinding(() -> observedSky.getValue().objectClosestTo(CartesianCoordinates.of(newCoord.getX(),newCoord.getY()), 10).get()
                 ,observedSky
                 ,planeToCanvas
                 ,mousePosition);
-
+*/
+//todo il y a pas d'objet
+        objectUnderMouse = Bindings.createObjectBinding(() -> {
+            CelestialObject objectClosestTo;
+            if ((objectClosestTo = observedSky.getValue().objectClosestTo(CartesianCoordinates.of(mousePosition.get().x(),mousePosition.get().y()), 10).get() )!= null){
+                return objectClosestTo;
+            }else return
+                }
+                ,observedSky
+                ,planeToCanvas
+                ,mousePosition);
 
         canvas.setOnScroll( scrollEvent -> {
               double x = Math.abs(scrollEvent.getDeltaX());
