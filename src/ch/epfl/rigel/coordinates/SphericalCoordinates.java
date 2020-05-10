@@ -1,6 +1,8 @@
 package ch.epfl.rigel.coordinates;
 
 import ch.epfl.rigel.math.Angle;
+import ch.epfl.rigel.math.ClosedInterval;
+import ch.epfl.rigel.math.RightOpenInterval;
 
 /**
  * Des coordonnées sphériques
@@ -9,6 +11,21 @@ import ch.epfl.rigel.math.Angle;
  */
 
 abstract class SphericalCoordinates {
+    /**
+     * Interval d'angles en radians acceptés pour la longitude
+     * [0°,360°[, en radians: [0, 2*pi[
+     */
+    public final static RightOpenInterval LONGITUDE_RAD_INTERVAL_TAU = RightOpenInterval.of(0,Angle.TAU);
+    /**
+     * Deuxième interval d'angles en radians valides pour la longitudes, interval symmetric
+     * [-180°,180°[, en radians: [-pi,pi[
+     */
+    public final static RightOpenInterval LONGITUDE_RAD_INTERVAL_SYMMETRIC = RightOpenInterval.symmetric(Angle.TAU);
+    /**
+     * Interval d'angles en radians valides pour la latitude
+     * [-90°,90°], en radians: [-pi/4, pi/4]
+     */
+    public final static ClosedInterval LATITUDE_RAD_INTERVAL = ClosedInterval.symmetric(Angle.TAU/2);
 
     private final double longitude,latitude;;
 

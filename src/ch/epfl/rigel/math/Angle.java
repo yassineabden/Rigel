@@ -14,8 +14,11 @@ public final class Angle {
      * Constante valant 360 degré
      */
     final public static double TAU= 2*Math.PI;
+    /**
+     * Interval normal des angles trigo [0°,360°[
+     */
+    public static final RightOpenInterval INTERVAL_NORMAL_TRIGO = RightOpenInterval.of(0,TAU);
 
-    private static final RightOpenInterval INTERVAL_NORMAL_TRIGO = RightOpenInterval.of(0,TAU);
     private static final RightOpenInterval INTERVAL_SEC_MIN = RightOpenInterval.of(0, 60);
 
     private static final double RAD_PER_HR = TAU/24;
