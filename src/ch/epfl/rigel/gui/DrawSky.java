@@ -33,9 +33,6 @@ public final class DrawSky extends Application {
         try (InputStream hs = resourceStream("/hygdata_v3.csv")) {
 
             builder.loadFrom(hs, HygDatabaseLoader.INSTANCE);
-
-           // StarCatalogue catalogue = builder
-            //        .loadFrom(hs, HygDatabaseLoader.INSTANCE).build();
         }
             try (InputStream as = resourceStream("/asterisms.txt")) {
                 StarCatalogue catalogue = builder
@@ -63,9 +60,9 @@ public final class DrawSky extends Application {
                 painter.clear();
 
                 painter.drawStars(sky, projection, planeToCanvas);
-                // painter.drawPlanets(sky, projection, planeToCanvas);
-                // painter.drawMoon(sky,projection,planeToCanvas);
-                // painter.drawSun(sky,projection,planeToCanvas);
+                painter.drawPlanets(sky, projection, planeToCanvas);
+                painter.drawMoon(sky,projection,planeToCanvas);
+                painter.drawSun(sky,projection,planeToCanvas);
 
 
                 WritableImage fxImage =
