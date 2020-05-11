@@ -96,11 +96,12 @@ public final class SkyCanvasManager {
                     Point2D newCoord;
                     try {
                         newCoord = planeToCanvas.getValue().inverseTransform(mousePosition.get().getX(), mousePosition.get().getY());
-                        System.out.println("newCoord1:"+newCoord.toString());
+                        return projection.getValue().inverseApply(CartesianCoordinates.of(newCoord.getX(),newCoord.getY()));
+
                     }catch  (NonInvertibleTransformException e) {
-                        newCoord = null;
+                        return null;
                     }
-                    return projection.getValue().inverseApply(CartesianCoordinates.of(newCoord.getX(),newCoord.getY()));
+
                 }
                   ,mousePosition
                   ,projection
@@ -127,12 +128,12 @@ public final class SkyCanvasManager {
                     Point2D newCoord;
                     try {
                         newCoord = planeToCanvas.getValue().inverseTransform(mousePosition.get().getX(), mousePosition.get().getY());
-                        System.out.println("newCoord2:"+newCoord.toString());
+                        return observedSky.getValue().objectClosestTo(CartesianCoordinates.of(newCoord.getX(), newCoord.getY()), 10).orElse(null);
 
                     } catch (NonInvertibleTransformException e) {
-                        newCoord = null;
+                        return null;
                     }
-                   return observedSky.getValue().objectClosestTo(CartesianCoordinates.of(newCoord.getX(), newCoord.getY()), 10).orElse(null);
+
                 }
                 ,observedSky
                 ,planeToCanvas

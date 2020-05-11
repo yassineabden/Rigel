@@ -7,6 +7,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableStringValue;
 
+import static java.lang.Math.floorMod;
+
 public class UseCreateBinding {
 
     public static void main(String[] args) {
@@ -25,5 +27,7 @@ public class UseCreateBinding {
         e.set(16);
         b.set(9);
         System.out.println("----");
+
+        System.out.print(floorMod(42, 13));
     }
 }
