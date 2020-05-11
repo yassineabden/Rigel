@@ -73,8 +73,6 @@ public final class UseSkyCanvasManager extends Application {
             primaryStage.show();
 
             sky.requestFocus();
-        } catch (NonInvertibleTransformException e) {
-            e.printStackTrace();
         }
     }
 }

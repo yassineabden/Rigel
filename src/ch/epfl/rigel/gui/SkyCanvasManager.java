@@ -18,6 +18,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Transform;
 
+import static javafx.beans.binding.Bindings.createDoubleBinding;
+
 
 public final class SkyCanvasManager {
 
@@ -36,7 +38,7 @@ public final class SkyCanvasManager {
     private final ObservableValue <StereographicProjection> projection;
     private final ObservableValue <Transform> planeToCanvas;
     private final ObservableValue <ObservedSky> observedSky;
-    private final ObjectProperty <CartesianCoordinates> mousePosition;
+    private final ObjectProperty <Point2D> mousePosition;
     private final ObservableValue <HorizontalCoordinates> mouseHorizontalPosition;
 
     private final static int AZIMUT_DEG_STEP = 10;
@@ -45,7 +47,7 @@ public final class SkyCanvasManager {
     private final static ClosedInterval ALTITUDE_DEG_INTERVAL = ClosedInterval.of(5,90);
 
 
-    public SkyCanvasManager(StarCatalogue starCatalogue,  DateTimeBean dateTimeBean, ObserverLocationBean observerLocationBean, ViewingParametersBean viewingParametersBean) throws NonInvertibleTransformException {
+    public SkyCanvasManager(StarCatalogue starCatalogue,  DateTimeBean dateTimeBean, ObserverLocationBean observerLocationBean, ViewingParametersBean viewingParametersBean) {
 
         canvas = new Canvas();
         this.dateTimeBean = dateTimeBean;
@@ -73,46 +75,64 @@ public final class SkyCanvasManager {
                 ,this.dateTimeBean.timeProperty()
                 ,this.dateTimeBean.zoneProperty()
                 ,projection);
-
-        mousePosition = new SimpleObjectProperty<>(CartesianCoordinates.of(0,0));
-        canvas.setOnMouseMoved( event -> mousePosition.setValue(CartesianCoordinates.of(event.getX(),event.getY())));
+        //Point2D
+        mousePosition = new SimpleObjectProperty<>();
+        canvas.setOnMouseMoved( event -> mousePosition.set(new Point2D(event.getX(),event.getY())));
 
         if (mousePosition.get() != null) System.out.println(mousePosition.get().toString());
 
           //todo il faut rajouter planeToCanvas dans les dependecies?
           //todo ça bug... -> est-ce que c'est dans le repère du ciel ou juste en coordHorizontale?
         /**
-        Point2D newCoord = planeToCanvas.getValue().inverseTransform(mousePosition.get().x(),mousePosition.get().y());
-        mouseHorizontalPosition = Bindings.createObjectBinding(() -> projection.getValue().inverseApply(CartesianCoordinates.of(newCoord.getX(),newCoord.getY()))
+        Point2D newCoord;
+        try {
+            newCoord = planeToCanvas.getValue().inverseTransform(mousePosition.get().getX(), mousePosition.get().getY());
+        }catch  (NonInvertibleTransformException e) {
+            newCoord = null;
+        }
+*/
+
+        mouseHorizontalPosition = Bindings.createObjectBinding(() ->  {
+                    Point2D newCoord;
+                    try {
+                        newCoord = planeToCanvas.getValue().inverseTransform(mousePosition.get().getX(), mousePosition.get().getY());
+                        System.out.println("newCoord1:"+newCoord.toString());
+                    }catch  (NonInvertibleTransformException e) {
+                        newCoord = null;
+                    }
+                    return projection.getValue().inverseApply(CartesianCoordinates.of(newCoord.getX(),newCoord.getY()));
+                }
                   ,mousePosition
                   ,projection
                   ,planeToCanvas);
-        */
-        mouseHorizontalPosition = Bindings.createObjectBinding(() -> projection.getValue().inverseApply(CartesianCoordinates.of(mousePosition.get().x(), mousePosition.get().y()))
+        /**
+
+        mouseHorizontalPosition = Bindings.createObjectBinding(() -> projection.getValue().inverseApply(CartesianCoordinates.of(mousePosition.get().getX(), mousePosition.get().getY()))
                 ,mousePosition
                 ,projection
                 ,planeToCanvas);
-          mouseAzDeg = Bindings.createDoubleBinding(() -> mouseHorizontalPosition.getValue().azDeg()
+        */
+        mouseAzDeg = createDoubleBinding(() -> mouseHorizontalPosition.getValue().azDeg()
                   ,mouseHorizontalPosition);
-          mouseAltDeg = Bindings.createDoubleBinding(() -> mouseHorizontalPosition.getValue().altDeg()
+        mouseAltDeg = createDoubleBinding(() -> mouseHorizontalPosition.getValue().altDeg()
                   ,mouseHorizontalPosition);
 
           canvas.setOnMousePressed( event -> {
               if (event.isPrimaryButtonDown())
                   canvas.requestFocus(); }
                   ) ;
-/**
-        objectUnderMouse = Bindings.createObjectBinding(() -> observedSky.getValue().objectClosestTo(CartesianCoordinates.of(newCoord.getX(),newCoord.getY()), 10).get()
-                ,observedSky
-                ,planeToCanvas
-                ,mousePosition);
-*/
-//todo il y a pas d'objet
+
+//todo try catch
         objectUnderMouse = Bindings.createObjectBinding(() -> {
-            CelestialObject objectClosestTo;
-            if ((objectClosestTo = observedSky.getValue().objectClosestTo(CartesianCoordinates.of(mousePosition.get().x(),mousePosition.get().y()), 10).get() )!= null){
-                return objectClosestTo;
-            }else return
+                    Point2D newCoord;
+                    try {
+                        newCoord = planeToCanvas.getValue().inverseTransform(mousePosition.get().getX(), mousePosition.get().getY());
+                        System.out.println("newCoord2:"+newCoord.toString());
+
+                    } catch (NonInvertibleTransformException e) {
+                        newCoord = null;
+                    }
+                   return observedSky.getValue().objectClosestTo(CartesianCoordinates.of(newCoord.getX(), newCoord.getY()), 10).orElse(null);
                 }
                 ,observedSky
                 ,planeToCanvas
@@ -137,24 +157,24 @@ public final class SkyCanvasManager {
                   case LEFT:
                       viewingParametersBean.setCenter(
                               HorizontalCoordinates.ofDeg(
-                                      viewingParametersAzimutCenter(viewingParametersBean.getCenter().azDeg() - AZIMUT_DEG_STEP)
+                                      AZIMUT_DEG_INTERVAL.reduce(viewingParametersBean.getCenter().azDeg() - AZIMUT_DEG_STEP)
                                             ,viewingParametersBean.getCenter().altDeg()));
 
                   case RIGHT:
                       viewingParametersBean.setCenter(
                               HorizontalCoordinates.ofDeg(
-                                      viewingParametersAzimutCenter(viewingParametersBean.getCenter().azDeg() + AZIMUT_DEG_STEP)
+                                      AZIMUT_DEG_INTERVAL.reduce(viewingParametersBean.getCenter().azDeg() + AZIMUT_DEG_STEP)
                                       ,viewingParametersBean.getCenter().altDeg()));
 
                   case UP:
                       viewingParametersBean.setCenter(
                               HorizontalCoordinates.ofDeg(viewingParametersBean.getCenter().azDeg()
-                                      ,viewingParametersAltitudeCenter(viewingParametersBean.getCenter().altDeg() + ALTITUDE_DEG_STEP)));
+                                      ,ALTITUDE_DEG_INTERVAL.clip(viewingParametersBean.getCenter().altDeg() + ALTITUDE_DEG_STEP)));
 
                   case DOWN:
                       viewingParametersBean.setCenter(
                               HorizontalCoordinates.ofDeg(viewingParametersBean.getCenter().azDeg()
-                                      ,viewingParametersAltitudeCenter(viewingParametersBean.getCenter().altDeg() - ALTITUDE_DEG_STEP)));
+                                      ,ALTITUDE_DEG_INTERVAL.clip(viewingParametersBean.getCenter().altDeg() - ALTITUDE_DEG_STEP)));
 
 
                   default:
@@ -174,7 +194,6 @@ public final class SkyCanvasManager {
 
 
     }
-
     public Canvas canvas() {
         return canvas;
     }
@@ -201,25 +220,6 @@ public final class SkyCanvasManager {
 
     public ObservableValue<CelestialObject> objectUnderMouseProperty() {
         return objectUnderMouse;
-    }
-
-
-    private double viewingParametersAzimutCenter(double newAzDeg){
-
-        double x = AZIMUT_DEG_INTERVAL.size() - newAzDeg;
-        //todo ça se fait ou c'est trop moche?
-        return (AZIMUT_DEG_INTERVAL.contains(x)) ? newAzDeg
-                                                :  (x < 0) ?  - x
-                                                          : x - AZIMUT_DEG_INTERVAL.high();
-    }
-
-    private double viewingParametersAltitudeCenter(double newAltDeg){
-
-        double x = (ALTITUDE_DEG_INTERVAL.size() - newAltDeg);
-        //todo ça se fait ou c'est trop moche?
-        return (ALTITUDE_DEG_INTERVAL.contains(x)) ? newAltDeg
-                                                :  (x < 0) ?  - x
-                                                          : x - ALTITUDE_DEG_INTERVAL.high();
     }
 
 }
