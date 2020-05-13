@@ -47,6 +47,7 @@ public final class SkyCanvasManager {
 
     public SkyCanvasManager(StarCatalogue starCatalogue, DateTimeBean dateTimeBean, ObserverLocationBean observerLocationBean, ViewingParametersBean viewingParametersBean) {
 
+        //canvas = new Canvas(800,600);
         canvas = new Canvas();
         this.dateTimeBean = dateTimeBean;
         this.observerLocationBean = observerLocationBean;
@@ -55,11 +56,7 @@ public final class SkyCanvasManager {
 
         projection = Bindings.createObjectBinding(() -> (new StereographicProjection(viewingParametersBean.getCenter())), this.viewingParametersBean.centerProperty());
 
-        // à mettre en méthode
-        double dilatation = canvas.getWidth()
-                / projection.getValue().applyToAngle(viewingParametersBean.getFieldOfViewDeg());
-
-        planeToCanvas = Bindings.createObjectBinding(() -> Transform.affine(dilatation, 0, 0, -dilatation, canvas.getWidth() / 2.0, canvas.getHeight() / 2.0)
+        planeToCanvas = Bindings.createObjectBinding(() -> Transform.affine(dilatation(canvas,projection.getValue(),viewingParametersBean), 0, 0, -dilatation(canvas,projection.getValue(),viewingParametersBean), canvas.getWidth() / 2.0, canvas.getHeight() / 2.0)
                 , this.viewingParametersBean.fieldOfViewDegProperty()
                 , projection
                 , canvas.heightProperty()
@@ -163,6 +160,7 @@ public final class SkyCanvasManager {
                     throw new Error();
             }
         });
+
         planeToCanvas.addListener(e -> drawSky());
         observedSky.addListener(e -> drawSky());
 
@@ -199,14 +197,21 @@ public final class SkyCanvasManager {
 
     private void drawSky() {
         System.out.println("drawSky()");
+        System.out.printf("x: %f, y: %f%n", canvas.getWidth(),canvas.getHeight());
+        System.out.println(planeToCanvas.toString());
+        System.out.println(projection.getValue().toString());
 
         skyCanvasPainter.clear();
         skyCanvasPainter.drawStars(observedSky.getValue(), projection.getValue(), planeToCanvas.getValue());
         skyCanvasPainter.drawPlanets(observedSky.getValue(), projection.getValue(), planeToCanvas.getValue());
         skyCanvasPainter.drawMoon(observedSky.getValue(), projection.getValue(), planeToCanvas.getValue());
         skyCanvasPainter.drawSun(observedSky.getValue(), projection.getValue(), planeToCanvas.getValue());
-        //skyCanvasPainter.drawHorizon(projection.getValue(), planeToCanvas.getValue());
+       // skyCanvasPainter.drawHorizon(projection.getValue(), planeToCanvas.getValue());
 
     }
 
+    private double  dilatation(Canvas canvas, StereographicProjection projection, ViewingParametersBean viewingParametersBean) {
+        return canvas.getWidth()
+                / projection.applyToAngle(viewingParametersBean.getFieldOfViewDeg());
+    }
 }
