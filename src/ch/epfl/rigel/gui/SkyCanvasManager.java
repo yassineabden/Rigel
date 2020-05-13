@@ -6,6 +6,7 @@ import ch.epfl.rigel.astronomy.StarCatalogue;
 import ch.epfl.rigel.coordinates.CartesianCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import ch.epfl.rigel.coordinates.StereographicProjection;
+import ch.epfl.rigel.math.Angle;
 import ch.epfl.rigel.math.ClosedInterval;
 import ch.epfl.rigel.math.RightOpenInterval;
 import javafx.beans.binding.Bindings;
@@ -56,12 +57,23 @@ public final class SkyCanvasManager {
 
         projection = Bindings.createObjectBinding(() -> (new StereographicProjection(viewingParametersBean.getCenter())), this.viewingParametersBean.centerProperty());
 
+        planeToCanvas = Bindings.createObjectBinding(() ->  {
+            double dilatation  = canvas.getWidth()
+                            / projection.getValue().applyToAngle(Angle.ofDeg(viewingParametersBean.getFieldOfViewDeg()));
+            Transform scale = Transform.scale(dilatation, -dilatation);
+            Transform translation = Transform.translate(canvas.getWidth()/2.0, canvas.getHeight() / 2.0);
+            return translation.createConcatenation(scale);
+                    }, this.viewingParametersBean.fieldOfViewDegProperty()
+                , projection
+                , canvas.heightProperty()
+                , canvas.widthProperty());
+/**
         planeToCanvas = Bindings.createObjectBinding(() -> Transform.affine(dilatation(canvas,projection.getValue(),viewingParametersBean), 0, 0, -dilatation(canvas,projection.getValue(),viewingParametersBean), canvas.getWidth() / 2.0, canvas.getHeight() / 2.0)
                 , this.viewingParametersBean.fieldOfViewDegProperty()
                 , projection
                 , canvas.heightProperty()
                 , canvas.widthProperty());
-
+*/
         observedSky = Bindings.createObjectBinding(() -> new ObservedSky(dateTimeBean.getZonedDateTime()
                         , observerLocationBean.getCoordinates()
                         , projection.getValue()
@@ -121,44 +133,50 @@ public final class SkyCanvasManager {
                 , mousePosition);
 
         canvas.setOnScroll(scrollEvent -> {
+            ClosedInterval interval = ClosedInterval.of(30, 150);
+            double currentFoV = viewingParametersBean.getFieldOfViewDeg();
             double x = Math.abs(scrollEvent.getDeltaX());
             double y = Math.abs(scrollEvent.getDeltaY());
-            double z = Math.max(x, y) == x ? scrollEvent.getDeltaX() : scrollEvent.getDeltaY();
-            viewingParametersBean.setFieldOfViewDeg(z);
+            double z = Math.max(x, y) == x ? currentFoV + scrollEvent.getDeltaX() : currentFoV + scrollEvent.getDeltaY();
+            viewingParametersBean.setFieldOfViewDeg(interval.clip(z));
         });
 
         //todo
         canvas.setOnKeyPressed(keyEvent -> {
-
-            keyEvent.consume();
+            double centerALtDeg = viewingParametersBean.getCenter().altDeg();
+            double centerAzDeg = viewingParametersBean.getCenter().azDeg();
 
             switch (keyEvent.getCode()) {
                 case LEFT:
                     viewingParametersBean.setCenter(
                             HorizontalCoordinates.ofDeg(
-                                    AZIMUT_DEG_INTERVAL.reduce(viewingParametersBean.getCenter().azDeg() - AZIMUT_DEG_STEP)
-                                    , viewingParametersBean.getCenter().altDeg()));
+                                    AZIMUT_DEG_INTERVAL.reduce(centerAzDeg - AZIMUT_DEG_STEP)
+                                    , centerALtDeg));
+                    break;
 
                 case RIGHT:
                     viewingParametersBean.setCenter(
                             HorizontalCoordinates.ofDeg(
-                                    AZIMUT_DEG_INTERVAL.reduce(viewingParametersBean.getCenter().azDeg() + AZIMUT_DEG_STEP)
-                                    , viewingParametersBean.getCenter().altDeg()));
-
+                                    AZIMUT_DEG_INTERVAL.reduce(centerAzDeg + AZIMUT_DEG_STEP)
+                                    , centerALtDeg));
+                    break;
                 case UP:
                     viewingParametersBean.setCenter(
-                            HorizontalCoordinates.ofDeg(viewingParametersBean.getCenter().azDeg()
-                                    , ALTITUDE_DEG_INTERVAL.clip(viewingParametersBean.getCenter().altDeg() + ALTITUDE_DEG_STEP)));
+                            HorizontalCoordinates.ofDeg(centerAzDeg
+                                    , ALTITUDE_DEG_INTERVAL.clip(centerALtDeg + ALTITUDE_DEG_STEP)));
+                    break;
 
                 case DOWN:
                     viewingParametersBean.setCenter(
-                            HorizontalCoordinates.ofDeg(viewingParametersBean.getCenter().azDeg()
-                                    , ALTITUDE_DEG_INTERVAL.clip(viewingParametersBean.getCenter().altDeg() - ALTITUDE_DEG_STEP)));
+                            HorizontalCoordinates.ofDeg(centerAzDeg
+                                    , ALTITUDE_DEG_INTERVAL.clip(centerALtDeg - ALTITUDE_DEG_STEP)));
 
-
+                    break;
                 default:
-                    throw new Error();
+                    return;
             }
+            keyEvent.consume();
+
         });
 
         planeToCanvas.addListener(e -> drawSky());
@@ -200,18 +218,14 @@ public final class SkyCanvasManager {
         System.out.printf("x: %f, y: %f%n", canvas.getWidth(),canvas.getHeight());
         System.out.println(planeToCanvas.toString());
         System.out.println(projection.getValue().toString());
-
+//todo mettre les get_Value dans de s variables
         skyCanvasPainter.clear();
         skyCanvasPainter.drawStars(observedSky.getValue(), projection.getValue(), planeToCanvas.getValue());
         skyCanvasPainter.drawPlanets(observedSky.getValue(), projection.getValue(), planeToCanvas.getValue());
-        skyCanvasPainter.drawMoon(observedSky.getValue(), projection.getValue(), planeToCanvas.getValue());
         skyCanvasPainter.drawSun(observedSky.getValue(), projection.getValue(), planeToCanvas.getValue());
-       // skyCanvasPainter.drawHorizon(projection.getValue(), planeToCanvas.getValue());
+        skyCanvasPainter.drawMoon(observedSky.getValue(), projection.getValue(), planeToCanvas.getValue());
+        skyCanvasPainter.drawHorizon(projection.getValue(), planeToCanvas.getValue());
 
     }
 
-    private double  dilatation(Canvas canvas, StereographicProjection projection, ViewingParametersBean viewingParametersBean) {
-        return canvas.getWidth()
-                / projection.applyToAngle(viewingParametersBean.getFieldOfViewDeg());
-    }
 }

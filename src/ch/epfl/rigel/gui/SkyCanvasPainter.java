@@ -8,9 +8,11 @@ import ch.epfl.rigel.math.Angle;
 import ch.epfl.rigel.math.ClosedInterval;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Transform;
 
 import java.util.List;
@@ -22,7 +24,7 @@ public final class SkyCanvasPainter {
     private final GraphicsContext graphicsContext;
 
     private final static ClosedInterval MAGNITUDE = ClosedInterval.of(-2, 5);
-    private final static HorizontalCoordinates EQUATOR = HorizontalCoordinates.ofDeg(180, 0);
+    private final static HorizontalCoordinates EQUATOR = HorizontalCoordinates.ofDeg(0, 0);
 
 
     public SkyCanvasPainter(Canvas canvas) {
@@ -80,15 +82,18 @@ public final class SkyCanvasPainter {
 
     public void drawHorizon(StereographicProjection stereographicProjection, Transform planeToCanvas) {
 
-        graphicsContext.setFill(Color.RED);
+        graphicsContext.setStroke(Color.RED);
         graphicsContext.setLineWidth(2.0);
 
         Point2D equator = carthesianCoordOnCanvas(planeToCanvas, stereographicProjection.circleCenterForParallel(EQUATOR));
         double equatorD = diameterOnCanvas(stereographicProjection.circleRadiusForParallel(EQUATOR), planeToCanvas);
         graphicsContext.strokeOval(equator.getX() - equatorD / 2, equator.getY() - equatorD / 2, equatorD, equatorD);
+        graphicsContext.setFill(Color.RED);
+        graphicsContext.setTextBaseline(VPos.TOP);
+        graphicsContext.setTextAlign(TextAlignment.CENTER);
 
-        for (int deg = 0; deg < 360; deg = +45) {
-            HorizontalCoordinates cardinalPointCoord = HorizontalCoordinates.ofDeg(deg, -0.5);
+        for (int deg = 0; deg < 360; deg += 45) {
+            HorizontalCoordinates cardinalPointCoord = HorizontalCoordinates.ofDeg(deg, - 0.5);
             Point2D cardinalOnCanvas = carthesianCoordOnCanvas(planeToCanvas, stereographicProjection.apply(cardinalPointCoord));
             graphicsContext.fillText(cardinalPointCoord.azOctantName("N", "E", "S", "W"), cardinalOnCanvas.getX(), cardinalOnCanvas.getY());
         }
@@ -178,7 +183,7 @@ public final class SkyCanvasPainter {
 
     private double diameterOnCanvas(double d, Transform planeToCanvas) {
 
-        return planeToCanvas.deltaTransform(d, 0).getX();
+        return 2 * planeToCanvas.deltaTransform(d, 0).getX();
     }
 
 }
