@@ -20,7 +20,7 @@ public class Main extends Application {
         stage.setMinWidth(800);
 
         HBox hBox = new HBox();
-        HBox child1
+
 
 
 
