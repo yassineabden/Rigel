@@ -87,6 +87,7 @@ public final class SkyCanvasPainter {
 
         Point2D equator = carthesianCoordOnCanvas(planeToCanvas, stereographicProjection.circleCenterForParallel(EQUATOR));
         double equatorD = diameterOnCanvas(stereographicProjection.circleRadiusForParallel(EQUATOR), planeToCanvas);
+
         graphicsContext.strokeOval(equator.getX() - equatorD / 2, equator.getY() - equatorD / 2, equatorD, equatorD);
         graphicsContext.setFill(Color.RED);
         graphicsContext.setTextBaseline(VPos.TOP);
@@ -125,7 +126,6 @@ public final class SkyCanvasPainter {
         graphicsContext.setFill(Color.YELLOW.deriveColor(0, 0, 1, 0.25));
         graphicsContext.fillOval(sunX - (dTransformed * 2.2) / 2, sunY - (dTransformed * 2.2) / 2, dTransformed * 2.2, dTransformed * 2.2);
 
-
         //deuxième disque
         graphicsContext.setFill(Color.YELLOW);
         graphicsContext.fillOval(sunX - (dTransformed + 2) / 2, sunY - (dTransformed + 2) / 2, dTransformed + 2, dTransformed + 2);
@@ -154,7 +154,7 @@ public final class SkyCanvasPainter {
         int i = 0;
         for (CelestialObject celestialObject : list) {
             double dTransformed = diameterWithMagnitude(celestialObject, projection, planeToCanvas);
-            //todo à vérifier si c'est bien ou pas
+
             if (celestialObject instanceof Star) {
                 Color starColor = BlackBodyColor.colorForTemperature(((Star) (celestialObject)).colorTemperature());
                 graphicsContext.setFill(starColor);
