@@ -140,17 +140,14 @@ public final class ObservedSky {
      *
      * @return la liste des planètes
      */
-    public List <Planet> planets() {return planets;}
+    public List <Planet> planets() { return planets;}
 
     /**
      * Retourne les coordonnées cartésiennes des planètes sous forme de tableau
      *
      * @return les coordonnées cartésiennes des planètes sous forme de tableau
      */
-    public double [] planetsPositions() {
-
-        //TODO faire copie défensive
-          return objectsToCoordinates.get(Objects.PLANETS).clone() ; }
+    public double [] planetsPositions() {  return objectsToCoordinates.get(Objects.PLANETS).clone() ; }
 
     /**
      * Retourne la liste des étoiles
@@ -221,7 +218,7 @@ public final class ObservedSky {
         }
         return  cc; }
 
-        // Enum représentant les objets du siel
+        // Enum représentant les objets du Ciel
         private enum Objects {
             MOON, PLANETS, STARS, SUN;
             private final static List<Objects> ALL = Arrays.asList(Objects.values());
