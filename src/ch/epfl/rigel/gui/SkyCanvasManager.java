@@ -60,6 +60,7 @@ public final class SkyCanvasManager {
         planeToCanvas = Bindings.createObjectBinding(() -> {
                     double dilatation  = canvas.getWidth()
                             / projection.getValue().applyToAngle(Angle.ofDeg(viewingParametersBean.getFieldOfViewDeg()));
+
                     return Transform.affine(dilatation, 0, 0, -dilatation, canvas.getWidth() / 2.0, canvas.getHeight() / 2.0);
                 }
                 , this.viewingParametersBean.fieldOfViewDegProperty()
@@ -77,16 +78,17 @@ public final class SkyCanvasManager {
                 , this.dateTimeBean.zoneProperty()
                 , projection);
 
-        mousePosition = new SimpleObjectProperty<>(new Point2D(0, 0));
+        mousePosition = new SimpleObjectProperty<>(new Point2D(0,0));
         canvas.setOnMouseMoved(event -> mousePosition.set(new Point2D(event.getX(), event.getY())));
 
         mouseHorizontalPosition = Bindings.createObjectBinding(() -> {
                     Point2D newCoord;
                     try {
-                        newCoord = planeToCanvas.getValue().inverseTransform(mousePosition.get().getX(), mousePosition.get().getY());
+                        newCoord = planeToCanvas.getValue().inverseTransform(mousePosition.get());
                         return projection.getValue().inverseApply(CartesianCoordinates.of(newCoord.getX(), newCoord.getY()));
 
                     } catch (NonInvertibleTransformException e) {
+                        System.out.println("nonInvertibleTransform");
                         return null;
                     }
                 }
@@ -94,9 +96,9 @@ public final class SkyCanvasManager {
                 , projection
                 , planeToCanvas);
 
-        mouseAzDeg = createDoubleBinding(() -> mouseHorizontalPosition.getValue().azDeg()
+        mouseAzDeg = createDoubleBinding(() -> (mouseHorizontalPosition.getValue() == null) ? 5.0 : mouseHorizontalPosition.getValue().azDeg()
                 , mouseHorizontalPosition);
-        mouseAltDeg = createDoubleBinding(() -> mouseHorizontalPosition.getValue().altDeg()
+        mouseAltDeg = createDoubleBinding(() -> (mouseHorizontalPosition.getValue() == null) ? 5.0 : mouseHorizontalPosition.getValue().altDeg()
                 , mouseHorizontalPosition);
 
         canvas.setOnMousePressed(event -> {
@@ -181,7 +183,7 @@ public final class SkyCanvasManager {
         return canvas;
     }
 
-    public Number getMouseAzDeg() {
+    public double getMouseAzDeg() {
         return mouseAzDeg.get();
     }
 
@@ -189,7 +191,7 @@ public final class SkyCanvasManager {
         return mouseAzDeg;
     }
 
-    public Number getMouseAltDeg() {
+    public double getMouseAltDeg() {
         return mouseAltDeg.get();
     }
 

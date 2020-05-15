@@ -56,7 +56,7 @@ public final class StereographicProjection implements Function<HorizontalCoordin
      */
     public HorizontalCoordinates inverseApply(CartesianCoordinates xy){
 
-        if (xy.y() ==0 && xy.x()==0) return HorizontalCoordinates.of(center.lon(),center.lat());
+        if (xy.y() == 0 && xy.x()==0) return HorizontalCoordinates.of(center.lon(),center.lat());
 
         else {
 

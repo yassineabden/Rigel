@@ -53,6 +53,7 @@ public final class Main extends Application {
                     .loadFrom(hs, HygDatabaseLoader.INSTANCE)
                     .build();
 
+
             ObserverLocationBean observerLocationBean =
                     new ObserverLocationBean();
             observerLocationBean.setCoordinates(
@@ -82,7 +83,6 @@ public final class Main extends Application {
             stage.setMinWidth(800);
 
             // Barre de contrôle
-            //je pense qu'on va devoir les set children à la controlePane
 
             //Sous-panneau position d'observation
             HBox observationPositionPane = new HBox();
@@ -110,6 +110,7 @@ public final class Main extends Application {
                     new NumberStringConverter("#0.00");
 
             //longitude texte field
+            // todo formatter
             UnaryOperator<TextFormatter.Change> lonFilter = (change -> {
                 try {
                     String newText =
@@ -150,10 +151,7 @@ public final class Main extends Application {
             latTextField.setTextFormatter(latTextFormatter);
 
             observationPositionPane.getChildren().addAll(lonLabel, lonTextField, latLabel, latTextField);
-
-            //TODO check avec Ju bind value de lonTextFormatter et la position de l'observateur
-            //sans doutes ouais mais il faut def ce qui va se passer?
-
+            //todo il y a un ordre précis?
             lonTextFormatter.valueProperty().bind(observerLocationBean.lonDegProperty());
             latTextFormatter.valueProperty().bind(observerLocationBean.latDegProperty());
 
@@ -162,11 +160,12 @@ public final class Main extends Application {
             observationTimePane.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left;");
 
             //Date field
-            Label dateText = new Label("Date :");
+            Label dateLabel = new Label("Date :");
             DatePicker datePicker = new DatePicker();
             datePicker.setStyle("-fx-pref-width: 120;");
             datePicker.valueProperty().bind(dateTimeBean.dateProperty());
 
+            //observationTimePane.getChildren().addAll(dateLabel,)
             //todo peut -être les liés avant de les setChildren à observationTimePane?
 
             // Hour Field
@@ -191,7 +190,8 @@ public final class Main extends Application {
             timeAcceleratorChoiceBox.setItems(FXCollections.observableArrayList(NamedTimeAccelerator.values()));
 
             //todo bidirectional
-            timeAcceleratorChoiceBox.valueProperty().bind(Bindings.select(timeAnimator.acceleratorProperty(), "name"));
+           // timeAcceleratorChoiceBox.valueProperty().bind(Bindings.select(timeAnimator.acceleratorProperty(), "name"));
+            timeAcceleratorChoiceBox.setValue(NamedTimeAccelerator.TIMES_300);
             timeAnimator.acceleratorProperty().bind(Bindings.select(timeAcceleratorChoiceBox.valueProperty(), "accelerator"));
 
             try (InputStream fontStream = getClass()
@@ -230,14 +230,19 @@ public final class Main extends Application {
 
             // Barre d'information
 
+            canvasManager.objectUnderMouseProperty().addListener(
+                    (p, o, n) -> {if (n != null) System.out.println(n);});
+
             Text fieldOfViewText = new Text();
-            fieldOfViewText.textProperty().bind(Bindings.format("Champ de vue : %.2f °",viewingParametersBean.getFieldOfViewDeg()));
+            fieldOfViewText.textProperty().bind(Bindings.format("Champ de vue : %.2f °",viewingParametersBean.fieldOfViewDegProperty()));
 
             Text mousePositionText = new Text();
-            mousePositionText.textProperty().bind(Bindings.format("Azimut : %.2f°, hauteur : %2.f°",canvasManager.getMouseAzDeg(),canvasManager.getMouseAltDeg()));
+            mousePositionText.textProperty().bind(Bindings.format("Azimut : %.2f°, hauteur : %.2f°"
+                    ,canvasManager.mouseAzDegProperty(),canvasManager.mouseAltDegProperty()));
+
 
             Text objectClosesToText = new Text();
-            objectClosesToText.textProperty().bind(Bindings.format("%s",canvasManager.getObjectUnderMouse().info()));
+            objectClosesToText.textProperty().bind(Bindings.createStringBinding(() -> (canvasManager.getObjectUnderMouse() == null) ? "" : canvasManager.getObjectUnderMouse().info()));
 
             BorderPane informationPane = new BorderPane(objectClosesToText,null,mousePositionText,null,fieldOfViewText);
 
@@ -247,9 +252,7 @@ public final class Main extends Application {
             mainPane.setBottom(informationPane);
 
             stage.setScene(new Scene(mainPane));
-
             stage.show();
-
             sky.requestFocus();
         }
 
