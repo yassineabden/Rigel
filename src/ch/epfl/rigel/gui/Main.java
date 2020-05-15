@@ -31,7 +31,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
+import java.util.*;
 import java.util.function.UnaryOperator;
 
 
@@ -75,7 +75,7 @@ public final class Main extends Application {
             BorderPane mainPane = new BorderPane();
 
 
-            //BorderPane mainPane = new BorderPane(skyPane,controlPane,null,informationPane,null);
+
 
             // Fenêtre principale
             stage.setMinHeight(600);
@@ -152,6 +152,7 @@ public final class Main extends Application {
 
             observationPositionPane.getChildren().addAll(lonLabel, lonTextField, latLabel, latTextField);
             //todo il y a un ordre précis?
+
             lonTextFormatter.valueProperty().bind(observerLocationBean.lonDegProperty());
             latTextFormatter.valueProperty().bind(observerLocationBean.latDegProperty());
 
@@ -165,7 +166,7 @@ public final class Main extends Application {
             datePicker.setStyle("-fx-pref-width: 120;");
             datePicker.valueProperty().bind(dateTimeBean.dateProperty());
 
-            //observationTimePane.getChildren().addAll(dateLabel,)
+
             //todo peut -être les liés avant de les setChildren à observationTimePane?
 
             // Hour Field
@@ -181,7 +182,18 @@ public final class Main extends Application {
                     new TextFormatter<>(stringConverter);
             timeFormatter.valueProperty().bind(dateTimeBean.timeProperty());
 
-            // todo Time zone pane
+            ComboBox<ZoneId> timeZone = new ComboBox<>();
+            timeZone.setStyle("-fx-pref-width: 180;");
+            timeZone.valueProperty().bind(dateTimeBean.zoneProperty());
+            Set<String> allTimeZone = new TreeSet<>();
+            allTimeZone = Set.copyOf(ZoneId.getAvailableZoneIds());
+
+            for ( String s : allTimeZone)
+                timeZone.setAccessibleText(s);
+            timeZone.disableProperty().bind(timeAnimator.isRunning());
+
+            observationPositionPane.getChildren().addAll(dateLabel,datePicker,hourLabel,hourTextField,timeZone);
+
 
             //time lapse pane
 
@@ -189,7 +201,7 @@ public final class Main extends Application {
             ChoiceBox<NamedTimeAccelerator> timeAcceleratorChoiceBox = new ChoiceBox<>();
             timeAcceleratorChoiceBox.setItems(FXCollections.observableArrayList(NamedTimeAccelerator.values()));
 
-            //todo bidirectional
+
            // timeAcceleratorChoiceBox.valueProperty().bind(Bindings.select(timeAnimator.acceleratorProperty(), "name"));
             timeAcceleratorChoiceBox.setValue(NamedTimeAccelerator.TIMES_300);
             timeAnimator.acceleratorProperty().bind(Bindings.select(timeAcceleratorChoiceBox.valueProperty(), "accelerator"));
