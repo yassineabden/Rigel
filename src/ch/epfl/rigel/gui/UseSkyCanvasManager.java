@@ -28,6 +28,7 @@ public final class UseSkyCanvasManager extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException, IOException {
         try (InputStream hs = resourceStream("/hygdata_v3.csv")) {
+
             StarCatalogue catalogue = new StarCatalogue.Builder()
                     .loadFrom(hs, HygDatabaseLoader.INSTANCE)
                     .build();

@@ -80,7 +80,6 @@ public final class SkyCanvasManager {
         mousePosition = new SimpleObjectProperty<>(new Point2D(0, 0));
         canvas.setOnMouseMoved(event -> mousePosition.set(new Point2D(event.getX(), event.getY())));
 
-
         mouseHorizontalPosition = Bindings.createObjectBinding(() -> {
                     Point2D newCoord;
                     try {
@@ -103,10 +102,8 @@ public final class SkyCanvasManager {
         canvas.setOnMousePressed(event -> {
                     if (event.isPrimaryButtonDown())
                         canvas.requestFocus();
-                }
-        );
+                });
 
-//todo try catch
         objectUnderMouse = Bindings.createObjectBinding(() -> {
                     Point2D newCoord;
                     try {

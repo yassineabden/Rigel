@@ -43,7 +43,7 @@ public enum NamedTimeAccelerator {
     public String getName(){
 
         String type =  (this == DAY ||this == SIDERAL_DAY) ? "discrete" : "continuous";
-        return new String("(" + name + "," + type);
+        return new String("(" + name + "," + type + ")");
     }
 
     /**
