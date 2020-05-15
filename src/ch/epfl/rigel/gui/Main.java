@@ -11,6 +11,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.event.EventType;
 import javafx.geometry.Orientation;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
@@ -194,6 +195,7 @@ public final class Main extends Application {
 
             observationPositionPane.getChildren().addAll(dateLabel,datePicker,hourLabel,hourTextField,timeZone);
 
+            mainPane.setTop(observationPositionPane);
 
             //time lapse pane
 
@@ -210,18 +212,20 @@ public final class Main extends Application {
                     .getResourceAsStream("/Font Awesome 5 Free-Solid-900.otf")) {
 
                 Font fontAwesome = Font.loadFont(fontStream, 15);
+
                 String reset = "\uf0e2";
                 Button resetButton = new Button(reset);
                 resetButton.setFont(fontAwesome);
 
                 String pause = "\uf04b";
-                Button pauseButton = new Button(pause);
-                pauseButton.setFont(fontAwesome);
-
                 String play = "\uf04c";
-                Button playButton = new Button(play);
-                playButton.setFont(fontAwesome);
+                Button playPauseButton = new Button();
+                playPauseButton.;
+                playPauseButton.setFont(fontAwesome);
             }
+
+
+
 
             //todo gérer pause/play
 
