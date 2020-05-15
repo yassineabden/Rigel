@@ -92,8 +92,6 @@ public final class Main extends Application {
             Separator separator1 = new Separator(Orientation.VERTICAL);
             Separator separator2 = new Separator(Orientation.VERTICAL);
 
-            HBox controlBar = new HBox(observationPositionPane, separator1, observationTimePane, separator2, timeLapsePane);
-            controlBar.setStyle("-fx-spacing: 4; -fx-padding: 4;");
 
             //observationPositionPane
             observationPositionPane.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left;");
@@ -153,8 +151,9 @@ public final class Main extends Application {
             observationPositionPane.getChildren().addAll(lonLabel, lonTextField, latLabel, latTextField);
             //todo il y a un ordre précis?
 
-            lonTextFormatter.valueProperty().bind(observerLocationBean.lonDegProperty());
-            latTextFormatter.valueProperty().bind(observerLocationBean.latDegProperty());
+            lonTextFormatter.valueProperty().addListener((o,oV,nV)-> observerLocationBean.setLonDeg(nV.doubleValue()));
+
+            latTextFormatter.valueProperty().addListener((o,oV,nV)-> observerLocationBean.setLatDeg(nV.doubleValue()));
 
 
             //instant d'observation HBox
@@ -190,6 +189,7 @@ public final class Main extends Application {
 
             for ( String s : allTimeZone)
                 timeZone.setAccessibleText(s);
+
             timeZone.disableProperty().bind(timeAnimator.isRunning());
 
             observationPositionPane.getChildren().addAll(dateLabel,datePicker,hourLabel,hourTextField,timeZone);
@@ -222,6 +222,11 @@ public final class Main extends Application {
                 Button playButton = new Button(play);
                 playButton.setFont(fontAwesome);
             }
+
+            HBox controlBar = new HBox(observationPositionPane, separator1, observationTimePane, separator2, timeLapsePane);
+            controlBar.setStyle("-fx-spacing: 4; -fx-padding: 4;");
+            mainPane.setTop(controlBar);
+
 
             //todo gérer pause/play
 

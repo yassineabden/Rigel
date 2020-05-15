@@ -28,7 +28,7 @@ public final class ObserverLocationBean {
 
     public double getLonDeg(){ return lonDeg.get(); }
 
-    public void setLonDeg (double newLonDeg){ latDeg.set(newLonDeg); }
+    public void setLonDeg (double newLonDeg){ lonDeg.set(newLonDeg); }
 
     public DoubleProperty latDegProperty(){ return latDeg; }
 
