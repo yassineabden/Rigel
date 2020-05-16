@@ -7,7 +7,9 @@ import ch.epfl.rigel.coordinates.GeographicCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Orientation;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -176,19 +178,18 @@ public final class Main extends Application {
         TextFormatter<LocalTime> timeFormatter =
                 new TextFormatter<>(stringConverter);
 
-        dateTimeBean.timeProperty().addListener((e) -> dateTimeBean.setTime(timeFormatter.getValue()));
-        //timeFormatter.valueProperty().addListener((p,o,n) -> dateTimeBean.setTime(n));
+
+        timeFormatter.valueProperty().bindBidirectional(dateTimeBean.timeProperty());
 
 
-        ComboBox<ZoneId> timeZone = new ComboBox<>();
+        List<String> zoneList= new ArrayList<>();
+        zoneList.addAll(ZoneId.getAvailableZoneIds());
+        Collections.sort(zoneList);
+
+        ComboBox<String> timeZone = new ComboBox<>(FXCollections.observableArrayList(zoneList));
         timeZone.setStyle("-fx-pref-width: 180;");
-        timeZone.valueProperty().bind(dateTimeBean.zoneProperty());
-        Set<String> allTimeZone = new TreeSet<>();
-        allTimeZone = Set.copyOf(ZoneId.getAvailableZoneIds());
 
-
-        for ( String s : allTimeZone)
-            timeZone.setAccessibleText(s);
+        timeZone.valueProperty().addListener((p,o,n)-> dateTimeBean.setZone(ZoneId.of(n)));
 
         timeZone.disableProperty().bind(timeAnimator.isRunning());
 
@@ -206,18 +207,22 @@ public final class Main extends Application {
         timeAcceleratorChoiceBox.setValue(NamedTimeAccelerator.TIMES_300);
         timeAnimator.acceleratorProperty().bind(Bindings.select(timeAcceleratorChoiceBox.valueProperty(), "accelerator"));
 
+        String reset = "\uf0e2";
+        Button resetButton = new Button(reset);
+        Button playPauseButton = new Button();
+
         try (InputStream fontStream = getClass()
                 .getResourceAsStream("/Font Awesome 5 Free-Solid-900.otf")) {
 
             Font fontAwesome = Font.loadFont(fontStream, 15);
-            String reset = "\uf0e2";
-            Button resetButton = new Button(reset);
+
+
             resetButton.setFont(fontAwesome);
 
             String pause = "\uf04b";
             String play = "\uf04c";
 
-            Button playPauseButton = new Button();
+
             playPauseButton.setOnAction( e -> {
                 //todo à mon avis on peut faire ça plus propre...
                 if(timeAnimator.isRunning().get()){
@@ -231,6 +236,7 @@ public final class Main extends Application {
             playPauseButton.setFont(fontAwesome);
         }
 
+        timeLapsePane.getChildren().addAll(timeAcceleratorChoiceBox,resetButton,playPauseButton);
         HBox controlBar = new HBox(observationPositionPane, separator1, observationTimePane, separator2, timeLapsePane);
         controlBar.setStyle("-fx-spacing: 4; -fx-padding: 4;");
 
