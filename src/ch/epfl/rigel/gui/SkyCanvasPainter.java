@@ -65,7 +65,6 @@ public final class SkyCanvasPainter {
                 double x = starsOnCanvas[2 * index], y = starsOnCanvas[2 * index + 1];
 
                 if (lastStarInBounds || (lastStarInBounds = canvasBound.contains(new Point2D(x, y)))) {
-                    System.out.println("asterisms");
                     graphicsContext.lineTo(x, y);
                 } else {
                     graphicsContext.moveTo(x, y);
@@ -76,7 +75,6 @@ public final class SkyCanvasPainter {
 
         //dessine les étoiles
         drawBlackBody(starsOnCanvas, sky.stars(), projection, planeToCanvas);
-        System.out.println("drawStar()");
 
     }
 
@@ -98,7 +96,7 @@ public final class SkyCanvasPainter {
             Point2D cardinalOnCanvas = carthesianCoordOnCanvas(planeToCanvas, stereographicProjection.apply(cardinalPointCoord));
             graphicsContext.fillText(cardinalPointCoord.azOctantName("N", "E", "S", "W"), cardinalOnCanvas.getX(), cardinalOnCanvas.getY());
         }
-        System.out.println("drawHorizon()");
+
     }
 
     public void drawPlanets(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas) {
@@ -107,7 +105,7 @@ public final class SkyCanvasPainter {
         planeToCanvas.transform2DPoints(sky.planetsPositions(), 0, planetsOnCanvas, 0, planetsOnCanvas.length / 2);
 
         drawBlackBody(planetsOnCanvas, sky.planets(), projection, planeToCanvas);
-        System.out.println("drawPlanets()");
+
     }
 
     public void drawSun(ObservedSky sky, StereographicProjection stereographicProjection, Transform planeToCanvas) {
@@ -133,7 +131,7 @@ public final class SkyCanvasPainter {
         //troisième  disque
         graphicsContext.setFill(Color.WHITE);
         graphicsContext.fillOval(sunX - dTransformed / 2, sunY - dTransformed / 2, dTransformed, dTransformed);
-        System.out.println("drawSun()");
+
     }
 
 
@@ -146,7 +144,7 @@ public final class SkyCanvasPainter {
 
         graphicsContext.setFill(Color.WHITE);
         graphicsContext.fillOval(moonCoord.getX() - dTransformed / 2, moonCoord.getY() - dTransformed / 2, dTransformed, dTransformed);
-        System.out.println("drawMoon()");
+
     }
 
     private void drawBlackBody(double[] positionsOnCanvas, List<? extends CelestialObject> list, StereographicProjection projection, Transform planeToCanvas) {
@@ -165,7 +163,7 @@ public final class SkyCanvasPainter {
 
             i += 2;
         }
-        System.out.println("drawBlackBody() fin");
+
     }
 
     private double diameterWithMagnitude(CelestialObject object, StereographicProjection projection, Transform planeToCanvas) {
