@@ -11,7 +11,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.event.EventType;
 import javafx.geometry.Orientation;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
@@ -93,8 +92,6 @@ public final class Main extends Application {
             Separator separator1 = new Separator(Orientation.VERTICAL);
             Separator separator2 = new Separator(Orientation.VERTICAL);
 
-            HBox controlBar = new HBox(observationPositionPane, separator1, observationTimePane, separator2, timeLapsePane);
-            controlBar.setStyle("-fx-spacing: 4; -fx-padding: 4;");
 
             //observationPositionPane
             observationPositionPane.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left;");
@@ -154,8 +151,9 @@ public final class Main extends Application {
             observationPositionPane.getChildren().addAll(lonLabel, lonTextField, latLabel, latTextField);
             //todo il y a un ordre précis?
 
-            lonTextFormatter.valueProperty().bind(observerLocationBean.lonDegProperty());
-            latTextFormatter.valueProperty().bind(observerLocationBean.latDegProperty());
+            lonTextFormatter.valueProperty().addListener((o,oV,nV)-> observerLocationBean.setLonDeg(nV.doubleValue()));
+
+            latTextFormatter.valueProperty().addListener((o,oV,nV)-> observerLocationBean.setLatDeg(nV.doubleValue()));
 
 
             //instant d'observation HBox
@@ -191,11 +189,11 @@ public final class Main extends Application {
 
             for ( String s : allTimeZone)
                 timeZone.setAccessibleText(s);
+
             timeZone.disableProperty().bind(timeAnimator.isRunning());
 
             observationPositionPane.getChildren().addAll(dateLabel,datePicker,hourLabel,hourTextField,timeZone);
 
-            mainPane.setTop(observationPositionPane);
 
             //time lapse pane
 
@@ -212,19 +210,22 @@ public final class Main extends Application {
                     .getResourceAsStream("/Font Awesome 5 Free-Solid-900.otf")) {
 
                 Font fontAwesome = Font.loadFont(fontStream, 15);
-
                 String reset = "\uf0e2";
                 Button resetButton = new Button(reset);
                 resetButton.setFont(fontAwesome);
 
                 String pause = "\uf04b";
+                Button pauseButton = new Button(pause);
+                pauseButton.setFont(fontAwesome);
+
                 String play = "\uf04c";
-                Button playPauseButton = new Button();
-                playPauseButton.;
-                playPauseButton.setFont(fontAwesome);
+                Button playButton = new Button(play);
+                playButton.setFont(fontAwesome);
             }
 
-
+            HBox controlBar = new HBox(observationPositionPane, separator1, observationTimePane, separator2, timeLapsePane);
+            controlBar.setStyle("-fx-spacing: 4; -fx-padding: 4;");
+            mainPane.setTop(controlBar);
 
 
             //todo gérer pause/play
