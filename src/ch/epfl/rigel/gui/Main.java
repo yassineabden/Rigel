@@ -112,10 +112,9 @@ public final class Main extends Application {
 
 
             Text objectClosesToText = new Text();
-            objectClosesToText.textProperty().bind(Bindings.createStringBinding(() -> (canvasManager.getObjectUnderMouse() == null) ? "" : canvasManager.getObjectUnderMouse().info()));
+            objectClosesToText.textProperty().bind(Bindings.createStringBinding(() -> (canvasManager.getObjectUnderMouse() == null) ? "hello" : canvasManager.getObjectUnderMouse().info()));
 
             BorderPane informationPane = new BorderPane(objectClosesToText,null,mousePositionText,null,fieldOfViewText);
-
             informationPane.setStyle("-fx-padding: 4; -fx-background-color: white;");
 
 
@@ -169,18 +168,17 @@ public final class Main extends Application {
         Label hourLabel = new Label("Heure :");
 
         TextField hourTextField = new TextField(hmsFormatter.format(dateTimeBean.getTime()));
-
         hourTextField.setStyle("-fx-pref-width: 75; -fx-alignment: baseline-right;");
-
 
         LocalTimeStringConverter stringConverter =
                 new LocalTimeStringConverter(hmsFormatter, hmsFormatter);
         TextFormatter<LocalTime> timeFormatter =
                 new TextFormatter<>(stringConverter);
+        //todo pas compris
+        //timeFormatter.valueProperty().bindBidirectional(dateTimeBean.timeProperty());
+        //dateTimeBean.timeProperty().bindBidirectional(timeFormatter.valueProperty());
 
-
-        timeFormatter.valueProperty().bindBidirectional(dateTimeBean.timeProperty());
-
+       // timeFormatter.valueProperty().addListener((p,o,n) -> dateTimeBean.setTime(n));
 
         List<String> zoneList= new ArrayList<>();
         zoneList.addAll(ZoneId.getAvailableZoneIds());
