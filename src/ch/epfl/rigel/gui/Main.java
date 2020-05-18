@@ -116,9 +116,8 @@ public final class Main extends Application {
 
 
             Text objectClosesToText = new Text();
-            objectClosesToText.textProperty().bind(Bindings.createStringBinding(() -> {
-                return canvasManager.getObjectUnderMouse() == null ? "hello" : canvasManager.getObjectUnderMouse().info();
-                }, canvasManager.objectUnderMouseProperty()));
+            objectClosesToText.textProperty().bind(Bindings.createStringBinding(()
+                    -> canvasManager.getObjectUnderMouse() == null ? "" : canvasManager.getObjectUnderMouse().info(), canvasManager.objectUnderMouseProperty()));
 
             BorderPane informationPane = new BorderPane(objectClosesToText,null,mousePositionText,null,fieldOfViewText);
             informationPane.setStyle("-fx-padding: 4; -fx-background-color: white;");
@@ -139,10 +138,6 @@ public final class Main extends Application {
         HBox observationTimePane = new HBox();
         HBox timeLapsePane = new HBox();
 
-        Separator separator1 = new Separator(Orientation.VERTICAL);
-        Separator separator2 = new Separator(Orientation.VERTICAL);
-
-
         //observationPositionPane
         observationPositionPane.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left;");
         NumberStringConverter stringToNumberConverter =
@@ -162,7 +157,8 @@ public final class Main extends Application {
         Label dateLabel = new Label("Date :");
         DatePicker datePicker = new DatePicker(dateTimeBean.getDate());
         datePicker.setStyle("-fx-pref-width: 120;");
-        dateTimeBean.dateProperty().bind(datePicker.valueProperty());
+
+        dateTimeBean.dateProperty().bindBidirectional(datePicker.valueProperty());
 
 
 
@@ -193,8 +189,8 @@ public final class Main extends Application {
 
         ComboBox<String> timeZone = new ComboBox<>(FXCollections.observableArrayList(zoneList));
         timeZone.setStyle("-fx-pref-width: 180;");
-        //todo
-        timeZone.setAccessibleText(ZonedDateTime.now().getZone().toString());
+
+        timeZone.getSelectionModel().select(dateTimeBean.getZone().toString());
 
 
 
@@ -202,7 +198,7 @@ public final class Main extends Application {
 
         timeZone.disableProperty().bind(timeAnimator.isRunning());
 
-        observationPositionPane.getChildren().addAll(dateLabel,datePicker,hourLabel,hourTextField,timeZone);
+        observationTimePane.getChildren().addAll(dateLabel,datePicker,hourLabel,hourTextField,timeZone);
 
 
         //time lapse pane
@@ -244,8 +240,11 @@ public final class Main extends Application {
 
         timeLapsePane.getChildren().addAll(timeAcceleratorChoiceBox,resetButton,playPauseButton);
 
-        HBox controlBar = new HBox(observationPositionPane, new Separator(Orientation.VERTICAL), observationTimePane, new Separator(Orientation.VERTICAL), timeLapsePane);
+        HBox controlBar = new HBox(observationPositionPane,new Separator(Orientation.VERTICAL),observationTimePane,new Separator(Orientation.VERTICAL),timeLapsePane);
         controlBar.setStyle("-fx-spacing: 4; -fx-padding: 4;");
+
+
+
 
 
         return controlBar;
@@ -287,8 +286,8 @@ public final class Main extends Application {
 
         textField.setTextFormatter(textFormatter);
 
-        if(coordinatesType == CoordinatesType.LONGITUDE) observerLocationBean.lonDegProperty().bind(textFormatter.valueProperty());
-        else observerLocationBean.latDegProperty().bind(textFormatter.valueProperty());
+        if(coordinatesType == CoordinatesType.LONGITUDE) observerLocationBean.lonDegProperty().bindBidirectional(textFormatter.valueProperty());
+        else observerLocationBean.latDegProperty().bindBidirectional(textFormatter.valueProperty());
 
         return textField;
 
