@@ -155,6 +155,7 @@ public final class SkyCanvasPainter {
 
             if (celestialObject instanceof Star) {
                 Color starColor = BlackBodyColor.colorForTemperature(((Star) (celestialObject)).colorTemperature());
+                //todo check la magnitude pour dessiner le nom
                 graphicsContext.setFill(starColor);
             } else {
                 graphicsContext.setFill(Color.GRAY);

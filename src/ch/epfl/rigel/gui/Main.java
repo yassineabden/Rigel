@@ -81,10 +81,8 @@ public final class Main extends Application {
 
             // Barre de contrôle
 
-            HBox controlBar = controlPane(catalogue,viewingParametersBean,observerLocationBean,dateTimeBean,timeAnimator);
+            HBox controlBar = controlPane(observerLocationBean,dateTimeBean,timeAnimator);
             mainPane.setTop(controlBar);
-
-
 
 
             // Ciel
@@ -118,7 +116,9 @@ public final class Main extends Application {
 
 
             Text objectClosesToText = new Text();
-            objectClosesToText.textProperty().bind(Bindings.createStringBinding(() -> (canvasManager.getObjectUnderMouse() == null) ? "hello" : canvasManager.getObjectUnderMouse().info()));
+            objectClosesToText.textProperty().bind(Bindings.createStringBinding(() -> {
+                return canvasManager.getObjectUnderMouse() == null ? "hello" : canvasManager.getObjectUnderMouse().info();
+                }, canvasManager.objectUnderMouseProperty()));
 
             BorderPane informationPane = new BorderPane(objectClosesToText,null,mousePositionText,null,fieldOfViewText);
             informationPane.setStyle("-fx-padding: 4; -fx-background-color: white;");
@@ -133,7 +133,7 @@ public final class Main extends Application {
 
     }
 
-    private HBox controlPane (StarCatalogue catalogue, ViewingParametersBean viewingParametersBean, ObserverLocationBean observerLocationBean, DateTimeBean dateTimeBean,TimeAnimator timeAnimator ) throws IOException {
+    private HBox controlPane (ObserverLocationBean observerLocationBean, DateTimeBean dateTimeBean,TimeAnimator timeAnimator ) throws IOException {
 
         HBox observationPositionPane = new HBox();
         HBox observationTimePane = new HBox();
@@ -188,12 +188,12 @@ public final class Main extends Application {
         timeFormatter.valueProperty().bindBidirectional(dateTimeBean.timeProperty());
 
 
-        List<String> zoneList= new ArrayList<>();
-        zoneList.addAll(ZoneId.getAvailableZoneIds());
+        List<String> zoneList = new ArrayList<>(ZoneId.getAvailableZoneIds());
         Collections.sort(zoneList);
 
         ComboBox<String> timeZone = new ComboBox<>(FXCollections.observableArrayList(zoneList));
         timeZone.setStyle("-fx-pref-width: 180;");
+        //todo
         timeZone.setAccessibleText(ZonedDateTime.now().getZone().toString());
 
 
@@ -224,13 +224,10 @@ public final class Main extends Application {
                 .getResourceAsStream("/Font Awesome 5 Free-Solid-900.otf")) {
 
             Font fontAwesome = Font.loadFont(fontStream, 15);
-
-
             resetButton.setFont(fontAwesome);
 
             String pause = "\uf04b";
             String play = "\uf04c";
-
 
             playPauseButton.setOnAction( e -> {
                 //todo à mon avis on peut faire ça plus propre...
@@ -246,7 +243,8 @@ public final class Main extends Application {
         }
 
         timeLapsePane.getChildren().addAll(timeAcceleratorChoiceBox,resetButton,playPauseButton);
-        HBox controlBar = new HBox(observationPositionPane, separator1, observationTimePane, separator2, timeLapsePane);
+
+        HBox controlBar = new HBox(observationPositionPane, new Separator(Orientation.VERTICAL), observationTimePane, new Separator(Orientation.VERTICAL), timeLapsePane);
         controlBar.setStyle("-fx-spacing: 4; -fx-padding: 4;");
 
 
@@ -257,11 +255,7 @@ public final class Main extends Application {
     private TextField positionTextField(CoordinatesType coordinatesType, NumberStringConverter stringToNumberConverter, ObserverLocationBean observerLocationBean){
 
         //todo pourquoi on peut pas le set comme ça?
-        /**
-        TextField textField = (coordinatesType == CoordinatesType.LONGITUDE) ?
-                new TextField(stringToNumberConverter.toString(observerLocationBean.getLonDeg()))
-                : new TextField(stringToNumberConverter.toString(observerLocationBean.getLatDeg()));
-*/
+
         TextField textField = new TextField();
         textField.setStyle("-fx-pref-width: 60; -fx-alignment: baseline-right;");
 
@@ -302,7 +296,7 @@ public final class Main extends Application {
         //todo je suis pas sûr que faire une enum pour 2 cas soit très strat mais c'est plus joli
     private enum CoordinatesType {
         LATITUDE, LONGITUDE;
-        private final static List<CoordinatesType> ALL = Arrays.asList(CoordinatesType.values());
+
     }
 
 }
