@@ -60,9 +60,10 @@ public final class Main extends Application {
             observerLocationBean.setCoordinates(
                     GeographicCoordinates.ofDeg(6.57, 46.52));
 
-            ZonedDateTime when = ZonedDateTime.now();
+
             DateTimeBean dateTimeBean = new DateTimeBean();
-            dateTimeBean.setZonedDateTime(when);
+            dateTimeBean.setZonedDateTime(ZonedDateTime.now());
+
 
             ViewingParametersBean viewingParametersBean = new ViewingParametersBean();
             viewingParametersBean.setCenter(HorizontalCoordinates.ofDeg(180.000000000001, 15));
@@ -83,12 +84,17 @@ public final class Main extends Application {
             HBox controlBar = controlPane(catalogue,viewingParametersBean,observerLocationBean,dateTimeBean,timeAnimator);
             mainPane.setTop(controlBar);
 
+
+
+
             // Ciel
             SkyCanvasManager canvasManager = new SkyCanvasManager(
                     catalogue,
                     dateTimeBean,
                     observerLocationBean,
                     viewingParametersBean);
+
+
 
             Canvas sky = canvasManager.canvas();
             Pane skyPane = new Pane(sky);
@@ -167,18 +173,20 @@ public final class Main extends Application {
                 DateTimeFormatter.ofPattern("HH:mm:ss");
         Label hourLabel = new Label("Heure :");
 
-        TextField hourTextField = new TextField(hmsFormatter.format(dateTimeBean.getTime()));
+        TextField hourTextField = new TextField();
         hourTextField.setStyle("-fx-pref-width: 75; -fx-alignment: baseline-right;");
 
         LocalTimeStringConverter stringConverter =
                 new LocalTimeStringConverter(hmsFormatter, hmsFormatter);
         TextFormatter<LocalTime> timeFormatter =
                 new TextFormatter<>(stringConverter);
-        //todo pas compris
-        //timeFormatter.valueProperty().bindBidirectional(dateTimeBean.timeProperty());
-        //dateTimeBean.timeProperty().bindBidirectional(timeFormatter.valueProperty());
 
-       // timeFormatter.valueProperty().addListener((p,o,n) -> dateTimeBean.setTime(n));
+        hourTextField.setTextFormatter(timeFormatter);
+
+        timeFormatter.setValue(LocalTime.now());
+
+        timeFormatter.valueProperty().bindBidirectional(dateTimeBean.timeProperty());
+
 
         List<String> zoneList= new ArrayList<>();
         zoneList.addAll(ZoneId.getAvailableZoneIds());
@@ -186,6 +194,9 @@ public final class Main extends Application {
 
         ComboBox<String> timeZone = new ComboBox<>(FXCollections.observableArrayList(zoneList));
         timeZone.setStyle("-fx-pref-width: 180;");
+        timeZone.setAccessibleText(ZonedDateTime.now().getZone().toString());
+
+
 
         timeZone.valueProperty().addListener((p,o,n)-> dateTimeBean.setZone(ZoneId.of(n)));
 
