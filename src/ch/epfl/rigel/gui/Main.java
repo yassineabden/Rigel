@@ -72,18 +72,14 @@ public final class Main extends Application {
             TimeAnimator timeAnimator = new TimeAnimator(dateTimeBean);
             timeAnimator.acceleratorProperty().set(NamedTimeAccelerator.TIMES_300.getAccelerator());
 
-            BorderPane mainPane = new BorderPane();
-
             // Fenêtre principale
+            BorderPane mainPane = new BorderPane();
             stage.setMinHeight(600);
             stage.setTitle("Rigel");
             stage.setMinWidth(800);
 
             // Barre de contrôle
-
-            HBox controlBar = controlPane(observerLocationBean,dateTimeBean,timeAnimator);
-            mainPane.setTop(controlBar);
-
+            mainPane.setTop(controlPane(observerLocationBean, dateTimeBean, timeAnimator));
 
             // Ciel
             SkyCanvasManager canvasManager = new SkyCanvasManager(
@@ -91,8 +87,6 @@ public final class Main extends Application {
                     dateTimeBean,
                     observerLocationBean,
                     viewingParametersBean);
-
-
 
             Canvas sky = canvasManager.canvas();
             Pane skyPane = new Pane(sky);
@@ -103,27 +97,7 @@ public final class Main extends Application {
             mainPane.setCenter(skyPane);
 
             // Barre d'information
-
-            canvasManager.objectUnderMouseProperty().addListener(
-                    (p, o, n) -> {if (n != null) System.out.println(n);});
-
-            Text fieldOfViewText = new Text();
-            fieldOfViewText.textProperty().bind(Bindings.format("Champ de vue : %.2f °",viewingParametersBean.fieldOfViewDegProperty()));
-
-            Text mousePositionText = new Text();
-            mousePositionText.textProperty().bind(Bindings.format("Azimut : %.2f°, hauteur : %.2f°"
-                    ,canvasManager.mouseAzDegProperty(),canvasManager.mouseAltDegProperty()));
-
-
-            Text objectClosesToText = new Text();
-            objectClosesToText.textProperty().bind(Bindings.createStringBinding(()
-                    -> canvasManager.getObjectUnderMouse() == null ? "" : canvasManager.getObjectUnderMouse().info(), canvasManager.objectUnderMouseProperty()));
-
-            BorderPane informationPane = new BorderPane(objectClosesToText,null,mousePositionText,null,fieldOfViewText);
-            informationPane.setStyle("-fx-padding: 4; -fx-background-color: white;");
-
-
-            mainPane.setBottom(informationPane);
+            mainPane.setBottom(informationPane(canvasManager,viewingParametersBean));
 
             stage.setScene(new Scene(mainPane));
             stage.show();
@@ -149,7 +123,6 @@ public final class Main extends Application {
         TextField latTextField = positionTextField(CoordinatesType.LATITUDE, stringToNumberConverter, observerLocationBean);
         observationPositionPane.getChildren().addAll(lonLabel,lonTextField,latLabel, latTextField);
 
-
         //instant d'observation HBox
         observationTimePane.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left;");
 
@@ -159,10 +132,9 @@ public final class Main extends Application {
         datePicker.setStyle("-fx-pref-width: 120;");
 
         dateTimeBean.dateProperty().bindBidirectional(datePicker.valueProperty());
+        //todo pourquoi on peut pas faire ça mais avec l'autre oui?
+        // datePicker.disabledProperty().bind(timeAnimator.isRunning());
 
-
-
-        //todo peut -être les liés avant de les setChildren à observationTimePane?
 
         // Hour Field
         DateTimeFormatter hmsFormatter =
@@ -178,11 +150,8 @@ public final class Main extends Application {
                 new TextFormatter<>(stringConverter);
 
         hourTextField.setTextFormatter(timeFormatter);
-
         timeFormatter.setValue(LocalTime.now());
-
         timeFormatter.valueProperty().bindBidirectional(dateTimeBean.timeProperty());
-
 
         List<String> zoneList = new ArrayList<>(ZoneId.getAvailableZoneIds());
         Collections.sort(zoneList);
@@ -193,16 +162,14 @@ public final class Main extends Application {
         timeZone.getSelectionModel().select(dateTimeBean.getZone().toString());
 
 
-
+        //todo vu qu'on a un listener la mise à jour de la zone id de mets pas à jour la comboBox
         timeZone.valueProperty().addListener((p,o,n)-> dateTimeBean.setZone(ZoneId.of(n)));
-
         timeZone.disableProperty().bind(timeAnimator.isRunning());
 
         observationTimePane.getChildren().addAll(dateLabel,datePicker,hourLabel,hourTextField,timeZone);
 
 
         //time lapse pane
-
         timeLapsePane.setStyle("-fx-spacing: inherit;");
         ChoiceBox<NamedTimeAccelerator> timeAcceleratorChoiceBox = new ChoiceBox<>();
         timeAcceleratorChoiceBox.setItems(FXCollections.observableArrayList(NamedTimeAccelerator.values()));
@@ -221,39 +188,57 @@ public final class Main extends Application {
 
             Font fontAwesome = Font.loadFont(fontStream, 15);
             resetButton.setFont(fontAwesome);
+            //todo mets pas à jour la zone id
+            resetButton.setOnAction( e -> dateTimeBean.setZonedDateTime(ZonedDateTime.now()));
 
-            String pause = "\uf04b";
-            String play = "\uf04c";
+            String play = "\uf04b";
+            String pause = "\uf04c";
+            playPauseButton.setText(play);
 
-            playPauseButton.setOnAction( e -> {
-                //todo à mon avis on peut faire ça plus propre...
-                if(timeAnimator.isRunning().get()){
-                    playPauseButton.setText(play);
-                    timeAnimator.stop();
-                } else {
-                    playPauseButton.setText(pause);
-                    timeAnimator.start();
-                }
-            });
             playPauseButton.setFont(fontAwesome);
+            playPauseButton.setText(play);
+            playPauseButton.setOnAction( e -> playPauseButton.setText((playPauseButton.getText().equals(play)) ? pause : play));
         }
-
+        playPauseButton.textProperty().addListener( (p,o,n) -> {
+                    if (timeAnimator.isRunning().get()) timeAnimator.stop();
+                    else timeAnimator.start();
+                }
+        );
         timeLapsePane.getChildren().addAll(timeAcceleratorChoiceBox,resetButton,playPauseButton);
 
         HBox controlBar = new HBox(observationPositionPane,new Separator(Orientation.VERTICAL),observationTimePane,new Separator(Orientation.VERTICAL),timeLapsePane);
         controlBar.setStyle("-fx-spacing: 4; -fx-padding: 4;");
 
-
-
-
-
         return controlBar;
 
     }
 
-    private TextField positionTextField(CoordinatesType coordinatesType, NumberStringConverter stringToNumberConverter, ObserverLocationBean observerLocationBean){
+    private BorderPane informationPane( SkyCanvasManager canvasManager, ViewingParametersBean viewingParametersBean){
+        canvasManager.objectUnderMouseProperty().addListener(
+                (p, o, n) -> {
+                    if (n != null) System.out.println(n);
+                });
 
-        //todo pourquoi on peut pas le set comme ça?
+        Text fieldOfViewText = new Text();
+        fieldOfViewText.textProperty().bind(Bindings.format("Champ de vue : %.2f °", viewingParametersBean.fieldOfViewDegProperty()));
+
+        Text mousePositionText = new Text();
+        mousePositionText.textProperty().bind(Bindings.format("Azimut : %.2f°, hauteur : %.2f°"
+                , canvasManager.mouseAzDegProperty(), canvasManager.mouseAltDegProperty()));
+
+
+        Text objectClosesToText = new Text();
+        objectClosesToText.textProperty().bind(Bindings.createStringBinding(()
+                -> canvasManager.getObjectUnderMouse() == null ? "" : canvasManager.getObjectUnderMouse().info(), canvasManager.objectUnderMouseProperty()));
+
+        BorderPane informationPane = new BorderPane(objectClosesToText, null, mousePositionText, null, fieldOfViewText);
+        informationPane.setStyle("-fx-padding: 4; -fx-background-color: white;");
+
+
+        return informationPane;
+    }
+
+    private TextField positionTextField(CoordinatesType coordinatesType, NumberStringConverter stringToNumberConverter, ObserverLocationBean observerLocationBean){
 
         TextField textField = new TextField();
         textField.setStyle("-fx-pref-width: 60; -fx-alignment: baseline-right;");
@@ -265,7 +250,7 @@ public final class Main extends Application {
                 double newCoord =
                         stringToNumberConverter.fromString(newText).doubleValue();
                 if (coordinatesType == CoordinatesType.LONGITUDE) {
-                    //todo possible de faire plus propre? -> duplication
+                    //todo demander à yass s'il se souvient du bail de l'assistant
                     return GeographicCoordinates.isValidLonDeg(newCoord)
                             ? change
                             : null;
