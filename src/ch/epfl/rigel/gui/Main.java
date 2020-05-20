@@ -27,6 +27,9 @@ import javafx.util.converter.NumberStringConverter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.FieldPosition;
+import java.text.Format;
+import java.text.ParsePosition;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -133,7 +136,8 @@ public final class Main extends Application {
 
         dateTimeBean.dateProperty().bindBidirectional(datePicker.valueProperty());
         //todo pourquoi on peut pas faire ça mais avec l'autre oui?
-        // datePicker.disabledProperty().bind(timeAnimator.isRunning());
+
+        datePicker.disableProperty().bind(timeAnimator.isRunning());
 
 
         // Hour Field
@@ -153,17 +157,23 @@ public final class Main extends Application {
         timeFormatter.setValue(LocalTime.now());
         timeFormatter.valueProperty().bindBidirectional(dateTimeBean.timeProperty());
 
-        List<String> zoneList = new ArrayList<>(ZoneId.getAvailableZoneIds());
-        Collections.sort(zoneList);
+        hourTextField.disableProperty().bind(timeAnimator.isRunning());
 
-        ComboBox<String> timeZone = new ComboBox<>(FXCollections.observableArrayList(zoneList));
+        Set<String> stringZoneId = new TreeSet<>(ZoneId.getAvailableZoneIds());
+
+        List<ZoneId> zoneIdList = new ArrayList<>();
+
+        for (String s: stringZoneId)
+            zoneIdList.add(ZoneId.of(s));
+
+        ComboBox<ZoneId> timeZone = new ComboBox<>(FXCollections.observableArrayList(List.copyOf(zoneIdList)));
         timeZone.setStyle("-fx-pref-width: 180;");
 
-        timeZone.getSelectionModel().select(dateTimeBean.getZone().toString());
+        timeZone.getSelectionModel().select(dateTimeBean.getZone());
+
+        timeZone.valueProperty().bindBidirectional(dateTimeBean.zoneProperty());
 
 
-        //todo vu qu'on a un listener la mise à jour de la zone id de mets pas à jour la comboBox
-        timeZone.valueProperty().addListener((p,o,n)-> dateTimeBean.setZone(ZoneId.of(n)));
         timeZone.disableProperty().bind(timeAnimator.isRunning());
 
         observationTimePane.getChildren().addAll(dateLabel,datePicker,hourLabel,hourTextField,timeZone);
@@ -179,17 +189,19 @@ public final class Main extends Application {
         timeAcceleratorChoiceBox.setValue(NamedTimeAccelerator.TIMES_300);
         timeAnimator.acceleratorProperty().bind(Bindings.select(timeAcceleratorChoiceBox.valueProperty(), "accelerator"));
 
+        timeAcceleratorChoiceBox.disableProperty().bind(timeAnimator.isRunning());
+
         String reset = "\uf0e2";
         Button resetButton = new Button(reset);
         Button playPauseButton = new Button();
 
-        try (InputStream fontStream = getClass()
-                .getResourceAsStream("/Font Awesome 5 Free-Solid-900.otf")) {
+        try (InputStream fontStream = resourceStream("/Font Awesome 5 Free-Solid-900.otf")) {
 
             Font fontAwesome = Font.loadFont(fontStream, 15);
             resetButton.setFont(fontAwesome);
-            //todo mets pas à jour la zone id
+
             resetButton.setOnAction( e -> dateTimeBean.setZonedDateTime(ZonedDateTime.now()));
+            resetButton.disableProperty().bind(timeAnimator.isRunning());
 
             String play = "\uf04b";
             String pause = "\uf04c";
