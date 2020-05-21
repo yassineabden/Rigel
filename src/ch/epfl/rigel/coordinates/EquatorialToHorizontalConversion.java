@@ -13,7 +13,7 @@ import java.util.function.Function;
 
 public final class EquatorialToHorizontalConversion implements Function<EquatorialCoordinates, HorizontalCoordinates> {
 
-    private final double cosLat,sinLat, localSideralTime;
+    private final double cosLat,sinLat,localSideralTime;
 
     /**
      * Constructeur de conversion de coordonnées équatoriales en coordonnées horizontales à un instant et un lieu donnés
@@ -25,7 +25,8 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
 
         cosLat = Math.cos(where.lat());
         sinLat = Math.sin(where.lat());
-        localSideralTime = SiderealTime.local(when,where); }
+        localSideralTime = SiderealTime.local(when,where);
+    }
 
     /**
      * Effectue la conversion de coordonnées équatoriales en des coordonnées horizontales
@@ -41,13 +42,14 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
         double sinDec = Math.sin(equ.dec());
         double cosDec = Math.cos(equ.dec());
 
-        double alt = Math.asin(sinDec*sinLat +
-                                cosDec*Math.cos(angleHoraire)*cosLat);
+        double sinAlt = sinDec*sinLat
+                                + cosDec*Math.cos(angleHoraire)*cosLat;
         double az = Angle.normalizePositive(Math.atan2(
-                                - cosDec*cosLat*Math.sin(angleHoraire),
-                                sinDec - sinLat*Math.sin(alt)));
+                                - cosDec*cosLat*Math.sin(angleHoraire)
+                                ,sinDec - sinLat*sinAlt));
 
-        return HorizontalCoordinates.of(az,alt); }
+        return HorizontalCoordinates.of(az, Math.asin(sinAlt));
+    }
 
     /**
      * Lance une exception car on ne peut pas utiliser cette méthode avec une conversion de coordonnées

@@ -14,7 +14,8 @@ public final class CartesianCoordinates {
 
     private CartesianCoordinates(double x, double y){
         this.x = x;
-        this.y = y;}
+        this.y = y;
+    }
 
     /**
      * Methode de construction de coordonées cartésiennes
@@ -26,7 +27,8 @@ public final class CartesianCoordinates {
      */
     public static CartesianCoordinates of(double x,double y){
 
-        return new CartesianCoordinates(x, y); }
+        return new CartesianCoordinates(x, y);
+    }
 
     /**
      * Retourne l'abscisse
@@ -50,7 +52,8 @@ public final class CartesianCoordinates {
      */
     @Override
     public String toString() {
-        return String.format(Locale.ROOT,"(%.4f , %.4f)",x(),y()); }
+        return String.format(Locale.ROOT,"(%.4f , %.4f)",x(),y());
+    }
 
     /**
      * Cette méthode lève l'exception UnsupportedOperationException lorsqu'on fait appel à celle-ci
@@ -59,7 +62,8 @@ public final class CartesianCoordinates {
      */
    @Override
     public int hashCode() {
-        throw new UnsupportedOperationException(); }
+        throw new UnsupportedOperationException();
+   }
 
     /**
      *Cette méthode lève l'exception UnsupportedOperationException lorsqu'on fait appel à celle-ci
@@ -68,10 +72,10 @@ public final class CartesianCoordinates {
      *
      * @throws UnsupportedOperationException si cette méthode est appelée
      */
-
     @Override
     public boolean equals(Object obj) {
-        throw new UnsupportedOperationException(); }
+        throw new UnsupportedOperationException();
+    }
 
 
 }

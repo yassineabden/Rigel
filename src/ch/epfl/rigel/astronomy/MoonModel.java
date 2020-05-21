@@ -30,16 +30,17 @@ public enum MoonModel implements CelestialObjectModel<Moon> {
     public Moon at(double daysSinceJ2010, EclipticToEquatorialConversion eclipticToEquatorialConversion) {
 
         // Calcul de l'anomalie moyenne et la longitude écliptique du Soleil
-        double longEclpSun = SunModel.SUN.at(daysSinceJ2010, eclipticToEquatorialConversion).eclipticPos().lon();
-        double meanAnomalySun = SunModel.SUN.at(daysSinceJ2010, eclipticToEquatorialConversion).meanAnomaly();
+        Sun sun = SunModel.SUN.at(daysSinceJ2010, eclipticToEquatorialConversion);
+        double longEclpSun = sun.eclipticPos().lon();
+        double meanAnomalySun = Math.sin(sun.meanAnomaly());
 
         // Calcul de la longitude orbitale vraie
         double averageLongOrb = Angle.ofDeg(13.1763966) * daysSinceJ2010 + AVERAGE_LONG;
         double meanAnomaly = averageLongOrb - Angle.ofDeg(0.1114041) * daysSinceJ2010 - AVERAGE_LONG_PERIGREE;
 
         double evection = Angle.ofDeg(1.2739) * Math.sin(2 * (averageLongOrb - longEclpSun) - meanAnomaly);
-        double correcEquAnnu = Angle.ofDeg(0.1858) * Math.sin(meanAnomalySun);
-        double coorec3 = Angle.ofDeg(0.37) * Math.sin(meanAnomalySun);
+        double correcEquAnnu = Angle.ofDeg(0.1858) * meanAnomalySun;
+        double coorec3 = Angle.ofDeg(0.37) * meanAnomalySun;
 
         double anomalyCorr = meanAnomaly + evection - correcEquAnnu - coorec3;
         double coorecCenterEqu = Angle.ofDeg(6.2886) * Math.sin(anomalyCorr);
@@ -52,7 +53,7 @@ public enum MoonModel implements CelestialObjectModel<Moon> {
 
         // Calcul de la longitude corrigée du nœud ascendant
         double averageLongNode = LONGITUDE_NODE - Angle.ofDeg(0.0529539) * daysSinceJ2010;
-        double corrLongNode = averageLongNode - Angle.ofDeg(0.16) * Math.sin(meanAnomalySun);
+        double corrLongNode = averageLongNode - Angle.ofDeg(0.16) * meanAnomalySun;
 
         // Calcul de longitude et la latitude écliptique de la Lune grâce aux données précédentes
         double longMoon = Angle.normalizePositive(Math.atan2(Math.sin(trueOrbLong - corrLongNode) * Math.cos(INCLIN_ORBIT),
@@ -68,6 +69,7 @@ public enum MoonModel implements CelestialObjectModel<Moon> {
         double distance = (1 - ECCENT_ORBIT * ECCENT_ORBIT) / (1 + ECCENT_ORBIT * Math.cos(anomalyCorr + coorecCenterEqu));
         double angularSize = Angle.ofDeg(0.5181) / distance;
 
-        return new Moon(coordinates, (float) angularSize, 0f, (float) phase); }
+        return new Moon(coordinates, (float) angularSize, 0f, (float) phase);
+    }
 }
 

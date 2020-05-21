@@ -36,35 +36,44 @@ public abstract class CelestialObject {
         this.name = name;
         this.equatorielPos = equatorialPos;
         this.angularSize = angularSize;
-        this.magnitude = magnitude; }
+        this.magnitude = magnitude;
+    }
 
     /**
      * Retourne le nom de l'objet céleste
      *
      * @return le nom de l'objet céleste
      */
-    public String name(){  return name; }
+    public String name(){
+        return name;
+    }
 
     /**
      * Retourne la taille angulaire
      *
      * @return la taille angulaire
      */
-    public double angularSize(){ return angularSize; }
+    public double angularSize(){
+        return angularSize;
+    }
 
     /**
      * Retourne la magnitude
      *
      * @return la magnitude
      */
-    public double magnitude(){ return magnitude; }
+    public double magnitude(){
+        return magnitude;
+    }
 
     /**
      * Retourne les coordonnées equatoriales
      *
      * @return les coordonnées equatoriales
      */
-    public EquatorialCoordinates equatorialPos(){ return equatorielPos; }
+    public EquatorialCoordinates equatorialPos(){
+        return equatorielPos;
+    }
 
     /**
      * Retourne un texte informatif au sujet de l'objet, destiné à l'utilisateur.

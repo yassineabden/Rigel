@@ -15,13 +15,9 @@ import java.util.Locale;
 
 public final class GeographicCoordinates  extends SphericalCoordinates{
 
-    private static final RightOpenInterval INTERVAL_LONG_RAD = RightOpenInterval.symmetric(Angle.TAU);
-    private static final ClosedInterval INTERVAL_LAT_RAD =  ClosedInterval.symmetric(Angle.TAU/2);
-
-
-
     private GeographicCoordinates(double lon, double lat){
-        super(lon,lat); }
+        super(lon,lat);
+    }
 
     /**
      * Méthode de construction de coordonées géographiques
@@ -35,10 +31,11 @@ public final class GeographicCoordinates  extends SphericalCoordinates{
      */
     public static GeographicCoordinates ofDeg(double lonDeg, double latDeg){
 
-        Preconditions.checkInInterval(INTERVAL_LONG_RAD,Angle.ofDeg(lonDeg));
-        Preconditions.checkInInterval(INTERVAL_LAT_RAD,Angle.ofDeg(latDeg));
+        Preconditions.checkInInterval(SphericalCoordinates.LONGITUDE_RAD_INTERVAL_SYMMETRIC,Angle.ofDeg(lonDeg));
+        Preconditions.checkInInterval(SphericalCoordinates.LATITUDE_RAD_INTERVAL,Angle.ofDeg(latDeg));
 
-        return new GeographicCoordinates(Angle.ofDeg(lonDeg),Angle.ofDeg(latDeg)); }
+        return new GeographicCoordinates(Angle.ofDeg(lonDeg),Angle.ofDeg(latDeg));
+    }
 
     /**
      * Vérifie que la longitude est contenue entre [-180 deg, 180 deg[
@@ -48,7 +45,7 @@ public final class GeographicCoordinates  extends SphericalCoordinates{
      * @return vrai si l'angle est valide, faux sinon
      */
     public static boolean isValidLonDeg(double lonDeg){
-        return INTERVAL_LONG_RAD.contains(Angle.ofDeg(lonDeg));
+        return SphericalCoordinates.LONGITUDE_RAD_INTERVAL_SYMMETRIC.contains(Angle.ofDeg(lonDeg));
     }
 
     /**
@@ -59,7 +56,7 @@ public final class GeographicCoordinates  extends SphericalCoordinates{
      * @return vrai si l'angle est valide, faux sinon
      */
     public static boolean isValidLatDeg(double latDeg){
-        return INTERVAL_LAT_RAD.contains(Angle.ofDeg(latDeg));
+        return SphericalCoordinates.LATITUDE_RAD_INTERVAL.contains(Angle.ofDeg(latDeg));
     }
 
     /**
@@ -110,6 +107,7 @@ public final class GeographicCoordinates  extends SphericalCoordinates{
      */
     @Override
     public String toString(){
-        return String.format(Locale.ROOT, "(lon=%.4f°, lat=%.4f°)", lonDeg(), latDeg()); }
+        return String.format(Locale.ROOT, "(lon=%.4f°, lat=%.4f°)", lonDeg(), latDeg());
+    }
 
 }

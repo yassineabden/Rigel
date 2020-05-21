@@ -24,7 +24,6 @@ public final class StarCatalogue {
      *
      * @param stars     Liste d'étoiles contenues dans les asterisms
      * @param asterisms Liste d'asterisms
-     *
      * @throws IllegalArgumentException si un asterisms contient une étoile qui ne se trouve pas dans la liste donnée
      */
     public StarCatalogue(List<Star> stars, List<Asterism> asterisms) {
@@ -37,7 +36,8 @@ public final class StarCatalogue {
         int i = 0;
         for (Star s : stars) {
             starsIndex.put(s, i);
-            i++; }
+            i++;
+        }
 
         for (Asterism a : asterisms) {
             List<Integer> aIndex = new ArrayList<>(a.stars().size());
@@ -45,9 +45,11 @@ public final class StarCatalogue {
                 Preconditions.checkArgument(starsIndex.get(s) != null);
                 aIndex.add(starsIndex.get(s));
             }
-            aMap.put(a, Collections.unmodifiableList(aIndex)); }
+            aMap.put(a, Collections.unmodifiableList(aIndex));
+        }
 
-        asterismsMap = Collections.unmodifiableMap(aMap); }
+        asterismsMap = Collections.unmodifiableMap(aMap);
+    }
 
     /**
      * Retourne la liste d'étoiles contenues dans les astérismes
@@ -55,7 +57,9 @@ public final class StarCatalogue {
      * @return la liste d'étoiles contenues dans les astérismes
      */
 
-    public List<Star> stars() { return stars; }
+    public List<Star> stars() {
+        return stars;
+    }
 
     /**
      * Retourne la liste d'astérismes
@@ -63,20 +67,22 @@ public final class StarCatalogue {
      * @return la liste d'astérismes
      */
 
-    public Set<Asterism> asterisms() { return asterismsMap.keySet(); }
+    public Set<Asterism> asterisms() {
+        return asterismsMap.keySet();
+    }
 
     /**
      * Retourne la liste d'index des étoiles contenues dans l'asterism donné
      *
      * @param asterism astérisme donné
-     *
-     * @throws IllegalArgumentException si l'asterism ne fait pas parti du catalogue
      * @return la liste d'index des étoiles faisant partie de l'asterism
+     * @throws IllegalArgumentException si l'asterism ne fait pas parti du catalogue
      */
     public List<Integer> asterismIndices(Asterism asterism) {
 
         Preconditions.checkArgument(asterismsMap.containsKey(asterism));
-        return asterismsMap.get(asterism); }
+        return asterismsMap.get(asterism);
+    }
 
     /**
      * Un bâtisseur de catalogue d'étoiles (classe imbriquée)
@@ -92,46 +98,51 @@ public final class StarCatalogue {
          * Constructeur par défaut qui initialise le bâtisseur de manière à ce que le catalogue
          * en construction soit initialment vide.
          */
-        public Builder() {}
+        public Builder() {
+        }
 
 
         /**
          * Ajoute l'étoile donnée au catalogue en cours de construction
          *
          * @param star l'étoile
-         *
          * @return le bâtisseur
          */
         public Builder addStar(Star star) {
 
             stars.add(star);
-            return this; }
+            return this;
+        }
 
         /**
          * Retourne une vue non modifiable sur les étoiles du catalogue en cours de construction.
          *
          * @return une vue non modifiable sur les étoiles du catalogue en cours de construction.
          */
-        public List<Star> stars() { return Collections.unmodifiableList(stars); }
+        public List<Star> stars() {
+            return Collections.unmodifiableList(stars);
+        }
 
         /**
          * Ajoute l'astérisme donné au catalogue en cours de construction.
          *
          * @param asterism l'astérisme
-         *
          * @return le bâtisseur
          */
         public Builder addAsterism(Asterism asterism) {
 
             asterisms.add(asterism);
-            return this; }
+            return this;
+        }
 
         /**
          * Retourne une vue non modifiablesur les astérismes du catalogue en cours de construction.
          *
          * @return une vue non modifiablesur les astérismes du catalogue en cours de construction.
          */
-        public List<Asterism> asterisms() { return Collections.unmodifiableList(asterisms); }
+        public List<Asterism> asterisms() {
+            return Collections.unmodifiableList(asterisms);
+        }
 
         /**
          * Méthode qui charge un input d'asterism et/ou d'étoiles au builder grâce à un chargeur d'étoiles et/ou d'asterims
@@ -139,13 +150,13 @@ public final class StarCatalogue {
          * @param inputStream input d'asterisms et/ou d'étoiles
          * @param loader      chargeur d'asterisms et/ou d'étoiles
          * @return le builder chargé
-         *
          * @throws IOException s'il y a une erreur d'entrée/sortie
          */
         public Builder loadFrom(InputStream inputStream, Loader loader) throws IOException {
             loader.load(inputStream, this);
 
-            return this; }
+            return this;
+        }
 
 
         /**
@@ -154,8 +165,10 @@ public final class StarCatalogue {
          * @return le catalogue contenant les étoiles et astérismes ajoutés jusqu'alors au bâtisseur.
          */
         public StarCatalogue build() {
-            return new StarCatalogue(stars, asterisms); }
+            return new StarCatalogue(stars, asterisms);
+        }
     }
+
     /**
      * Interface imbriquée qui charge des données
      *

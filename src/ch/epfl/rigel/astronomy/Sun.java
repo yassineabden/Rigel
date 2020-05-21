@@ -13,6 +13,7 @@ public final class Sun extends CelestialObject {
 
     private final float meanAnomaly;
     private final EclipticCoordinates eclipticPos;
+    private static final String SUN_NAME = "Soleil";
     private static final float MAGNITUDE_SUN = (float) -26.7;
 
     /**
@@ -27,7 +28,7 @@ public final class Sun extends CelestialObject {
      * @throws NullPointerException     si le nom ou la position equatoriale ou la position écliptique sont nuls
      */
     public Sun(EclipticCoordinates eclipticPos, EquatorialCoordinates equatorialPos, float angularSize, float meanAnomaly) {
-        super("Soleil", equatorialPos, angularSize,MAGNITUDE_SUN);
+        super(SUN_NAME, equatorialPos, angularSize,MAGNITUDE_SUN);
 
         Objects.requireNonNull(eclipticPos);
         this.meanAnomaly = meanAnomaly;

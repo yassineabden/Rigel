@@ -14,16 +14,16 @@ public final class Angle {
      * Constante valant 360 degré
      */
     final public static double TAU= 2*Math.PI;
-    /**
-     * Interval normal des angles trigo [0°,360°[
-     */
-    public static final RightOpenInterval INTERVAL_NORMAL_TRIGO = RightOpenInterval.of(0,TAU);
 
+    private static final RightOpenInterval INTERVAL_NORMAL_TRIGO = RightOpenInterval.of(0,TAU);
     private static final RightOpenInterval INTERVAL_SEC_MIN = RightOpenInterval.of(0, 60);
 
     private static final double RAD_PER_HR = TAU/24;
     private static final double HR_PER_RAD = 24/TAU;
     private static final double SEC_PER_DEG= 1.0/ (60*60);
+    private static final double MIN_PER_DEG= 60.0;
+    private static final double SEC_PER_MIN= 60.0;
+
 
 
     private Angle(){};
@@ -69,7 +69,7 @@ public final class Angle {
          Preconditions.checkInInterval(INTERVAL_SEC_MIN,sec);
          Preconditions.checkArgument(deg >= 0);
 
-         return ofDeg(deg + (min +( sec/ 60))/60);
+         return ofDeg(deg + (min +( sec/ SEC_PER_MIN))/MIN_PER_DEG);
      }
 
     /**
@@ -79,7 +79,9 @@ public final class Angle {
      *
      * @return angle en radians
      */
-    public static double ofDeg(double deg){ return Math.toRadians(deg); }
+    public static double ofDeg(double deg){
+        return Math.toRadians(deg);
+    }
 
     /**
      * Transforme un angle donné en radians en degrés
@@ -99,7 +101,9 @@ public final class Angle {
      *
      * @return angle en radians
      */
-    public static double ofHr (double hr){ return hr*RAD_PER_HR; }
+    public static double ofHr (double hr){
+        return hr*RAD_PER_HR;
+    }
 
     /**
      * transforme un angle donné en radian en heures

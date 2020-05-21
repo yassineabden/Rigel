@@ -6,11 +6,13 @@ import ch.epfl.rigel.math.Polynomial;
 
 import java.time.Duration;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
 /**
  * Classe de temps sidéral
+ * Mesure de temps pour les calculs astronomiques
  * @author Yassine Abdennadher (299273)
  * @author Juliette Aerni (296670)
  */
@@ -32,14 +34,15 @@ public final class SiderealTime {
      */
     public static double greenwich(ZonedDateTime when){
 
-        ZonedDateTime atGreenwich =  when.withZoneSameInstant(ZoneId.of("UTC"));
+        ZonedDateTime atGreenwich =  when.withZoneSameInstant(ZoneOffset.UTC);
         ZonedDateTime atGreenwichMidnight = atGreenwich.truncatedTo(ChronoUnit.DAYS);
 
         double T = Epoch.J2000.julianCenturiesUntil(atGreenwichMidnight);
         double t = atGreenwichMidnight.until(atGreenwich,ChronoUnit.MILLIS)*MILLIS_TO_HOURS;
 
         double sGHr = S_0.at(T) + S_1.at(t);
-        return Angle.normalizePositive(Angle.ofHr(sGHr)); }
+        return Angle.normalizePositive(Angle.ofHr(sGHr));
+    }
 
     /**
      * Calcul le temps sidéral d'un endroit et d'un couple date/heure donnés
@@ -51,7 +54,8 @@ public final class SiderealTime {
      */
     public static double local(ZonedDateTime when, GeographicCoordinates where){
 
-        return Angle.normalizePositive(greenwich(when) + where.lon()); }
+        return Angle.normalizePositive(greenwich(when) + where.lon());
+    }
 
 }
 

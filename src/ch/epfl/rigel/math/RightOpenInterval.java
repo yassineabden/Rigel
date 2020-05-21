@@ -29,7 +29,8 @@ public final class RightOpenInterval extends Interval {
     public static RightOpenInterval of(double low, double high) {
 
         Preconditions.checkArgument(low < high);
-        return new RightOpenInterval(low, high); }
+        return new RightOpenInterval(low, high);
+    }
 
     /**
      * Méthode de construction d'un intervalle semi-ouvert, symmetrique autour de zéro de taille donnée
@@ -42,7 +43,8 @@ public final class RightOpenInterval extends Interval {
     public static RightOpenInterval symmetric(double size) {
 
         Preconditions.checkArgument(size > 0);
-        return new RightOpenInterval(-size / 2, size / 2); }
+        return new RightOpenInterval(-size / 2, size / 2);
+    }
 
     /**
      * Vérifie qu'une valeur donnée est contenue dans l'intervalle
@@ -52,7 +54,9 @@ public final class RightOpenInterval extends Interval {
      * @return vrai si la valeur est dans l'intervalle, faux sinon
      */
     @Override
-    public boolean contains(double v) { return v >= low() && v < high(); }
+    public boolean contains(double v) {
+        return v >= low() && v < high();
+    }
 
     /**
      * Réduit une valeur à l'intervalle, assigne la valeur à une valeur correspondante dans l'intervalle si elle est en dehors
@@ -63,7 +67,9 @@ public final class RightOpenInterval extends Interval {
      */
     public double reduce(double v) {
 
-        return low() + (v - low()) - (size() * floor((v - low()) / size())); }
+        double floorMod = floor((v - low()) / size());
+        return low() + (v - low()) - (size() * floorMod);
+    }
 
     /**
      * Transforme l'intervalle en string
@@ -73,7 +79,8 @@ public final class RightOpenInterval extends Interval {
     @Override
     public String toString() {
 
-        return String.format(Locale.ROOT, "[%.2f , %.2f[", low(), high()); }
+        return String.format(Locale.ROOT, "[%.2f , %.2f[", low(), high());
+    }
 
 
 }

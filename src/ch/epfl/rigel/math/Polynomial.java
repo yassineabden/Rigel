@@ -11,12 +11,12 @@ public final class Polynomial {
 
     private final double[] coefficients;
 
-
     private Polynomial(double coefficientN, double... coefficients) {
 
         this.coefficients = new double[coefficients.length + 1];
         this.coefficients[0] = coefficientN;
-        System.arraycopy(coefficients, 0, this.coefficients, 1, coefficients.length); }
+        System.arraycopy(coefficients, 0, this.coefficients, 1, coefficients.length);
+    }
 
 
     /**
@@ -31,7 +31,8 @@ public final class Polynomial {
     public static Polynomial of(double coefficientN, double... coefficients) {
 
         Preconditions.checkArgument(coefficientN != 0);
-        return new Polynomial(coefficientN, coefficients); }
+        return new Polynomial(coefficientN, coefficients);
+    }
 
     /**
      * Evalue le polynôme à une valeur donnée x
@@ -45,8 +46,10 @@ public final class Polynomial {
         double polAtx = 0;
         // Polynôme évalué en x au moyen de la forme de Horner
         for (double coefficient : coefficients) {
-            polAtx = polAtx * x + coefficient; }
-        return polAtx; }
+            polAtx = polAtx * x + coefficient;
+        }
+        return polAtx;
+    }
 
     /**
      * Transforme le polynôme en string
@@ -75,7 +78,8 @@ public final class Polynomial {
             power--;
         }
 
-        return sb.toString(); }
+        return sb.toString();
+    }
 
 
     /**
@@ -86,7 +90,9 @@ public final class Polynomial {
      * @throws UnsupportedOperationException car cette méthode de peut pas être appelée pour un polynôme
      */
     @Override
-    public final boolean equals(Object obj) { throw new UnsupportedOperationException(); }
+    public final boolean equals(Object obj) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * Lance une exception car on ne peut pas utiliser cette méthode avec un polynôme immuable

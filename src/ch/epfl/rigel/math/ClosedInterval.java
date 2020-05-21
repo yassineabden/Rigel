@@ -28,7 +28,8 @@ public final class ClosedInterval extends Interval {
     public static ClosedInterval of(double low, double high) {
 
         Preconditions.checkArgument(low < high);
-        return new ClosedInterval(low,high); }
+        return new ClosedInterval(low,high);
+    }
 
     /**
      * Méthode de construction d'un intervalle fermé symmetrique autour de zéro d'une taille donée
@@ -41,7 +42,8 @@ public final class ClosedInterval extends Interval {
     public static ClosedInterval symmetric (double size) {
 
         Preconditions.checkArgument(size > 0);
-        return new ClosedInterval(-size / 2, size / 2); }
+        return new ClosedInterval(-size / 2, size / 2);
+    }
 
     /**
      * Vérifie qu'une valeur est contenue dans l'intervalle
@@ -51,7 +53,10 @@ public final class ClosedInterval extends Interval {
      * @return vraie si la valeur est dans l'intervalle, faux sinon
      */
     @Override
-    public boolean contains(double v) { return v >= low() && v <= high(); }
+    public boolean contains(double v) {
+
+        return v >= low() && v <= high();
+    }
 
 
 
@@ -64,9 +69,10 @@ public final class ClosedInterval extends Interval {
      */
     public double clip (double v) {
 
-        if (v > high()) v = high();
-        if (v < low()) v = low();
-        return v; }
+        if (v > high()) return high();
+        else if (v < low()) return low();
+        else return v;
+    }
 
     /**
      * Transforme en string l'intervalle
@@ -76,7 +82,8 @@ public final class ClosedInterval extends Interval {
     @Override
     public String toString() {
 
-        return String.format(Locale.ROOT, "[%.2f , %.2f]", low(), high()); }
+        return String.format(Locale.ROOT, "[%.2f , %.2f]", low(), high());
+    }
 
 }
 

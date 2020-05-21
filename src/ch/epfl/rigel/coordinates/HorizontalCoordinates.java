@@ -14,10 +14,6 @@ import java.util.Locale;
  */
 public final class HorizontalCoordinates extends SphericalCoordinates {
 
-    private static final RightOpenInterval INTERVAL_LONG_RAD = RightOpenInterval.of(0,Angle.TAU);
-    private static final ClosedInterval INTERVAL_LAT_RAD = ClosedInterval.symmetric(Math.PI);
-
-
     private HorizontalCoordinates(double lon, double lat) {
         super(lon, lat);
     }
@@ -28,12 +24,14 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
      * @param az l'azimuth qui correspond à la longitude pour les coordonnées horizontales en radians
      * @param alt la hauteur qui correspond à la hauteur pour les coordonnées horizontales en radians
      *
+     * @throws  IllegalArgumentException si l'azimut n'est pas compris dans l'interval [0°, 360°[
+     * @throws  IllegalArgumentException si l'altitude n'est pas comprise dans l'interval [-90°, 90°]
      * @return les coordonnées horizontales dont l'azimuth vaut az et la hauteur alt.
      */
     public static HorizontalCoordinates of(double az, double alt) {
 
-        Preconditions.checkInInterval(INTERVAL_LONG_RAD, az);
-        Preconditions.checkInInterval(INTERVAL_LAT_RAD, alt);
+        Preconditions.checkInInterval(SphericalCoordinates.LONGITUDE_RAD_INTERVAL_TAU, az);
+        Preconditions.checkInInterval(SphericalCoordinates.LATITUDE_RAD_INTERVAL, alt);
 
         return new HorizontalCoordinates(az, alt); }
 
@@ -48,10 +46,11 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
 
     public static HorizontalCoordinates ofDeg(double azDeg, double altDeg) {
 
-        Preconditions.checkInInterval(INTERVAL_LONG_RAD, Angle.ofDeg(azDeg));
-        Preconditions.checkInInterval(INTERVAL_LAT_RAD, Angle.ofDeg(altDeg));
+        Preconditions.checkInInterval(SphericalCoordinates.LONGITUDE_RAD_INTERVAL_TAU, Angle.ofDeg(azDeg));
+        Preconditions.checkInInterval(SphericalCoordinates.LATITUDE_RAD_INTERVAL, Angle.ofDeg(altDeg));
 
-        return new HorizontalCoordinates(Angle.ofDeg(azDeg),Angle.ofDeg(altDeg)); }
+        return new HorizontalCoordinates(Angle.ofDeg(azDeg),Angle.ofDeg(altDeg));
+    }
 
     /**
      * Retourne l'azimut
@@ -85,7 +84,7 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
     public String azOctantName(String n, String e, String s, String w) {
 
         double phi= azDeg();
-        int Quadrant= (int) Math.round(phi/360*8);
+        int Quadrant= (int) Math.round(phi/360.0*8);
 
         switch (Quadrant) {
             case (0):
@@ -106,7 +105,8 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
             case (7):
                 return n+w;
             default:
-                throw new IllegalArgumentException(); }
+                throw new IllegalArgumentException();
+        }
     }
 
     /**
@@ -135,8 +135,10 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
     public double angularDistanceTo(HorizontalCoordinates that){
 
         return Math.acos(Math.sin(that.alt())
-                *Math.sin(this.alt())+Math.cos(that.alt())
-                *Math.cos(this.alt())*Math.cos(this.az()-that.az())); }
+                *Math.sin(this.alt()) + Math.cos(that.alt())
+                *Math.cos(this.alt())
+                *Math.cos(this.az() - that.az()));
+    }
 
     /**
      * Transforme en string les coordonées horizontales
@@ -145,7 +147,8 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
      */
     @Override
     public String toString () {
-        return String.format(Locale.ROOT,"(az=%.4f°, alt=%.4f°)",azDeg(),altDeg()); }
+        return String.format(Locale.ROOT,"(az=%.4f°, alt=%.4f°)",azDeg(),altDeg());
+    }
 
 
 

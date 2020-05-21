@@ -9,7 +9,7 @@ import ch.epfl.rigel.coordinates.EquatorialCoordinates;
     public final class Planet extends CelestialObject {
 
     /**
-     * Constructeur de la classe.
+     * Constructeur de la classe
      *
      * @param name          nom de l'objet céleste
      * @param equatorialPos Position de l'objet en coordonnées equatoriales
@@ -20,6 +20,7 @@ import ch.epfl.rigel.coordinates.EquatorialCoordinates;
      * @throws NullPointerException     si le nom ou la position equatoriale sont nuls
      */
     public Planet(String name, EquatorialCoordinates equatorialPos, float angularSize, float magnitude) {
-        super(name, equatorialPos, angularSize, magnitude); }
+        super(name, equatorialPos, angularSize, magnitude);
+    }
 
 }

@@ -6,6 +6,7 @@ import ch.epfl.rigel.math.RightOpenInterval;
 
 /**
  * Des coordonnées sphériques
+ *
  * @author Yassine Abdennadher (299273)
  * @author Juliette Aerni (296670)
  */
@@ -13,30 +14,35 @@ import ch.epfl.rigel.math.RightOpenInterval;
 abstract class SphericalCoordinates {
     /**
      * Interval d'angles en radians acceptés pour la longitude
+     *
      * [0°,360°[, en radians: [0, 2*pi[
      */
     public final static RightOpenInterval LONGITUDE_RAD_INTERVAL_TAU = RightOpenInterval.of(0,Angle.TAU);
     /**
      * Deuxième interval d'angles en radians valides pour la longitudes, interval symmetric
+     *
      * [-180°,180°[, en radians: [-pi,pi[
      */
     public final static RightOpenInterval LONGITUDE_RAD_INTERVAL_SYMMETRIC = RightOpenInterval.symmetric(Angle.TAU);
     /**
      * Interval d'angles en radians valides pour la latitude
-     * [-90°,90°], en radians: [-pi/4, pi/4]
+     *
+     * [-90°,90°], en radians: [-pi/2, pi/2]
      */
     public final static ClosedInterval LATITUDE_RAD_INTERVAL = ClosedInterval.symmetric(Angle.TAU/2);
 
-    private final double longitude,latitude;;
+    private final double longitude,latitude;
 
     /**
      * Constructeur de la classe
+     *
      * @param lon Longitude
      * @param lat Latitude
      */
     SphericalCoordinates(double lon, double lat){
         latitude =lat;
-        longitude =lon; }
+        longitude =lon;
+    }
 
     /**
      * Retourne la longitude
@@ -75,7 +81,8 @@ abstract class SphericalCoordinates {
      */
     @Override
     public final boolean equals(Object obj) {
-        throw new UnsupportedOperationException(); }
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * Cette méthode lève l'exception UnsupportedOperationException pour garantir qu'aucune sous-classe ne les redéfinira
@@ -84,6 +91,7 @@ abstract class SphericalCoordinates {
      */
     @Override
     public final int hashCode (){
-        throw new UnsupportedOperationException(); }
+        throw new UnsupportedOperationException();
+    }
 
 }

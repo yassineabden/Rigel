@@ -15,10 +15,6 @@ import java.util.Locale;
 
 public final class EquatorialCoordinates extends SphericalCoordinates{
 
-    private static final RightOpenInterval INTERVAL_RA_RAD = RightOpenInterval.of(0.0, Angle.TAU );
-    private static final ClosedInterval INTERVAL_DEC_RAD =  ClosedInterval.symmetric(Angle.TAU/2);
-
-   
     private EquatorialCoordinates(double lon, double lat){ super(lon,lat); }
 
     /**
@@ -33,8 +29,8 @@ public final class EquatorialCoordinates extends SphericalCoordinates{
      */
     public static EquatorialCoordinates of(double ra, double dec){
 
-        Preconditions.checkInInterval(INTERVAL_RA_RAD,ra);
-        Preconditions.checkInInterval(INTERVAL_DEC_RAD,dec);
+        Preconditions.checkInInterval(SphericalCoordinates.LONGITUDE_RAD_INTERVAL_TAU,ra);
+        Preconditions.checkInInterval(SphericalCoordinates.LATITUDE_RAD_INTERVAL,dec);
 
         return new EquatorialCoordinates(ra,dec); }
 
@@ -46,9 +42,10 @@ public final class EquatorialCoordinates extends SphericalCoordinates{
      * @return vrai si l'heure est valide, faux sinon
      */
     public static boolean isValidRaHr(double raHr){
-        return INTERVAL_RA_RAD.contains(Angle.ofHr(raHr));
+        return SphericalCoordinates.LONGITUDE_RAD_INTERVAL_TAU.contains(Angle.ofHr(raHr));
     }
 
+    //TODO on les garde quand même non?
     /**
      * Vérifie qu'un angle est une declinaison valide, contenue entre [-90 deg, 90 deg]
      *
@@ -57,7 +54,7 @@ public final class EquatorialCoordinates extends SphericalCoordinates{
      * @return vrai si l'angle est valide, faux sinon
      */
     public static boolean isValidDec(double dec){
-        return INTERVAL_DEC_RAD.contains(Angle.ofDeg(dec));
+        return SphericalCoordinates.LATITUDE_RAD_INTERVAL.contains(Angle.ofDeg(dec));
     }
 
     /**
@@ -107,7 +104,8 @@ public final class EquatorialCoordinates extends SphericalCoordinates{
      */
     @Override
     public String toString(){
-        return String.format(Locale.ROOT, "(ra=%.4fh, dec=%.4f°)", raHr(), decDeg()); }
+        return String.format(Locale.ROOT, "(ra=%.4fh, dec=%.4f°)", raHr(), decDeg());
+    }
 
 
 }

@@ -53,7 +53,8 @@ public final class Main extends Application {
         try (InputStream hs = resourceStream("/hygdata_v3.csv");
                 InputStream as = resourceStream("/asterisms.txt")) {
 
-            StarCatalogue catalogue = new StarCatalogue.Builder()
+            StarCatalogue catalogue = new StarCatalogue
+                    .Builder()
                     .loadFrom(hs, HygDatabaseLoader.INSTANCE)
                     .loadFrom(as, AsterismLoader.INSTANCE)
                     .build();
@@ -159,22 +160,21 @@ public final class Main extends Application {
 
         hourTextField.disableProperty().bind(timeAnimator.isRunning());
 
-        Set<String> stringZoneId = new TreeSet<>(ZoneId.getAvailableZoneIds());
+        Set <String> stringZoneId = new TreeSet<>(ZoneId.getAvailableZoneIds());
 
-        List<ZoneId> zoneIdList = new ArrayList<>();
+        List <ZoneId> zoneIdList = new ArrayList<>();
 
         for (String s: stringZoneId)
             zoneIdList.add(ZoneId.of(s));
 
-        ComboBox<ZoneId> timeZone = new ComboBox<>(FXCollections.observableArrayList(List.copyOf(zoneIdList)));
+
+        ComboBox <ZoneId> timeZone = new ComboBox<>(FXCollections.observableArrayList(List.copyOf(zoneIdList)));
         timeZone.setStyle("-fx-pref-width: 180;");
 
         timeZone.getSelectionModel().select(dateTimeBean.getZone());
-
         timeZone.valueProperty().bindBidirectional(dateTimeBean.zoneProperty());
-
-
         timeZone.disableProperty().bind(timeAnimator.isRunning());
+
 
         observationTimePane.getChildren().addAll(dateLabel,datePicker,hourLabel,hourTextField,timeZone);
 
@@ -184,8 +184,6 @@ public final class Main extends Application {
         ChoiceBox<NamedTimeAccelerator> timeAcceleratorChoiceBox = new ChoiceBox<>();
         timeAcceleratorChoiceBox.setItems(FXCollections.observableArrayList(NamedTimeAccelerator.values()));
 
-
-        // timeAcceleratorChoiceBox.valueProperty().bind(Bindings.select(timeAnimator.acceleratorProperty(), "name"));
         timeAcceleratorChoiceBox.setValue(NamedTimeAccelerator.TIMES_300);
         timeAnimator.acceleratorProperty().bind(Bindings.select(timeAcceleratorChoiceBox.valueProperty(), "accelerator"));
 
@@ -211,6 +209,7 @@ public final class Main extends Application {
             playPauseButton.setText(play);
             playPauseButton.setOnAction( e -> playPauseButton.setText((playPauseButton.getText().equals(play)) ? pause : play));
         }
+
         playPauseButton.textProperty().addListener( (p,o,n) -> {
                     if (timeAnimator.isRunning().get()) timeAnimator.stop();
                     else timeAnimator.start();

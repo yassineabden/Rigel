@@ -16,10 +16,6 @@ import java.util.Locale;
 
 public final class EclipticCoordinates extends SphericalCoordinates{
 
-    private static final RightOpenInterval INTERVAL_LONG_RAD = RightOpenInterval.of(0.0,Angle.TAU);
-    private static final ClosedInterval INTERVAL_LAT_RAD = ClosedInterval.symmetric(Angle.TAU/2);
-
-
     private EclipticCoordinates(double lon, double lat){ super(lon,lat); }
 
     /**
@@ -35,8 +31,8 @@ public final class EclipticCoordinates extends SphericalCoordinates{
 
     public static EclipticCoordinates of(double lon, double lat){
 
-        Preconditions.checkInInterval(INTERVAL_LONG_RAD,lon);
-        Preconditions.checkInInterval(INTERVAL_LAT_RAD,lat);
+        Preconditions.checkInInterval(SphericalCoordinates.LONGITUDE_RAD_INTERVAL_TAU,lon);
+        Preconditions.checkInInterval(SphericalCoordinates.LATITUDE_RAD_INTERVAL,lat);
 
          return new EclipticCoordinates(lon,lat); }
 
@@ -48,7 +44,7 @@ public final class EclipticCoordinates extends SphericalCoordinates{
      * @return vrai si l'angle est valide, faux sinon
      */
     public static boolean isValidLonDeg(double lonDeg){
-        return INTERVAL_LONG_RAD.contains(Angle.ofDeg(lonDeg));
+        return SphericalCoordinates.LONGITUDE_RAD_INTERVAL_TAU.contains(Angle.ofDeg(lonDeg));
     }
 
     /**
@@ -59,7 +55,7 @@ public final class EclipticCoordinates extends SphericalCoordinates{
      * @return vrai si l'angle est valide, faux sinon
      */
     public static boolean isValidLatDeg(double latDeg){
-        return INTERVAL_LAT_RAD.contains(Angle.ofDeg(latDeg));
+        return SphericalCoordinates.LATITUDE_RAD_INTERVAL.contains(Angle.ofDeg(latDeg));
     }
 
     /**
@@ -110,7 +106,8 @@ public final class EclipticCoordinates extends SphericalCoordinates{
      */
     @Override
     public String toString(){
-        return(String.format(Locale.ROOT, "(λ=%.4f°, β=%.4f°)", lonDeg(), latDeg())); }
+        return(String.format(Locale.ROOT, "(λ=%.4f°, β=%.4f°)", lonDeg(), latDeg()));
+    }
 
 
 }

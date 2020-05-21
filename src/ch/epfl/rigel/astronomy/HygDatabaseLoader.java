@@ -28,6 +28,8 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
     private final static int DECRAD = 24;
     private final static int BAYER = 27;
     private final static int CON = 29;
+    private final static String SEPARATOR = ",";
+    private final static int DEFAULT_ZERO = 0;
 
 
     /**
@@ -46,10 +48,10 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
 
             String line;
             bufferedReader.readLine();
-
+//TODO duplication de code?
             while ((line = bufferedReader.readLine()) != null) {
-                String[] parts= line.split(",");
-                int hipparcosId= parts[HIP].isEmpty()? 0 : Integer.parseInt(parts[HIP]);
+                String[] parts = line.split(SEPARATOR);
+                int hipparcosId = parts[HIP].isEmpty()? DEFAULT_ZERO : Integer.parseInt(parts[HIP]);
                 String con = parts[CON];
                 String bayer = parts[BAYER].isEmpty()? "?": parts[BAYER];
                 String name = parts[PROPER].isEmpty()? bayer+ " " + con: parts[PROPER];
@@ -60,7 +62,9 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
                 EquatorialCoordinates coordinates = EquatorialCoordinates.of(rared,decred);
 
                 Star star = new Star(hipparcosId,name,coordinates,(float) magnitude,(float) colorIndex);
-                builder.addStar(star); }
+                builder.addStar(star);
+
+            }
         }
     }
 }
