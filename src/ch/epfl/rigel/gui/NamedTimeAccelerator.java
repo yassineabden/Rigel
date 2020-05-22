@@ -20,8 +20,14 @@ public enum NamedTimeAccelerator {
     private final String name;
     private final TimeAccelerator accelerator;
 
+    /**
+     * Constructeur des accélérateurs
+     *
+     * @param name        le nom de la paire
+     * @param accelerator le type de l'accélérateur de la paire
+     */
     NamedTimeAccelerator(String name, TimeAccelerator accelerator) {
-        
+
         this.name = name;
         this.accelerator = accelerator;
     }
@@ -36,14 +42,14 @@ public enum NamedTimeAccelerator {
     }
 
     /**
-     * Retourne la paire: l'accélérateur et son nom sous forme textuelle
+     * Retourne le nom de la paire: l'accélérateur et son nom sous forme textuelle
      *
      * @return la paire sous forme (nom, accélérateur)
      */
-    public String getName(){
+    public String getName() {
 
-        String type =  (this == DAY ||this == SIDERAL_DAY) ? "discrete" : "continuous";
-        return new String("(" + name + "," + type + ")");
+        String type = (this == DAY || this == SIDERAL_DAY) ? "discrete" : "continuous";
+        return ("(" + name + "," + type + ")");
     }
 
     /**

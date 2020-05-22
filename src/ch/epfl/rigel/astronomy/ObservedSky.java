@@ -17,11 +17,14 @@ public final class ObservedSky {
     private final GeographicCoordinates observPosition;
     private final StereographicProjection stereographicProjection;
     private final StarCatalogue starCatalogue;
-    private final Sun sun;
-    private final CartesianCoordinates sunCoord;
-    private final Moon moon;
-    private final CartesianCoordinates moonCoord;
+
     private final List<Planet> planets;
+    private final Sun sun;
+    private final Moon moon;
+
+    private final CartesianCoordinates sunCoord;
+    private final CartesianCoordinates moonCoord;
+
     private final Map<Objects, double[]> objectsToCoordinates;
 
     /**
@@ -39,24 +42,26 @@ public final class ObservedSky {
         this.observPosition = observPosition;
         this.stereographicProjection = stereographicProjection;
         this.starCatalogue = starCatalogue;
-        double daysSinceJ2010 = Epoch.J2010.daysUntil(observTime);
 
+        double daysSinceJ2010 = Epoch.J2010.daysUntil(observTime);
         EclipticToEquatorialConversion eclipticToEquatorialConversion = new EclipticToEquatorialConversion(observTime);
+
         Map<Objects, double[]> coordMap = new HashMap<>();
 
         sun = SunModel.SUN.at(daysSinceJ2010, eclipticToEquatorialConversion);
         moon = MoonModel.MOON.at(daysSinceJ2010, eclipticToEquatorialConversion);
-        sunCoord = applyFromObject(sun);
-        moonCoord = applyFromObject(moon);
+        sunCoord = coordinatesFromObject(sun);
+        moonCoord = coordinatesFromObject(moon);
+
         coordMap.put(Objects.SUN, new double[]{sunCoord.x(), sunCoord.y()});
         coordMap.put(Objects.MOON, new double[]{moonCoord.x(), moonCoord.y()});
 
         planets = List.copyOf(planetsList(daysSinceJ2010, eclipticToEquatorialConversion));
-
         coordMap.put(Objects.PLANETS, coordinatesInArray(planets));
 
         List<Star> stars = List.copyOf(starCatalogue.stars());
         coordMap.put(Objects.STARS, coordinatesInArray(stars));
+
         objectsToCoordinates = Collections.unmodifiableMap(coordMap);
     }
 
@@ -73,19 +78,19 @@ public final class ObservedSky {
         return planet;
     }
 
-    // Calcule les coordonnées après la projection
-    private CartesianCoordinates applyFromObject(CelestialObject celestialObject) {
+    // Retourne les coordonnées cartésiennes après la projection
+    private CartesianCoordinates coordinatesFromObject(CelestialObject celestialObject) {
 
         EquatorialToHorizontalConversion equatorialToHorizontalConversion = new EquatorialToHorizontalConversion(observTime, observPosition);
         return stereographicProjection.apply(equatorialToHorizontalConversion.apply(celestialObject.equatorialPos()));
     }
 
-    // Remplit le tableau de cordonnées
+    // Remplit le tableau de coordonnées cartésiennes à partir d'une liste qui hérite de Celestial Object
     private double[] coordinatesInArray(List<? extends CelestialObject> list) {
         double[] array = new double[2 * list.size()];
         int i = 0;
         for (CelestialObject c : list) {
-            CartesianCoordinates coordinates = applyFromObject(c);
+            CartesianCoordinates coordinates = coordinatesFromObject(c);
             array[i] = coordinates.x();
             array[i + 1] = coordinates.y();
             i += 2;
@@ -93,6 +98,7 @@ public final class ObservedSky {
         return array;
     }
 
+    //TODO elle fait quoi enfaite cette méthode?
     private CelestialObject indexOfCoordinatesToObject(Objects object, int index) {
 
         if (index % 2 != 0) System.out.println("ObservedSky.indexOfCoordinatesToObject - mauvais index");
@@ -184,6 +190,7 @@ public final class ObservedSky {
      * Retourne la liste des index des étoiles d'un astérisme donné
      *
      * @param asterism un Astérisme
+     *
      * @return la liste des index des étoiles d'un astérisme donné
      */
     public List<Integer> asterismIndices(Asterism asterism) {
@@ -191,12 +198,13 @@ public final class ObservedSky {
         return starCatalogue.asterismIndices(asterism);
     }
 
-
+    //TODO revoir efficacité et conception
     /**
      * Retourne l'objet céleste le plus proche de ce point qui se trouve à une distance inférieure à la distance maximale
      *
      * @param cartesianCoordinates des coordonnées cartésiennes
      * @param distance             une distance maximale
+     *
      * @return l'objet céleste le plus proche de ce point qui se trouve à une distance inférieure à la distance maximale
      */
     public Optional<CelestialObject> objectClosestTo(CartesianCoordinates cartesianCoordinates, double distance) {
@@ -218,7 +226,7 @@ public final class ObservedSky {
                 if (!(Math.abs(x - x0) >= distance || Math.abs(y - y0) >= distance)) {
                     objectDistance = Math.hypot(x - x0, y - y0);
 
-                    if (objectDistance < min && objectDistance < distance) {
+                    if ((objectDistance < min) && (objectDistance < distance)) {
                         min = objectDistance;
                         closestObject = Optional.of(indexOfCoordinatesToObject(object, i));
                     }
@@ -234,6 +242,5 @@ public final class ObservedSky {
         private final static List<Objects> ALL = Arrays.asList(Objects.values());
 
     }
-
 
 }

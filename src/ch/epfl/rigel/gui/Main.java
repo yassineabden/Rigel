@@ -35,10 +35,33 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 
 public final class Main extends Application {
+
+    private final static GeographicCoordinates INITIAL_POSITION = GeographicCoordinates.ofDeg(6.57,46.52);
+    private final static HorizontalCoordinates INITIAL_OBSERVATION = HorizontalCoordinates.ofDeg(180.000000000001, 15);
+    private final static double INITIAL_FIELD_OF_VIEW = 100;
+    private final static double MIN_WIDTH = 800;
+    private final static double MIN_HEIGHT = 600;
+    private final static String TITLE = "Rigel";
+    private final StarCatalogue catalogue;
+    private final Font fontAwesome;
+
+    public Main() throws IOException {
+        try (InputStream hs = resourceStream("/hygdata_v3.csv");
+             InputStream as = resourceStream("/asterisms.txt");
+             InputStream fontStream = resourceStream("/Font Awesome 5 Free-Solid-900.otf")){
+
+             catalogue = new StarCatalogue.Builder()
+                    .loadFrom(hs, HygDatabaseLoader.INSTANCE)
+                    .loadFrom(as, AsterismLoader.INSTANCE)
+                    .build();
+             fontAwesome = Font.loadFont(fontStream, 15);
+        }
+    }
 
     private InputStream resourceStream(String resourceName) {
         return getClass().getResourceAsStream(resourceName);
@@ -53,37 +76,39 @@ public final class Main extends Application {
         try (InputStream hs = resourceStream("/hygdata_v3.csv");
                 InputStream as = resourceStream("/asterisms.txt")) {
 
-            StarCatalogue catalogue = new StarCatalogue
-                    .Builder()
+            StarCatalogue catalogue = new StarCatalogue.Builder()
                     .loadFrom(hs, HygDatabaseLoader.INSTANCE)
                     .loadFrom(as, AsterismLoader.INSTANCE)
                     .build();
 
+            //Initialisation des beans
             ObserverLocationBean observerLocationBean =
                     new ObserverLocationBean();
-            observerLocationBean.setCoordinates(
-                    GeographicCoordinates.ofDeg(6.57, 46.52));
-
+            observerLocationBean.setCoordinates(INITIAL_POSITION);
 
             DateTimeBean dateTimeBean = new DateTimeBean();
             dateTimeBean.setZonedDateTime(ZonedDateTime.now());
 
-
             ViewingParametersBean viewingParametersBean = new ViewingParametersBean();
-            viewingParametersBean.setCenter(HorizontalCoordinates.ofDeg(180.000000000001, 15));
-            viewingParametersBean.setFieldOfViewDeg(100);
+            viewingParametersBean.setCenter(INITIAL_OBSERVATION);
+            viewingParametersBean.setFieldOfViewDeg(INITIAL_FIELD_OF_VIEW);
 
             TimeAnimator timeAnimator = new TimeAnimator(dateTimeBean);
             timeAnimator.acceleratorProperty().set(NamedTimeAccelerator.TIMES_300.getAccelerator());
 
             // Fenêtre principale
             BorderPane mainPane = new BorderPane();
-            stage.setMinHeight(600);
-            stage.setTitle("Rigel");
-            stage.setMinWidth(800);
+            stage.setMinHeight(MIN_HEIGHT);
+            stage.setTitle(TITLE);
+            stage.setMinWidth(MIN_WIDTH);
 
             // Barre de contrôle
-            mainPane.setTop(controlPane(observerLocationBean, dateTimeBean, timeAnimator));
+            HBox controlBar = new HBox(observationPosition(observerLocationBean),new Separator(Orientation.VERTICAL),
+                    observationTime(dateTimeBean,timeAnimator),new Separator(Orientation.VERTICAL),
+                    timeLapsePane(timeAnimator,dateTimeBean));
+
+            controlBar.setStyle("-fx-spacing: 4; -fx-padding: 4;");
+            mainPane.setTop(controlBar);
 
             // Ciel
             SkyCanvasManager canvasManager = new SkyCanvasManager(
@@ -110,14 +135,11 @@ public final class Main extends Application {
 
     }
 
-    private HBox controlPane (ObserverLocationBean observerLocationBean, DateTimeBean dateTimeBean,TimeAnimator timeAnimator ) throws IOException {
+    private HBox observationPosition (ObserverLocationBean observerLocationBean){
 
         HBox observationPositionPane = new HBox();
-        HBox observationTimePane = new HBox();
-        HBox timeLapsePane = new HBox();
-
-        //observationPositionPane
         observationPositionPane.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left;");
+
         NumberStringConverter stringToNumberConverter =
                 new NumberStringConverter("#0.00");
 
@@ -125,27 +147,28 @@ public final class Main extends Application {
         TextField lonTextField = positionTextField(CoordinatesType.LONGITUDE, stringToNumberConverter,observerLocationBean);
         Label latLabel = new Label("Latitude (°) :");
         TextField latTextField = positionTextField(CoordinatesType.LATITUDE, stringToNumberConverter, observerLocationBean);
+
         observationPositionPane.getChildren().addAll(lonLabel,lonTextField,latLabel, latTextField);
 
-        //instant d'observation HBox
+        return observationPositionPane;
+    }
+
+    private HBox observationTime (DateTimeBean dateTimeBean,TimeAnimator timeAnimator){
+
+        HBox observationTimePane = new HBox();
         observationTimePane.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left;");
 
-        //Date field
+        //Date
         Label dateLabel = new Label("Date :");
         DatePicker datePicker = new DatePicker(dateTimeBean.getDate());
         datePicker.setStyle("-fx-pref-width: 120;");
-
-        dateTimeBean.dateProperty().bindBidirectional(datePicker.valueProperty());
-        //todo pourquoi on peut pas faire ça mais avec l'autre oui?
-
+        datePicker.valueProperty().bindBidirectional(dateTimeBean.dateProperty());
         datePicker.disableProperty().bind(timeAnimator.isRunning());
 
-
-        // Hour Field
+        //Temps
         DateTimeFormatter hmsFormatter =
                 DateTimeFormatter.ofPattern("HH:mm:ss");
         Label hourLabel = new Label("Heure :");
-
         TextField hourTextField = new TextField();
         hourTextField.setStyle("-fx-pref-width: 75; -fx-alignment: baseline-right;");
 
@@ -157,72 +180,65 @@ public final class Main extends Application {
         hourTextField.setTextFormatter(timeFormatter);
         timeFormatter.setValue(LocalTime.now());
         timeFormatter.valueProperty().bindBidirectional(dateTimeBean.timeProperty());
-
         hourTextField.disableProperty().bind(timeAnimator.isRunning());
 
-        Set <String> stringZoneId = new TreeSet<>(ZoneId.getAvailableZoneIds());
-
-        List <ZoneId> zoneIdList = new ArrayList<>();
+        //Zone
+        Set<String> stringZoneId = new TreeSet<>(ZoneId.getAvailableZoneIds());
+        List<ZoneId> zoneIdList = new ArrayList<>();
 
         for (String s: stringZoneId)
             zoneIdList.add(ZoneId.of(s));
 
-
-        ComboBox <ZoneId> timeZone = new ComboBox<>(FXCollections.observableArrayList(List.copyOf(zoneIdList)));
+        ComboBox<ZoneId> timeZone = new ComboBox<>(FXCollections.observableArrayList(List.copyOf(zoneIdList)));
         timeZone.setStyle("-fx-pref-width: 180;");
-
         timeZone.getSelectionModel().select(dateTimeBean.getZone());
         timeZone.valueProperty().bindBidirectional(dateTimeBean.zoneProperty());
         timeZone.disableProperty().bind(timeAnimator.isRunning());
 
-
         observationTimePane.getChildren().addAll(dateLabel,datePicker,hourLabel,hourTextField,timeZone);
 
+        return observationTimePane;
 
-        //time lapse pane
+    }
+
+    private HBox timeLapsePane (TimeAnimator timeAnimator, DateTimeBean dateTimeBean){
+
+        HBox timeLapsePane = new HBox();
         timeLapsePane.setStyle("-fx-spacing: inherit;");
+
         ChoiceBox<NamedTimeAccelerator> timeAcceleratorChoiceBox = new ChoiceBox<>();
         timeAcceleratorChoiceBox.setItems(FXCollections.observableArrayList(NamedTimeAccelerator.values()));
-
         timeAcceleratorChoiceBox.setValue(NamedTimeAccelerator.TIMES_300);
         timeAnimator.acceleratorProperty().bind(Bindings.select(timeAcceleratorChoiceBox.valueProperty(), "accelerator"));
-
         timeAcceleratorChoiceBox.disableProperty().bind(timeAnimator.isRunning());
 
         String reset = "\uf0e2";
         Button resetButton = new Button(reset);
         Button playPauseButton = new Button();
 
-        try (InputStream fontStream = resourceStream("/Font Awesome 5 Free-Solid-900.otf")) {
+        resetButton.setFont(fontAwesome);
+        resetButton.setOnAction( e -> dateTimeBean.setZonedDateTime(ZonedDateTime.now()));
+        resetButton.disableProperty().bind(timeAnimator.isRunning());
 
-            Font fontAwesome = Font.loadFont(fontStream, 15);
-            resetButton.setFont(fontAwesome);
+        String play = "\uf04b";
+        String pause = "\uf04c";
+        playPauseButton.setText(play);
 
-            resetButton.setOnAction( e -> dateTimeBean.setZonedDateTime(ZonedDateTime.now()));
-            resetButton.disableProperty().bind(timeAnimator.isRunning());
-
-            String play = "\uf04b";
-            String pause = "\uf04c";
-            playPauseButton.setText(play);
-
-            playPauseButton.setFont(fontAwesome);
-            playPauseButton.setText(play);
-            playPauseButton.setOnAction( e -> playPauseButton.setText((playPauseButton.getText().equals(play)) ? pause : play));
-        }
+        playPauseButton.setFont(fontAwesome);
+        playPauseButton.setText(play);
+        playPauseButton.setOnAction( e -> playPauseButton.setText((playPauseButton.getText().equals(play)) ? pause : play));
 
         playPauseButton.textProperty().addListener( (p,o,n) -> {
                     if (timeAnimator.isRunning().get()) timeAnimator.stop();
                     else timeAnimator.start();
                 }
         );
+
         timeLapsePane.getChildren().addAll(timeAcceleratorChoiceBox,resetButton,playPauseButton);
 
-        HBox controlBar = new HBox(observationPositionPane,new Separator(Orientation.VERTICAL),observationTimePane,new Separator(Orientation.VERTICAL),timeLapsePane);
-        controlBar.setStyle("-fx-spacing: 4; -fx-padding: 4;");
-
-        return controlBar;
-
+        return timeLapsePane;
     }
+
 
     private BorderPane informationPane( SkyCanvasManager canvasManager, ViewingParametersBean viewingParametersBean){
         canvasManager.objectUnderMouseProperty().addListener(
@@ -261,16 +277,10 @@ public final class Main extends Application {
                 double newCoord =
                         stringToNumberConverter.fromString(newText).doubleValue();
                 if (coordinatesType == CoordinatesType.LONGITUDE) {
-                    //todo demander à yass s'il se souvient du bail de l'assistant
-                    return GeographicCoordinates.isValidLonDeg(newCoord)
-                            ? change
-                            : null;
+                    return checkCoordinates(GeographicCoordinates::isValidLonDeg,newCoord,change);
                 } else {
-                    return GeographicCoordinates.isValidLatDeg(newCoord)
-                            ? change
-                            : null;
+                    return checkCoordinates(GeographicCoordinates::isValidLatDeg, newCoord,change);
                 }
-
             } catch (Exception e) {
                 return null;
             }
@@ -288,7 +298,13 @@ public final class Main extends Application {
         return textField;
 
     }
-        //todo je suis pas sûr que faire une enum pour 2 cas soit très strat mais c'est plus joli
+
+    private TextFormatter.Change checkCoordinates (Predicate<Double> predicate, double coordinates, TextFormatter.Change change) {
+
+        return predicate.test(coordinates) == true ? change: null;
+    }
+
+
     private enum CoordinatesType {
         LATITUDE, LONGITUDE;
 
