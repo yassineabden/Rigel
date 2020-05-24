@@ -30,6 +30,7 @@ import static javafx.beans.binding.Bindings.createDoubleBinding;
 public final class SkyCanvasManager {
 
     private final Canvas canvas;
+    //TODO on fait ce qui intelliJ ?
     private final DateTimeBean dateTimeBean;
     private final ObserverLocationBean observerLocationBean;
     private final ViewingParametersBean viewingParametersBean;
@@ -51,38 +52,49 @@ public final class SkyCanvasManager {
     private final static ClosedInterval ALTITUDE_DEG_INTERVAL = ClosedInterval.of(5, 90);
     private final static ClosedInterval FOV_INTERVAL_DEG = ClosedInterval.of(30, 150);
 
-    /**TODO public?
+    /**
+     * TODO public?
      * Constructeur du manager de canvas, initialise les propriétés essentielles
      *
-     * @param starCatalogue catalogue contenant les étoiles et planètes ud ciel observé
-     * @param dateTimeBean
-     * @param observerLocationBean
-     * @param viewingParametersBean
+     * @param starCatalogue         catalogue contenant les étoiles et planètes du ciel observé
+     * @param dateTimeBean          bean contenant l'instant d'observation du ciel
+     * @param observerLocationBean  bean contenant la position d'observation du ciel
+     * @param viewingParametersBean bean contenant les paramètres du vue de l'écran
      */
     public SkyCanvasManager(StarCatalogue starCatalogue, DateTimeBean dateTimeBean, ObserverLocationBean observerLocationBean, ViewingParametersBean viewingParametersBean) {
 
+        // Initialisation des beans et attributs
         canvas = new Canvas();
         this.dateTimeBean = dateTimeBean;
         this.observerLocationBean = observerLocationBean;
         this.viewingParametersBean = viewingParametersBean;
         skyCanvasPainter = new SkyCanvasPainter(canvas);
 
-        projection = Bindings.createObjectBinding(() -> (new StereographicProjection(viewingParametersBean.getCenter())), this.viewingParametersBean.centerProperty());
+
+        HorizontalCoordinates viewingParametersBeanCenter = viewingParametersBean.getCenter();
+
+        projection = Bindings.createObjectBinding(() -> (new StereographicProjection(viewingParametersBeanCenter))
+                , this.viewingParametersBean.centerProperty());
+
+        StereographicProjection stereographicProjection = projection.getValue();
+
+        double viewingParametersBeanFoVDeg = viewingParametersBean.getFieldOfViewDeg();
 
         planeToCanvas = Bindings.createObjectBinding(() -> {
-                    double dilatation  = canvas.getWidth()
-                            / projection.getValue().applyToAngle(Angle.ofDeg(viewingParametersBean.getFieldOfViewDeg()));
+                    double dilatation = canvas.getWidth()
+                            / stereographicProjection.applyToAngle(Angle.ofDeg(viewingParametersBeanFoVDeg));
 
                     return Transform.affine(dilatation, 0, 0, -dilatation, canvas.getWidth() / 2.0, canvas.getHeight() / 2.0);
                 }
                 , this.viewingParametersBean.fieldOfViewDegProperty()
+                //todo avant il y avait projection.getValue() ...
                 , projection
                 , canvas.heightProperty()
                 , canvas.widthProperty());
 
         observedSky = Bindings.createObjectBinding(() -> new ObservedSky(dateTimeBean.getZonedDateTime()
                         , observerLocationBean.getCoordinates()
-                        , projection.getValue()
+                        , stereographicProjection
                         , starCatalogue)
                 , this.observerLocationBean.coordinatesProperty()
                 , this.dateTimeBean.dateProperty()
@@ -90,20 +102,24 @@ public final class SkyCanvasManager {
                 , this.dateTimeBean.zoneProperty()
                 , projection);
 
-        mousePosition = new SimpleObjectProperty<>(new Point2D(0,0));
+        mousePosition = new SimpleObjectProperty<>(new Point2D(0, 0));
         canvas.setOnMouseMoved(event -> mousePosition.set(new Point2D(event.getX(), event.getY())));
 
         mouseHorizontalPosition = Bindings.createObjectBinding(() -> {
-                    Point2D newCoord;
-                    try {
-                        newCoord = planeToCanvas.getValue().inverseTransform(mousePosition.get());
-                        return projection.getValue().inverseApply(CartesianCoordinates.of(newCoord.getX(), newCoord.getY()));
+                    Point2D newPosition;
 
-                    } catch (NonInvertibleTransformException e) {
-                        System.out.println("nonInvertibleTransform");
+                    if ((newPosition = inversePlaneToCanvas(mousePosition.get())) != null) {
+                        return stereographicProjection.inverseApply(CartesianCoordinates.of(newPosition.getX(), newPosition.getY()));
+                    } else {
                         return null;
                     }
                 }
+/**
+ return ((newPosition = inversePlaneToCanvas(mousePosition.get()) )!= null) ?
+ projection.getValue().inverseApply(CartesianCoordinates.of(newPosition.getX(), newPosition.getY()))
+ : newPosition;
+ */
+
                 , mousePosition
                 , projection
                 , planeToCanvas);
@@ -114,19 +130,30 @@ public final class SkyCanvasManager {
                 , mouseHorizontalPosition);
 
         canvas.setOnMousePressed(event -> {
-                    if (event.isPrimaryButtonDown())
-                        canvas.requestFocus();
-                });
+            if (event.isPrimaryButtonDown())
+                canvas.requestFocus();
+        });
 
         objectUnderMouse = Bindings.createObjectBinding(() -> {
-                    Point2D newCoord;
-                    try {
-                        newCoord = planeToCanvas.getValue().inverseTransform(mousePosition.get().getX(), mousePosition.get().getY());
-                        return observedSky.getValue().objectClosestTo(CartesianCoordinates.of(newCoord.getX(), newCoord.getY()), 10).orElse(null);
-
-                    } catch (NonInvertibleTransformException e) {
+                    Point2D newPosition;
+                    if((newPosition = inversePlaneToCanvas(mousePosition.get())) != null) {
+                        return observedSky.getValue()
+                                .objectClosestTo(CartesianCoordinates.of(newPosition.getX(), newPosition.getY()), 10)
+                                .orElse(null);
+                    } else {
                         return null;
                     }
+
+                    /**
+                     Point2D newCoord;
+                     try {
+                     newCoord = planeToCanvas.getValue().inverseTransform(mousePosition.get().getX(), mousePosition.get().getY());
+                     return observedSky.getValue().objectClosestTo(CartesianCoordinates.of(newCoord.getX(), newCoord.getY()), 10).orElse(null);
+
+                     } catch (NonInvertibleTransformException e) {
+                     return null;
+                     }
+                     */
                 }
                 , observedSky
                 , planeToCanvas
@@ -134,7 +161,7 @@ public final class SkyCanvasManager {
 
         canvas.setOnScroll(scrollEvent -> {
 
-            double currentFoV = viewingParametersBean.getFieldOfViewDeg();
+            double currentFoV = viewingParametersBeanFoVDeg;
             double scrollDeltaX = scrollEvent.getDeltaX();
             double scrollDeltaY = scrollEvent.getDeltaY();
 
@@ -145,11 +172,11 @@ public final class SkyCanvasManager {
             viewingParametersBean.setFieldOfViewDeg(FOV_INTERVAL_DEG.clip(z));
         });
 
-        //todo
+
         canvas.setOnKeyPressed(keyEvent -> {
 
-            double centerALtDeg = viewingParametersBean.getCenter().altDeg();
-            double centerAzDeg = viewingParametersBean.getCenter().azDeg();
+            double centerALtDeg = viewingParametersBeanCenter.altDeg();
+            double centerAzDeg = viewingParametersBeanCenter.azDeg();
 
             switch (keyEvent.getCode()) {
                 case LEFT:
@@ -185,43 +212,76 @@ public final class SkyCanvasManager {
 
         });
 
-        planeToCanvas.addListener(e -> drawSky());
-        observedSky.addListener(e -> drawSky());
+        planeToCanvas.addListener(e -> drawSky(stereographicProjection));
+        observedSky.addListener(e -> drawSky(stereographicProjection));
 
     }
 
-
+    /**
+     * Retourne le canvas utilisé
+     *
+     * @return le canvas utilisé
+     */
     public Canvas canvas() {
         return canvas;
     }
 
+    /**TODO on utilise pas?
+     * Retourne l'azimut en degrés de la position horizontal de la souris
+     *
+     * @return l'azimut en degrés de la position horizontal de la souris
+     */
     public double getMouseAzDeg() {
         return mouseAzDeg.get();
     }
 
+    /**
+     * Retourne la propriété contenant l'azimut en degrés de la position horizontal de la souris
+     *
+     * @returnla propriété contenant l'azimut en degrés de la position horizontal de la souris
+     */
     public ObservableDoubleValue mouseAzDegProperty() {
         return mouseAzDeg;
     }
 
+    /**TODO on utilise pas?
+     * Retourne l'altitude en degrés de la position horizontal de la souris
+     *
+     * @return l'altitude en degrés de la position horizontal de la souris
+     */
     public double getMouseAltDeg() {
         return mouseAltDeg.get();
     }
 
+    /**
+     * Retourne la propriété contenant l'altitude en degrés de la position horizontal de la souris
+     *
+     * @returnla propriété contenant l'altitude en degrés de la position horizontal de la souris
+     */
     public ObservableDoubleValue mouseAltDegProperty() {
         return mouseAltDeg;
     }
 
+    /**
+     * Retourne l'object celeste se trouvant sous la souris
+     *
+     * @return l'object celeste se trouvant sous la souris
+     */
     public CelestialObject getObjectUnderMouse() {
         return objectUnderMouse.getValue();
     }
 
+    /**
+     * Retourne la propriété de l'object celeste se trouvant sous la souris
+     *
+     * @return la propriété del'object celeste se trouvant sous la souris
+     */
     public ObservableValue<CelestialObject> objectUnderMouseProperty() {
         return objectUnderMouse;
     }
 
-    private void drawSky() {
+    private void drawSky(StereographicProjection stereographicProjection) {
 
-        StereographicProjection stereographicProjection = projection.getValue();
         ObservedSky sky = observedSky.getValue();
         Transform transform = planeToCanvas.getValue();
 
@@ -233,5 +293,22 @@ public final class SkyCanvasManager {
         skyCanvasPainter.drawHorizon(stereographicProjection, transform);
 
     }
+    //TODO c'est quoi le mieux/diff entre try catch et throws Exception?
+
+    /**
+     * private Point2D inversePlaneToCanvas (Point2D canvasCoordinates) throws NonInvertibleTransformException {
+     * return planeToCanvas.getValue().inverseTransform(canvasCoordinates);
+     * }
+     */
+
+    private Point2D inversePlaneToCanvas(Point2D canvasCoordinates) {
+        try {
+            return planeToCanvas.getValue().inverseTransform(canvasCoordinates);
+        } catch (NonInvertibleTransformException e) {
+            return null;
+        }
+    }
+
 
 }
+

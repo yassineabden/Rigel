@@ -61,7 +61,7 @@ public final class StereographicProjection implements Function<HorizontalCoordin
         double x = xy.x();
         double y = xy.y();
 
-        if (y == 0 && x ==0) return HorizontalCoordinates.of(center.lon(),center.lat());
+        if (y == 0 && x == 0) return HorizontalCoordinates.of(center.lon(),center.lat());
 
         else {
 
