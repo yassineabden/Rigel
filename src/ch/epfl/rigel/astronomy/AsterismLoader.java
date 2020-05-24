@@ -34,22 +34,15 @@ public enum AsterismLoader implements StarCatalogue.Loader {
     @Override
     public void load(InputStream inputStream, StarCatalogue.Builder builder) throws IOException {
 
-        try ( BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,US_ASCII))){
-
             List<Star> starsBuilded = builder.stars();
             HashMap <Integer, Star> hipToStar = new HashMap<>();
 
             for (Star star  : starsBuilded)
                 hipToStar.put(star.hipparcosId(), star);
-        /**
-            bufferedReader.lines()
-                    .map( l -> l.split(","))
-                    .forEach(hypparcosID -> {
 
-                    });
-         */
             String a;
 
+        try ( BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,US_ASCII))){
             while ((a = bufferedReader.readLine()) != null){
 
                 String [] stars = a.split(",");

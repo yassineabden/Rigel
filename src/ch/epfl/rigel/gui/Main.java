@@ -40,6 +40,7 @@ import java.util.function.UnaryOperator;
 
 public final class Main extends Application {
 
+
     private InputStream resourceStream(String resourceName) {
         return getClass().getResourceAsStream(resourceName);
     }
@@ -261,7 +262,6 @@ public final class Main extends Application {
                 double newCoord =
                         stringToNumberConverter.fromString(newText).doubleValue();
                 if (coordinatesType == CoordinatesType.LONGITUDE) {
-                    //todo demander à yass s'il se souvient du bail de l'assistant
                     return GeographicCoordinates.isValidLonDeg(newCoord)
                             ? change
                             : null;
@@ -288,10 +288,9 @@ public final class Main extends Application {
         return textField;
 
     }
-        //todo je suis pas sûr que faire une enum pour 2 cas soit très strat mais c'est plus joli
+
     private enum CoordinatesType {
         LATITUDE, LONGITUDE;
-
     }
 
 }
