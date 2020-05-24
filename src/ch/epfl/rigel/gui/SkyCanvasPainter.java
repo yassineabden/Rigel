@@ -24,13 +24,19 @@ import java.util.Set;
  * @author Yassine Abdennadher (299273)
  * @author Juliette Aerni (296670)
  */
-public final class SkyCanvasPainter {
+//TODO elle est private, package private ou publique?
+final class SkyCanvasPainter {
 
     private final Canvas canvas;
     private final GraphicsContext graphicsContext;
 
     private final static ClosedInterval MAGNITUDE = ClosedInterval.of(-2, 5);
     private final static HorizontalCoordinates EQUATOR = HorizontalCoordinates.ofDeg(0, 0);
+    private final static double ASTERISMS_LINE_WIDTH = 1.0;
+    private final static double HORIZON_LINE_WIDTH = 2.0;
+    private final static double SUN_FIRST_DISC_OPACITY = 0.25;
+    private final static double SUN_FIRST_DISC_DIAMETER_EXPANSION = 2.2;
+    private final static double SUN_SECOND_DISC_DIAMETER_EXPANSION = 2.0;
 
     //TODO public, private? comment on sait?
     public SkyCanvasPainter(Canvas canvas) {
@@ -40,7 +46,7 @@ public final class SkyCanvasPainter {
     }
 
     /**
-     * Dessine "l'arrière-plan" du ciel, remplis le canvas de noir, effaçant ainsi les étoiles et planètes existantent
+     * Dessine "l'arrière-plan" du ciel, remplit le canvas de noir, effaçant ainsi les étoiles et planètes existantes
      */
     public void clear() {
 
@@ -50,15 +56,14 @@ public final class SkyCanvasPainter {
     }
 
     /**
-     * Dessine les étoiles et constellations présentes dans le ciel osbervé sur l'écran
+     * Dessine les étoiles et asterimes présentes dans le ciel osbervé sur l'écran
      *
      * @param sky           ciel observé
-     * @param projection    projection stéréographique pour mettre les étoiles sur
+     * @param projection    projection stéréographique pour mettre les étoiles sur un repère carthésien
      * @param planeToCanvas transformation utilisée pour passer d'un repère carthésien au repère du canvas
      */
     public void drawStars(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas) {
 
-        // List<Star> stars = sky.stars();
         double[] starsOnCanvas = sky.starsPositions();
         planeToCanvas.transform2DPoints(sky.starsPositions(), 0, starsOnCanvas, 0, starsOnCanvas.length / 2);
         Set<Asterism> asterisms = sky.asterisms();
@@ -66,7 +71,7 @@ public final class SkyCanvasPainter {
         //Dessine les asterisms
         Bounds canvasBound = canvas.getBoundsInLocal();
         graphicsContext.setStroke(Color.BLUE);
-        graphicsContext.setLineWidth(1.0);
+        graphicsContext.setLineWidth(ASTERISMS_LINE_WIDTH);
         boolean lastStarInBounds = false, thisStarInBounds, firstStar = true;
 
         for (Asterism a : asterisms) {
@@ -77,6 +82,7 @@ public final class SkyCanvasPainter {
             //todo à vérifier s'il faut true ou false au début
 
             for (Integer index : aIndex) {
+
                 double x = starsOnCanvas[2 * index], y = starsOnCanvas[2 * index + 1];
                 if (firstStar) {
                     graphicsContext.moveTo(x, y);
@@ -110,7 +116,7 @@ public final class SkyCanvasPainter {
     public void drawHorizon(StereographicProjection stereographicProjection, Transform planeToCanvas) {
 
         graphicsContext.setStroke(Color.RED);
-        graphicsContext.setLineWidth(2.0);
+        graphicsContext.setLineWidth(HORIZON_LINE_WIDTH);
 
         Point2D equator = carthesianCoordOnCanvas(planeToCanvas, stereographicProjection.circleCenterForParallel(EQUATOR));
         double equatorD = diameterOnCanvas(stereographicProjection.circleRadiusForParallel(EQUATOR), planeToCanvas);
@@ -167,12 +173,12 @@ public final class SkyCanvasPainter {
         double sunY = sunCoord.getY();
 
         // premier cercle à 25% d'opacité
-        graphicsContext.setFill(Color.YELLOW.deriveColor(0, 0, 1, 0.25));
-        graphicsContext.fillOval(sunX - (dTransformed * 2.2) / 2, sunY - (dTransformed * 2.2) / 2, dTransformed * 2.2, dTransformed * 2.2);
-
+        graphicsContext.setFill(Color.YELLOW.deriveColor(0, 0, 1, SUN_FIRST_DISC_OPACITY));
+        graphicsContext.fillOval(sunX - (dTransformed * SUN_FIRST_DISC_DIAMETER_EXPANSION) / 2, sunY - (dTransformed * SUN_FIRST_DISC_DIAMETER_EXPANSION) / 2, dTransformed * 2.2, dTransformed * 2.2);
+//TODO c'est + ou * ?
         //deuxième disque
         graphicsContext.setFill(Color.YELLOW);
-        graphicsContext.fillOval(sunX - (dTransformed + 2) / 2, sunY - (dTransformed + 2) / 2, dTransformed + 2, dTransformed + 2);
+        graphicsContext.fillOval(sunX - (dTransformed + SUN_SECOND_DISC_DIAMETER_EXPANSION) / 2, sunY - (dTransformed + SUN_SECOND_DISC_DIAMETER_EXPANSION) / 2, dTransformed + SUN_SECOND_DISC_DIAMETER_EXPANSION, dTransformed + SUN_SECOND_DISC_DIAMETER_EXPANSION);
 
         //troisième disque
         graphicsContext.setFill(Color.WHITE);
@@ -230,14 +236,8 @@ public final class SkyCanvasPainter {
 
     }
 
-    /**
-     * Calcule le diamètre d'un object celeste ayant une magnitude (une étoile ou une planète)
-     *
-     * @param object        object dont on veut calculer le diamètre
-     * @param projection    la projection stéréographique utilisée pour projeter les coordonées sphérique en coordonées carthésiennes
-     * @param planeToCanvas transformation utilisée pour passer d'un repère carthésien au repère du canvas
-     * @return le diamètre de l'object célèste projeté sur le canvas par rapport à sa magnitude
-     */
+
+     //Transforme le diamètre d'un object celeste ayant une magnitude (une étoile ou une planète) de coordonées sphérique au repère du canvas
     private double diameterWithMagnitude(CelestialObject object, StereographicProjection projection, Transform planeToCanvas) {
 
         double mDash = MAGNITUDE.clip(object.magnitude());
@@ -246,25 +246,15 @@ public final class SkyCanvasPainter {
         return diameterOnCanvas(d, planeToCanvas);
     }
 
-    /**
-     * Applique la transformation d'un repère carthésien au repère du canvas à des coordonées cathésiennes
-     *
-     * @param planeToCanvas transformation utilisée pour passer d'un repère carthésien au repère du canvas
-     * @param coordinates   coordonées carthésiennes à transformer
-     * @return les nouvelles coordonées sous forme d'un point 2D
-     */
+    // Applique la transformation d'un repère carthésien au repère du canvas à des coordonées cathésiennes
     private Point2D carthesianCoordOnCanvas(Transform planeToCanvas, CartesianCoordinates coordinates) {
+
         return planeToCanvas.transform(coordinates.x(), coordinates.y());
     }
 
-    /**
-     * Applique la transformation d'un repère carthésien au repère du canvas à un diamètre
-     *
-     * @param d             diamètre à transformer
-     * @param planeToCanvas transformation utilisée pour passer d'un repère carthésien au repère du canvas
-     * @return diamètre transformé
-     */
+   // Applique la transformation d'un repère carthésien au repère du canvas à un diamètre
     private double diameterOnCanvas(double d, Transform planeToCanvas) {
+
         return 2 * planeToCanvas.deltaTransform(d, 0).getX();
     }
 

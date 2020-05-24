@@ -14,6 +14,8 @@ import java.time.ZonedDateTime;
 @FunctionalInterface
 public interface TimeAccelerator {
 
+     double NANOSECONDS_PER_SECOND = 1_000_000_000;
+
     /**
      * Calcule le temps simulé
      *
@@ -46,7 +48,7 @@ public interface TimeAccelerator {
      */
     static TimeAccelerator discrete(long lambda, Duration step) {
 
-        return ((simulatedTime, nanoSeconds) -> simulatedTime.plus(step.multipliedBy((long) (lambda * nanoSeconds / 1_000_000_000))));
+        return ((simulatedTime, nanoSeconds) -> simulatedTime.plus(step.multipliedBy((long) (lambda * nanoSeconds / NANOSECONDS_PER_SECOND))));
     }
 
 }

@@ -37,12 +37,17 @@ import java.util.function.UnaryOperator;
 public final class Main extends Application {
 
 
+    private Font fontAwesome;
     private final static GeographicCoordinates INITIAL_POSITION = GeographicCoordinates.ofDeg(6.57, 46.52);
     private final static HorizontalCoordinates INITIAL_OBSERVATION = HorizontalCoordinates.ofDeg(180.000000000001, 15);
     private final static double INITIAL_FIELD_OF_VIEW = 100;
     private final static double MIN_WIDTH = 800;
     private final static double MIN_HEIGHT = 600;
     private final static String TITLE = "Rigel";
+    private final static String STARS_RESOURCES_FILE_NAME = "/hygdata_v3.csv";
+    private final static String ASTERISMS_RESOURCES_FILE_NAME = "/asterisms.txt";
+    private static final String HBOX_STYLE = "-fx-spacing: inherit; -fx-alignment: baseline-left;";
+    private static final String FONT_AWESOME_FILE_NAME = "/Font Awesome 5 Free-Solid-900.otf";
 
 
     // Constructeur de la classe qui permt d'initialiser tous les flots
@@ -57,11 +62,10 @@ public final class Main extends Application {
                     .build();
             fontAwesome = Font.loadFont(fontStream, 15);
         }
-=======
 
     private InputStream resourceStream(String resourceName) {
         return getClass().getResourceAsStream(resourceName);
->>>>>>> origin/master
+
     }
 */
 
@@ -85,9 +89,12 @@ public final class Main extends Application {
      */
     @Override
     public void start(Stage stage) throws Exception {
-        try (InputStream hs = resourceStream("/hygdata_v3.csv");
-             InputStream as = resourceStream("/asterisms.txt")) {
+        try (InputStream hs = resourceStream(STARS_RESOURCES_FILE_NAME);
+             InputStream as = resourceStream(ASTERISMS_RESOURCES_FILE_NAME);
+             InputStream fontStream = resourceStream(FONT_AWESOME_FILE_NAME)) {
 
+
+            fontAwesome = Font.loadFont(fontStream, 15);
 
             StarCatalogue catalogue = new StarCatalogue.Builder()
                     .loadFrom(hs, HygDatabaseLoader.INSTANCE)
@@ -116,9 +123,12 @@ public final class Main extends Application {
             stage.setMinWidth(MIN_WIDTH);
 
             // Barre de contrôle
-            HBox controlBar = new HBox(observationPosition(observerLocationBean), new Separator(Orientation.VERTICAL),
-                    observationTime(dateTimeBean, timeAnimator), new Separator(Orientation.VERTICAL),
-                    timeLapsePane(timeAnimator, dateTimeBean));
+            //TODO longitude à 3 chiffres et autres
+            HBox controlBar = new HBox(observationPosition(observerLocationBean)
+                    ,new Separator(Orientation.VERTICAL)
+                    ,observationTime(dateTimeBean, timeAnimator)
+                    ,new Separator(Orientation.VERTICAL)
+                    ,timeLapsePane(timeAnimator, dateTimeBean));
 
             controlBar.setStyle("-fx-spacing: 4; -fx-padding: 4;");
             mainPane.setTop(controlBar);
@@ -151,7 +161,7 @@ public final class Main extends Application {
     private HBox observationPosition(ObserverLocationBean observerLocationBean) {
 
         HBox observationPositionPane = new HBox();
-        observationPositionPane.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left;");
+        observationPositionPane.setStyle(HBOX_STYLE);
 
         NumberStringConverter stringToNumberConverter =
                 new NumberStringConverter("#0.00");
@@ -170,7 +180,7 @@ public final class Main extends Application {
     private HBox observationTime(DateTimeBean dateTimeBean, TimeAnimator timeAnimator) {
 
         HBox observationTimePane = new HBox();
-        observationTimePane.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left;");
+        observationTimePane.setStyle(HBOX_STYLE);
 
         //Date
         Label dateLabel = new Label("Date :");
@@ -231,22 +241,20 @@ public final class Main extends Application {
         Button resetButton = new Button(reset);
         Button playPauseButton = new Button();
 
-        try (InputStream fontStream = resourceStream("/Font Awesome 5 Free-Solid-900.otf")) {
 
-            Font fontAwesome = Font.loadFont(fontStream, 15);
-            resetButton.setFont(fontAwesome);
+        resetButton.setFont(fontAwesome);
 
-            resetButton.setOnAction(e -> dateTimeBean.setZonedDateTime(ZonedDateTime.now()));
-            resetButton.disableProperty().bind(timeAnimator.isRunning());
+        resetButton.setOnAction(e -> dateTimeBean.setZonedDateTime(ZonedDateTime.now()));
+        resetButton.disableProperty().bind(timeAnimator.isRunning());
 
-            String play = "\uf04b";
-            String pause = "\uf04c";
-            playPauseButton.setText(play);
+        String play = "\uf04b";
+        String pause = "\uf04c";
+        playPauseButton.setText(play);
 
-            playPauseButton.setFont(fontAwesome);
-            playPauseButton.setText(play);
-            playPauseButton.setOnAction(e -> playPauseButton.setText((playPauseButton.getText().equals(play)) ? pause : play));
-        }
+        playPauseButton.setFont(fontAwesome);
+        playPauseButton.setText(play);
+        playPauseButton.setOnAction(e -> playPauseButton.setText((playPauseButton.getText().equals(play)) ? pause : play));
+
         playPauseButton.textProperty().addListener((p, o, n) -> {
                     if (timeAnimator.isRunning().get()) timeAnimator.stop();
                     else timeAnimator.start();
@@ -331,7 +339,7 @@ public final class Main extends Application {
     }
 
 
-
+    // Enum représentant les types de coordonnées
     private enum CoordinatesType {
         LATITUDE, LONGITUDE;
     }

@@ -30,17 +30,13 @@ import static javafx.beans.binding.Bindings.createDoubleBinding;
 public final class SkyCanvasManager {
 
     private final Canvas canvas;
-    //TODO on fait ce qui intelliJ ?
-    private final DateTimeBean dateTimeBean;
-    private final ObserverLocationBean observerLocationBean;
-    private final ViewingParametersBean viewingParametersBean;
     private final SkyCanvasPainter skyCanvasPainter;
+    private final ObservableValue<StereographicProjection> projection;
 
     private final ObservableDoubleValue mouseAzDeg;
     private final ObservableDoubleValue mouseAltDeg;
     private final ObservableValue<CelestialObject> objectUnderMouse;
 
-    private final ObservableValue<StereographicProjection> projection;
     private final ObservableValue<Transform> planeToCanvas;
     private final ObservableValue<ObservedSky> observedSky;
     private final ObjectProperty<Point2D> mousePosition;
@@ -65,41 +61,34 @@ public final class SkyCanvasManager {
 
         // Initialisation des beans et attributs
         canvas = new Canvas();
-        this.dateTimeBean = dateTimeBean;
-        this.observerLocationBean = observerLocationBean;
-        this.viewingParametersBean = viewingParametersBean;
         skyCanvasPainter = new SkyCanvasPainter(canvas);
 
 
-        HorizontalCoordinates viewingParametersBeanCenter = viewingParametersBean.getCenter();
+       projection = Bindings.createObjectBinding(() -> (new StereographicProjection(viewingParametersBean.getCenter()))
+                , viewingParametersBean.centerProperty());
 
-        projection = Bindings.createObjectBinding(() -> (new StereographicProjection(viewingParametersBeanCenter))
-                , this.viewingParametersBean.centerProperty());
 
-        StereographicProjection stereographicProjection = projection.getValue();
 
-        double viewingParametersBeanFoVDeg = viewingParametersBean.getFieldOfViewDeg();
 
         planeToCanvas = Bindings.createObjectBinding(() -> {
                     double dilatation = canvas.getWidth()
-                            / stereographicProjection.applyToAngle(Angle.ofDeg(viewingParametersBeanFoVDeg));
+                            / projection.getValue().applyToAngle(Angle.ofDeg(viewingParametersBean.getFieldOfViewDeg()));
 
                     return Transform.affine(dilatation, 0, 0, -dilatation, canvas.getWidth() / 2.0, canvas.getHeight() / 2.0);
                 }
-                , this.viewingParametersBean.fieldOfViewDegProperty()
-                //todo avant il y avait projection.getValue() ...
+                , viewingParametersBean.fieldOfViewDegProperty()
                 , projection
                 , canvas.heightProperty()
                 , canvas.widthProperty());
 
         observedSky = Bindings.createObjectBinding(() -> new ObservedSky(dateTimeBean.getZonedDateTime()
                         , observerLocationBean.getCoordinates()
-                        , stereographicProjection
+                        , projection.getValue()
                         , starCatalogue)
-                , this.observerLocationBean.coordinatesProperty()
-                , this.dateTimeBean.dateProperty()
-                , this.dateTimeBean.timeProperty()
-                , this.dateTimeBean.zoneProperty()
+                , observerLocationBean.coordinatesProperty()
+                , dateTimeBean.dateProperty()
+                , dateTimeBean.timeProperty()
+                , dateTimeBean.zoneProperty()
                 , projection);
 
         mousePosition = new SimpleObjectProperty<>(new Point2D(0, 0));
@@ -109,17 +98,11 @@ public final class SkyCanvasManager {
                     Point2D newPosition;
 
                     if ((newPosition = inversePlaneToCanvas(mousePosition.get())) != null) {
-                        return stereographicProjection.inverseApply(CartesianCoordinates.of(newPosition.getX(), newPosition.getY()));
+                        return projection.getValue().inverseApply(CartesianCoordinates.of(newPosition.getX(), newPosition.getY()));
                     } else {
                         return null;
                     }
                 }
-/**
- return ((newPosition = inversePlaneToCanvas(mousePosition.get()) )!= null) ?
- projection.getValue().inverseApply(CartesianCoordinates.of(newPosition.getX(), newPosition.getY()))
- : newPosition;
- */
-
                 , mousePosition
                 , projection
                 , planeToCanvas);
@@ -143,17 +126,6 @@ public final class SkyCanvasManager {
                     } else {
                         return null;
                     }
-
-                    /**
-                     Point2D newCoord;
-                     try {
-                     newCoord = planeToCanvas.getValue().inverseTransform(mousePosition.get().getX(), mousePosition.get().getY());
-                     return observedSky.getValue().objectClosestTo(CartesianCoordinates.of(newCoord.getX(), newCoord.getY()), 10).orElse(null);
-
-                     } catch (NonInvertibleTransformException e) {
-                     return null;
-                     }
-                     */
                 }
                 , observedSky
                 , planeToCanvas
@@ -161,13 +133,13 @@ public final class SkyCanvasManager {
 
         canvas.setOnScroll(scrollEvent -> {
 
-            double currentFoV = viewingParametersBeanFoVDeg;
+            double currentFoV = viewingParametersBean.getFieldOfViewDeg();
             double scrollDeltaX = scrollEvent.getDeltaX();
             double scrollDeltaY = scrollEvent.getDeltaY();
 
             double x = Math.abs(scrollDeltaX);
             double y = Math.abs(scrollDeltaY);
-            double z = Math.max(x, y) == x ? currentFoV + scrollDeltaX : currentFoV + scrollDeltaY;
+            double z = Math.max(x, y) == x ?  currentFoV + scrollDeltaX : currentFoV + scrollDeltaY;
 
             viewingParametersBean.setFieldOfViewDeg(FOV_INTERVAL_DEG.clip(z));
         });
@@ -175,8 +147,9 @@ public final class SkyCanvasManager {
 
         canvas.setOnKeyPressed(keyEvent -> {
 
-            double centerALtDeg = viewingParametersBeanCenter.altDeg();
-            double centerAzDeg = viewingParametersBeanCenter.azDeg();
+            HorizontalCoordinates viewingCenter = viewingParametersBean.getCenter();
+            double centerALtDeg = viewingCenter.altDeg();
+            double centerAzDeg = viewingCenter.azDeg();
 
             switch (keyEvent.getCode()) {
                 case LEFT:
@@ -212,8 +185,8 @@ public final class SkyCanvasManager {
 
         });
 
-        planeToCanvas.addListener(e -> drawSky(stereographicProjection));
-        observedSky.addListener(e -> drawSky(stereographicProjection));
+        planeToCanvas.addListener(e -> drawSky());
+        observedSky.addListener(e -> drawSky());
 
     }
 
@@ -280,8 +253,8 @@ public final class SkyCanvasManager {
         return objectUnderMouse;
     }
 
-    private void drawSky(StereographicProjection stereographicProjection) {
-
+    private void drawSky() {
+        StereographicProjection stereographicProjection = projection.getValue();
         ObservedSky sky = observedSky.getValue();
         Transform transform = planeToCanvas.getValue();
 

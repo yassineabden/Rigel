@@ -15,7 +15,7 @@ public final class TimeAnimator extends AnimationTimer {
 
     private final DateTimeBean instantBean;
     //TODO attribut donc privé?
-    ZonedDateTime simulatedZoneDateTime;
+    private ZonedDateTime simulatedZoneDateTime;
     private final ObjectProperty <TimeAccelerator> accelerator = new SimpleObjectProperty<>();
     private final BooleanProperty running = new SimpleBooleanProperty();
     private long initialTime;
@@ -39,9 +39,8 @@ public final class TimeAnimator extends AnimationTimer {
      */
     @Override
     public void start(){
-        //todo set running avant ou après start?
-        running.set(true);
         super.start();
+        running.set(true);
     }
 
     /**
@@ -52,6 +51,7 @@ public final class TimeAnimator extends AnimationTimer {
     @Override
     public void handle(long realTime) {
 
+        // Initialise l'instant de début de l'animation
         if (initialTime == -1){
             initialTime = realTime;
             simulatedZoneDateTime = instantBean.getZonedDateTime();
@@ -76,7 +76,9 @@ public final class TimeAnimator extends AnimationTimer {
      *
      * @return l'état de l'animateur
      */
-    public ReadOnlyBooleanProperty isRunning(){return running;}
+    public ReadOnlyBooleanProperty isRunning(){
+        return running;
+    }
 
     /**
      * Retourne le contenu de l'accélérateur de temps
@@ -96,7 +98,7 @@ public final class TimeAnimator extends AnimationTimer {
         return accelerator;
     }
 
-    /**
+    /** TODO c'est normal qu'on l'utilise jamais?
      * Modifie le contenu de l'accélérateur de temps
      *
      * @param accelerator nouvel accélérateur

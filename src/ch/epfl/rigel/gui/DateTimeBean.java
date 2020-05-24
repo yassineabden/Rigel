@@ -8,7 +8,12 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-
+/**
+ * Bean représentant le triplet (date, heure, fuseau) correspondant à l'instant d'obseravtion
+ *
+ * @author Yassine Abdennadher (299273)
+ * @author Juliette Aerni (296670)
+ */
 public final class DateTimeBean {
 
     private ObjectProperty<LocalDate> date = new SimpleObjectProperty<>();

@@ -46,15 +46,6 @@ public class EquatorialCoordinatesTest {
         assertEquals(90,hc4.decDeg()
         ); }
 
-    @Test
-    void isValidRaHrWithValidValues(){
-        assertTrue(EquatorialCoordinates.isValidRaHr(18));
-        assertTrue(EquatorialCoordinates.isValidRaHr(23));
-    }
-    @Test
-    void isValidDecWithValidValues(){
-        assertTrue(EquatorialCoordinates.isValidDec(90));
-        assertTrue(EquatorialCoordinates.isValidDec(-50)); }
 
     @Test
     void toStringWorksonEclipticCoordinates(){

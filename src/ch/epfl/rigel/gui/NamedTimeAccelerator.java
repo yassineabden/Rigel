@@ -3,7 +3,7 @@ package ch.epfl.rigel.gui;
 import java.time.Duration;
 
 /**
- * Enumération représentant un accélérateur de temps
+ * Enumération représentant un accélérateur de temps constitué d'une paire (nom, accélérateur)
  *
  * @author Yassine Abdennadher (299273)
  * @author Juliette Aerni (296670)

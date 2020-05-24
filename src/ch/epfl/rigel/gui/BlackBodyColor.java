@@ -51,8 +51,9 @@ public final class BlackBodyColor {
 
     private static int tempToIndex(float kelvin) {
 
-        return (int) (kelvin - 1000) / 100;
+        return (int) (kelvin - TEMPERATURE_RANGE.low()) / 100;
     }
+    //TODO est-ce qu'on peut juste mettre bbr.color.txt?
 
     // Transforme les couleurs données dans le fichier, donné en argument sous forme de chaîne de caractères, en instances de la classe Color
     private static List<Color> colorList(String fileName) {
