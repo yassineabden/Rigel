@@ -36,6 +36,7 @@ import java.util.function.UnaryOperator;
 
 public final class Main extends Application {
 
+
     private final static GeographicCoordinates INITIAL_POSITION = GeographicCoordinates.ofDeg(6.57, 46.52);
     private final static HorizontalCoordinates INITIAL_OBSERVATION = HorizontalCoordinates.ofDeg(180.000000000001, 15);
     private final static double INITIAL_FIELD_OF_VIEW = 100;
@@ -56,6 +57,11 @@ public final class Main extends Application {
                     .build();
             fontAwesome = Font.loadFont(fontStream, 15);
         }
+=======
+
+    private InputStream resourceStream(String resourceName) {
+        return getClass().getResourceAsStream(resourceName);
+>>>>>>> origin/master
     }
 */
 
@@ -292,7 +298,9 @@ public final class Main extends Application {
                         stringToNumberConverter.fromString(newText).doubleValue();
 
                 if (coordinatesType == CoordinatesType.LONGITUDE) {
+
                     return checkCoordinates(GeographicCoordinates::isValidLonDeg, newCoord, change);
+
                 } else {
                     return checkCoordinates(GeographicCoordinates::isValidLatDeg, newCoord, change);
                 }
@@ -315,6 +323,7 @@ public final class Main extends Application {
 
     }
 
+
     //Contrôle si la coordonnée est valide (c-à-d nombre à deux décimales et compris dans les bons intervalles)
     private TextFormatter.Change checkCoordinates(Predicate<Double> predicate, double coordinates, TextFormatter.Change change) {
 
@@ -322,9 +331,9 @@ public final class Main extends Application {
     }
 
 
+
     private enum CoordinatesType {
         LATITUDE, LONGITUDE;
-
     }
 
 }
