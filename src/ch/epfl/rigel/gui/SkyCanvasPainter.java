@@ -233,8 +233,8 @@ public final class SkyCanvasPainter {
     /**
      * Calcule le diamètre d'un object celeste ayant une magnitude (une étoile ou une planète)
      *
-     * @param object object dont on veut calculer le diamètre
-     * @param projection la projection stéréographique utilisée pour projeter les coordonées sphérique en coordonées carthésiennes
+     * @param object        object dont on veut calculer le diamètre
+     * @param projection    la projection stéréographique utilisée pour projeter les coordonées sphérique en coordonées carthésiennes
      * @param planeToCanvas transformation utilisée pour passer d'un repère carthésien au repère du canvas
      * @return le diamètre de l'object célèste projeté sur le canvas par rapport à sa magnitude
      */
@@ -250,7 +250,7 @@ public final class SkyCanvasPainter {
      * Applique la transformation d'un repère carthésien au repère du canvas à des coordonées cathésiennes
      *
      * @param planeToCanvas transformation utilisée pour passer d'un repère carthésien au repère du canvas
-     * @param coordinates coordonées carthésiennes à transformer
+     * @param coordinates   coordonées carthésiennes à transformer
      * @return les nouvelles coordonées sous forme d'un point 2D
      */
     private Point2D carthesianCoordOnCanvas(Transform planeToCanvas, CartesianCoordinates coordinates) {
@@ -259,7 +259,8 @@ public final class SkyCanvasPainter {
 
     /**
      * Applique la transformation d'un repère carthésien au repère du canvas à un diamètre
-     * @param d diamètre à transformer
+     *
+     * @param d             diamètre à transformer
      * @param planeToCanvas transformation utilisée pour passer d'un repère carthésien au repère du canvas
      * @return diamètre transformé
      */
