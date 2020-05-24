@@ -21,7 +21,12 @@ import javafx.scene.transform.Transform;
 
 import static javafx.beans.binding.Bindings.createDoubleBinding;
 
-
+/**
+ * Classe s'ocuupant de gérer les actions et mises à jour du canvas
+ *
+ * @author Yassine Abdennadher (299273)
+ * @author Juliette Aerni (296670)
+ */
 public final class SkyCanvasManager {
 
     private final Canvas canvas;
@@ -46,7 +51,14 @@ public final class SkyCanvasManager {
     private final static ClosedInterval ALTITUDE_DEG_INTERVAL = ClosedInterval.of(5, 90);
     private final static ClosedInterval FOV_INTERVAL_DEG = ClosedInterval.of(30, 150);
 
-
+    /**TODO public?
+     * Constructeur du manager de canvas, initialise les propriétés essentielles
+     *
+     * @param starCatalogue catalogue contenant les étoiles et planètes ud ciel observé
+     * @param dateTimeBean
+     * @param observerLocationBean
+     * @param viewingParametersBean
+     */
     public SkyCanvasManager(StarCatalogue starCatalogue, DateTimeBean dateTimeBean, ObserverLocationBean observerLocationBean, ViewingParametersBean viewingParametersBean) {
 
         canvas = new Canvas();

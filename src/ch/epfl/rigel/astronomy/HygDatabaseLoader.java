@@ -51,7 +51,7 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
 //TODO duplication de code?
             while ((line = bufferedReader.readLine()) != null) {
                 String[] parts = line.split(SEPARATOR);
-                int hipparcosId = parts[HIP].isEmpty()? DEFAULT_ZERO : Integer.parseInt(parts[HIP]);
+                int hipparcosId = parts[HIP].isEmpty()? 0 : Integer.parseInt(parts[HIP]);
                 String con = parts[CON];
                 String bayer = parts[BAYER].isEmpty()? "?": parts[BAYER];
                 String name = parts[PROPER].isEmpty()? bayer+ " " + con: parts[PROPER];
