@@ -28,6 +28,23 @@ public final class BlackBodyColor {
 
     private BlackBodyColor() { }
 
+
+    // Transforme les couleurs données dans le fichier, donné en argument sous forme de chaîne de caractères, en instances de la classe Color
+    private static List<Color> colorList(String fileName) {
+
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(BlackBodyColor.class.getResourceAsStream(fileName), US_ASCII))) {
+
+            return bufferedReader.lines()
+                    .filter(l -> (!l.startsWith("#") && (l.regionMatches((int) DEG.low(), "10deg", 0, (int) DEG.size()))))
+                    .map(l -> Color.web(l.substring((int) COLOR_RGB.low(), (int) COLOR_RGB.high())))
+                    .collect(Collectors.toUnmodifiableList());
+
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+
     /**
      * Retourne la couleur correspondante à la température donnée
      *
@@ -44,7 +61,7 @@ public final class BlackBodyColor {
     }
     // TODO les nombres magiques représentent ils qqch? Si oui il faut les stocker dans des csts!!
     private static int validKelvinTemprature(float kelvin) {
-
+//todo cte
         int temp = Math.round(kelvin / 100);
         return temp * 100;
     }
@@ -55,19 +72,6 @@ public final class BlackBodyColor {
     }
     //TODO est-ce qu'on peut juste mettre bbr.color.txt?
 
-    // Transforme les couleurs données dans le fichier, donné en argument sous forme de chaîne de caractères, en instances de la classe Color
-    private static List<Color> colorList(String fileName) {
 
-        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(BlackBodyColor.class.getResourceAsStream(fileName), US_ASCII))) {
-
-            return bufferedReader.lines()
-                    .filter(l -> (!l.startsWith("#") && (l.regionMatches((int) DEG.low(), "10deg", 0, (int) DEG.size()))))
-                    .map(l -> Color.web(l.substring((int) COLOR_RGB.low(), (int) COLOR_RGB.high())))
-                    .collect(Collectors.toUnmodifiableList());
-
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
 
 }

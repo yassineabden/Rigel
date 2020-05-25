@@ -14,7 +14,6 @@ import java.time.ZonedDateTime;
 public final class TimeAnimator extends AnimationTimer {
 
     private final DateTimeBean instantBean;
-    //TODO attribut donc privé?
     private ZonedDateTime simulatedZoneDateTime;
     private final ObjectProperty <TimeAccelerator> accelerator = new SimpleObjectProperty<>();
     private final BooleanProperty running = new SimpleBooleanProperty();

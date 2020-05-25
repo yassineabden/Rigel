@@ -174,11 +174,11 @@ final class SkyCanvasPainter {
 
         // premier cercle à 25% d'opacité
         graphicsContext.setFill(Color.YELLOW.deriveColor(0, 0, 1, SUN_FIRST_DISC_OPACITY));
-        graphicsContext.fillOval(sunX - (dTransformed * SUN_FIRST_DISC_DIAMETER_EXPANSION) / 2, sunY - (dTransformed * SUN_FIRST_DISC_DIAMETER_EXPANSION) / 2, dTransformed * 2.2, dTransformed * 2.2);
-//TODO c'est + ou * ?
+        graphicsContext.fillOval(sunX - (dTransformed * SUN_FIRST_DISC_DIAMETER_EXPANSION) / 2, sunY - (dTransformed * SUN_FIRST_DISC_DIAMETER_EXPANSION) / 2, dTransformed * SUN_FIRST_DISC_DIAMETER_EXPANSION, dTransformed * SUN_FIRST_DISC_DIAMETER_EXPANSION);
+
         //deuxième disque
         graphicsContext.setFill(Color.YELLOW);
-        graphicsContext.fillOval(sunX - (dTransformed + SUN_SECOND_DISC_DIAMETER_EXPANSION) / 2, sunY - (dTransformed + SUN_SECOND_DISC_DIAMETER_EXPANSION) / 2, dTransformed + SUN_SECOND_DISC_DIAMETER_EXPANSION, dTransformed + SUN_SECOND_DISC_DIAMETER_EXPANSION);
+        graphicsContext.fillOval(sunX - (dTransformed * SUN_SECOND_DISC_DIAMETER_EXPANSION) / 2, sunY - (dTransformed * SUN_SECOND_DISC_DIAMETER_EXPANSION) / 2, dTransformed * SUN_SECOND_DISC_DIAMETER_EXPANSION, dTransformed * SUN_FIRST_DISC_DIAMETER_EXPANSION);
 
         //troisième disque
         graphicsContext.setFill(Color.WHITE);

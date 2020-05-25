@@ -49,7 +49,7 @@ public final class SkyCanvasManager {
     private final static ClosedInterval FOV_INTERVAL_DEG = ClosedInterval.of(30, 150);
 
     /**
-     * TODO public?
+     *
      * Constructeur du manager de canvas, initialise les propriétés essentielles
      *
      * @param starCatalogue         catalogue contenant les étoiles et planètes du ciel observé
@@ -199,7 +199,7 @@ public final class SkyCanvasManager {
         return canvas;
     }
 
-    /**TODO on utilise pas?
+    /**
      * Retourne l'azimut en degrés de la position horizontal de la souris
      *
      * @return l'azimut en degrés de la position horizontal de la souris
@@ -267,12 +267,6 @@ public final class SkyCanvasManager {
 
     }
     //TODO c'est quoi le mieux/diff entre try catch et throws Exception?
-
-    /**
-     * private Point2D inversePlaneToCanvas (Point2D canvasCoordinates) throws NonInvertibleTransformException {
-     * return planeToCanvas.getValue().inverseTransform(canvasCoordinates);
-     * }
-     */
 
     private Point2D inversePlaneToCanvas(Point2D canvasCoordinates) {
         try {
