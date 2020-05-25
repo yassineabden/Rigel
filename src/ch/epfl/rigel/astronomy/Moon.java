@@ -13,7 +13,6 @@ import java.util.Locale;
 public final class Moon extends CelestialObject {
 
     private final float phase;
-    private final static String MOON_NAME = "Lune";
     private final static ClosedInterval INTERVAL_PHASE = ClosedInterval.of(0,1);
 
 
@@ -29,7 +28,7 @@ public final class Moon extends CelestialObject {
      * @throws NullPointerException     si le nom ou la position equatoriale sont nuls
      */
     public Moon(EquatorialCoordinates equatorialPos, float angularSize, float magnitude, float phase) {
-        super(MOON_NAME,equatorialPos,angularSize,magnitude);
+        super("Lune",equatorialPos,angularSize,magnitude);
 
         Preconditions.checkInInterval(INTERVAL_PHASE,phase);
         this.phase = phase;
@@ -42,6 +41,6 @@ public final class Moon extends CelestialObject {
      */
     @Override
     public String info(){
-        return String.format(Locale.ROOT,"Lune (%.1f%%)",phase*100);
+        return String.format(Locale.ROOT,"%s (%.1f%%)",super.name(),phase*100);
     }
 }
