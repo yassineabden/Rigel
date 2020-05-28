@@ -179,8 +179,8 @@ final public class SkyCanvasPainter {
 
         //deuxième disque
         graphicsContext.setFill(Color.YELLOW);
-        graphicsContext.fillOval(sunX - (dTransformed * SUN_SECOND_DISC_DIAMETER_EXPANSION) / 2, sunY - (dTransformed * SUN_SECOND_DISC_DIAMETER_EXPANSION) / 2
-                ,dTransformed * SUN_SECOND_DISC_DIAMETER_EXPANSION, dTransformed * SUN_FIRST_DISC_DIAMETER_EXPANSION);
+        graphicsContext.fillOval(sunX - (dTransformed + SUN_SECOND_DISC_DIAMETER_EXPANSION) / 2, sunY - (dTransformed + SUN_SECOND_DISC_DIAMETER_EXPANSION) / 2
+                ,dTransformed + SUN_SECOND_DISC_DIAMETER_EXPANSION, dTransformed + SUN_FIRST_DISC_DIAMETER_EXPANSION);
 
         //troisième disque
         graphicsContext.setFill(Color.WHITE);
