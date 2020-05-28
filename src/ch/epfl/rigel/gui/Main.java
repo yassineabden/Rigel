@@ -39,16 +39,22 @@ public final class Main extends Application {
 
     private Font fontAwesome;
 
+    // Valeurs initiales de la position d'observation et du champ de vue
     private final static GeographicCoordinates INITIAL_POSITION = GeographicCoordinates.ofDeg(6.57, 46.52);
     private final static HorizontalCoordinates INITIAL_OBSERVATION = HorizontalCoordinates.ofDeg(180.000000000001, 15);
     private final static double INITIAL_FIELD_OF_VIEW = 100;
+
+    // Valeurs du canevas
     private final static double MIN_WIDTH = 800;
     private final static double MIN_HEIGHT = 600;
     private final static String TITLE = "Rigel";
+
+    // Noms des différentes sources
     private final static String STARS_RESOURCES_FILE_NAME = "/hygdata_v3.csv";
     private final static String ASTERISMS_RESOURCES_FILE_NAME = "/asterisms.txt";
     private static final String FONT_AWESOME_FILE_NAME = "/Font Awesome 5 Free-Solid-900.otf";
 
+    // Styles FX utilisés pour les différents noeuds
     private static final String STYLE_BASELINE_RIGHT = "-fx-alignment: baseline-right;";
     private static final String STYLE_BASELINE_LEFT = "-fx-alignment: baseline-left;";
     private static final String STYLE_SPACING_INHERIT = "--fx-spacing: inherit;";
@@ -66,6 +72,7 @@ public final class Main extends Application {
         launch(args);
     }
 
+    // Retourne l'input de la ressource en fonction de son nom
     private InputStream resourceStream(String resourceName) {
         return getClass().getResourceAsStream(resourceName);
     }
@@ -81,7 +88,7 @@ public final class Main extends Application {
              InputStream as = resourceStream(ASTERISMS_RESOURCES_FILE_NAME);
              InputStream fontStream = resourceStream(FONT_AWESOME_FILE_NAME)) {
 
-
+            // Chargement des ressources
             fontAwesome = Font.loadFont(fontStream, 15);
 
             StarCatalogue catalogue = new StarCatalogue.Builder()
@@ -89,7 +96,7 @@ public final class Main extends Application {
                     .loadFrom(as, AsterismLoader.INSTANCE)
                     .build();
 
-            //Initialisation des beans
+            //Initialisation des beans et de l'accélérateur de temps
             ObserverLocationBean observerLocationBean =
                     new ObserverLocationBean();
             observerLocationBean.setCoordinates(INITIAL_POSITION);
@@ -138,6 +145,7 @@ public final class Main extends Application {
             // Barre d'information
             mainPane.setBottom(informationPane(canvasManager, viewingParametersBean));
 
+            // Affiche le programme
             stage.setScene(new Scene(mainPane));
             stage.show();
             sky.requestFocus();
@@ -218,19 +226,19 @@ public final class Main extends Application {
         HBox timeLapsePane = new HBox();
         timeLapsePane.setStyle(STYLE_SPACING_INHERIT);
 
+        // Accélérateur
         ChoiceBox<NamedTimeAccelerator> timeAcceleratorChoiceBox = new ChoiceBox<>();
         timeAcceleratorChoiceBox.setItems(FXCollections.observableArrayList(NamedTimeAccelerator.values()));
         timeAcceleratorChoiceBox.setValue(NamedTimeAccelerator.TIMES_300);
         timeAnimator.acceleratorProperty().bind(Bindings.select(timeAcceleratorChoiceBox.valueProperty(), "accelerator"));
         timeAcceleratorChoiceBox.disableProperty().bind(timeAnimator.isRunning());
 
+        // Boutons reset, pause, play
         String reset = "\uf0e2";
         Button resetButton = new Button(reset);
         Button playPauseButton = new Button();
 
-
         resetButton.setFont(fontAwesome);
-
         resetButton.setOnAction(e -> dateTimeBean.setZonedDateTime(ZonedDateTime.now()));
         resetButton.disableProperty().bind(timeAnimator.isRunning());
 
@@ -247,6 +255,7 @@ public final class Main extends Application {
                     else timeAnimator.start();
                 }
         );
+
         timeLapsePane.getChildren().addAll(timeAcceleratorChoiceBox, resetButton, playPauseButton);
 
 
@@ -255,26 +264,23 @@ public final class Main extends Application {
 
     //Barre d'information
     private BorderPane informationPane(SkyCanvasManager canvasManager, ViewingParametersBean viewingParametersBean) {
-        canvasManager.objectUnderMouseProperty().addListener(
-                (p, o, n) -> {
-                    if (n != null) System.out.println(n);
-                });
 
+        // Champ de vue
         Text fieldOfViewText = new Text();
         fieldOfViewText.textProperty().bind(Bindings.format("Champ de vue : %.2f °", viewingParametersBean.fieldOfViewDegProperty()));
 
+        // Coordonnées de la souris
         Text mousePositionText = new Text();
         mousePositionText.textProperty().bind(Bindings.format("Azimut : %.2f°, hauteur : %.2f°"
                 , canvasManager.mouseAzDegProperty(), canvasManager.mouseAltDegProperty()));
 
-
+        // Objet céleste sous la souris
         Text objectClosesToText = new Text();
         objectClosesToText.textProperty().bind(Bindings.createStringBinding(()
                 -> canvasManager.getObjectUnderMouse() == null ? "" : canvasManager.getObjectUnderMouse().info(), canvasManager.objectUnderMouseProperty()));
 
         BorderPane informationPane = new BorderPane(objectClosesToText, null, mousePositionText, null, fieldOfViewText);
         informationPane.setStyle(STYLE_INFORMATION_PANE);
-
 
         return informationPane;
     }

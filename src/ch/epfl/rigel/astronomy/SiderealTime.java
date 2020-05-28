@@ -13,6 +13,7 @@ import java.time.temporal.ChronoUnit;
 /**
  * Classe de temps sidéral
  * Mesure de temps pour les calculs astronomiques
+ *
  * @author Yassine Abdennadher (299273)
  * @author Juliette Aerni (296670)
  */

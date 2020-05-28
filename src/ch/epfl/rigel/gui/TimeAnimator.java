@@ -24,7 +24,6 @@ public final class TimeAnimator extends AnimationTimer {
      *
      * @param dateTimeBean l'instant d'observation
      */
-    //todo private-public?
     public TimeAnimator (DateTimeBean dateTimeBean){
         instantBean = dateTimeBean;
         running.set(false);
@@ -71,9 +70,9 @@ public final class TimeAnimator extends AnimationTimer {
     }
 
     /**
-     * Retourne l'état de l'animateur
+     * Retourne la propriété de l'état de l'animateur
      *
-     * @return l'état de l'animateur
+     * @return la propriété de l'état de l'animateur
      */
     public ReadOnlyBooleanProperty isRunning(){
         return running;
@@ -97,7 +96,7 @@ public final class TimeAnimator extends AnimationTimer {
         return accelerator;
     }
 
-    /** TODO c'est normal qu'on l'utilise jamais?
+    /**
      * Modifie le contenu de l'accélérateur de temps
      *
      * @param accelerator nouvel accélérateur

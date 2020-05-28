@@ -125,10 +125,12 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         return new Planet(name, newEqCoord, (float) (newAngularSize), (float) (newMagnitude));
     }
 
+    // Calcul l'anomalie moyenne d'une planète
     private double meanAnomaly(double avAngularVelocity,double daysSinceJ2010, double lonAtJ2010, double lonAtPerigee) {
         return avAngularVelocity*daysSinceJ2010 + lonAtJ2010 - lonAtPerigee;
     }
 
+    // Calcul l'anomalie réelle d'une planète
     private double realAnomaly(double meanAnomaly, double excOrbite) {
         return meanAnomaly + 2 * excOrbite * Math.sin(meanAnomaly);
     }

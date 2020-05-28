@@ -39,6 +39,7 @@ public final class StarCatalogue {
             i++;
         }
 
+        // Donne la liste d'index des étoiles de chaque asterisms et rajoute le lien dans la map
         for (Asterism a : asterisms) {
             List<Integer> aIndex = new ArrayList<>(a.stars().size());
             for (Star s : a.stars()) {

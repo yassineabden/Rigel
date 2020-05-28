@@ -24,9 +24,9 @@ import java.util.Set;
  * @author Yassine Abdennadher (299273)
  * @author Juliette Aerni (296670)
  */
-//TODO elle est private, package private ou publique?
-final class SkyCanvasPainter {
+final public class SkyCanvasPainter {
 
+    private static final int INTERCARDINAL_DEG_STEP = 45;
     private final Canvas canvas;
     private final GraphicsContext graphicsContext;
 
@@ -38,7 +38,7 @@ final class SkyCanvasPainter {
     private final static double SUN_FIRST_DISC_DIAMETER_EXPANSION = 2.2;
     private final static double SUN_SECOND_DISC_DIAMETER_EXPANSION = 2.0;
 
-    //TODO public, private? comment on sait?
+
     public SkyCanvasPainter(Canvas canvas) {
 
         this.canvas = canvas;
@@ -64,6 +64,7 @@ final class SkyCanvasPainter {
      */
     public void drawStars(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas) {
 
+        // Créer un tableau contenant les coordonées des étoiles sur le canvas
         double[] starsOnCanvas = sky.starsPositions();
         planeToCanvas.transform2DPoints(sky.starsPositions(), 0, starsOnCanvas, 0, starsOnCanvas.length / 2);
         Set<Asterism> asterisms = sky.asterisms();
@@ -78,8 +79,6 @@ final class SkyCanvasPainter {
 
             List<Integer> aIndex = sky.asterismIndices(a);
             graphicsContext.beginPath();
-
-            //todo à vérifier s'il faut true ou false au début
 
             for (Integer index : aIndex) {
 
@@ -108,7 +107,7 @@ final class SkyCanvasPainter {
     }
 
     /**
-     * Dessine la ligne d'horizon et les points cardinaux
+     * Dessine la ligne d'horizon, les points cardinaux et intercardinaux
      *
      * @param stereographicProjection la projection stéréographique utilisée pour projeter les coordonées sphérique en coordonées carthésiennes
      * @param planeToCanvas           transformation utilisée pour passer d'un repère carthésien au repère du canvas
@@ -118,6 +117,7 @@ final class SkyCanvasPainter {
         graphicsContext.setStroke(Color.RED);
         graphicsContext.setLineWidth(HORIZON_LINE_WIDTH);
 
+        // Dessine la ligne d'horizon
         Point2D equator = carthesianCoordOnCanvas(planeToCanvas, stereographicProjection.circleCenterForParallel(EQUATOR));
         double equatorD = diameterOnCanvas(stereographicProjection.circleRadiusForParallel(EQUATOR), planeToCanvas);
 
@@ -126,8 +126,8 @@ final class SkyCanvasPainter {
         graphicsContext.setTextBaseline(VPos.TOP);
         graphicsContext.setTextAlign(TextAlignment.CENTER);
 
-        //dessine les points cardinaux
-        for (int deg = 0; deg < 360; deg += 45) {
+        //dessine les points cardinaux et intercardinaux
+        for (int deg = 0; deg < 360; deg += INTERCARDINAL_DEG_STEP) {
             HorizontalCoordinates cardinalPointCoord = HorizontalCoordinates.ofDeg(deg, -0.5);
             Point2D cardinalOnCanvas = carthesianCoordOnCanvas(planeToCanvas, stereographicProjection.apply(cardinalPointCoord));
             graphicsContext.fillText(cardinalPointCoord.azOctantName("N", "E", "S", "W")
@@ -174,15 +174,18 @@ final class SkyCanvasPainter {
 
         // premier cercle à 25% d'opacité
         graphicsContext.setFill(Color.YELLOW.deriveColor(0, 0, 1, SUN_FIRST_DISC_OPACITY));
-        graphicsContext.fillOval(sunX - (dTransformed * SUN_FIRST_DISC_DIAMETER_EXPANSION) / 2, sunY - (dTransformed * SUN_FIRST_DISC_DIAMETER_EXPANSION) / 2, dTransformed * SUN_FIRST_DISC_DIAMETER_EXPANSION, dTransformed * SUN_FIRST_DISC_DIAMETER_EXPANSION);
+        graphicsContext.fillOval(sunX - (dTransformed * SUN_FIRST_DISC_DIAMETER_EXPANSION) / 2, sunY - (dTransformed * SUN_FIRST_DISC_DIAMETER_EXPANSION) / 2
+                ,dTransformed * SUN_FIRST_DISC_DIAMETER_EXPANSION, dTransformed * SUN_FIRST_DISC_DIAMETER_EXPANSION);
 
         //deuxième disque
         graphicsContext.setFill(Color.YELLOW);
-        graphicsContext.fillOval(sunX - (dTransformed * SUN_SECOND_DISC_DIAMETER_EXPANSION) / 2, sunY - (dTransformed * SUN_SECOND_DISC_DIAMETER_EXPANSION) / 2, dTransformed * SUN_SECOND_DISC_DIAMETER_EXPANSION, dTransformed * SUN_FIRST_DISC_DIAMETER_EXPANSION);
+        graphicsContext.fillOval(sunX - (dTransformed * SUN_SECOND_DISC_DIAMETER_EXPANSION) / 2, sunY - (dTransformed * SUN_SECOND_DISC_DIAMETER_EXPANSION) / 2
+                ,dTransformed * SUN_SECOND_DISC_DIAMETER_EXPANSION, dTransformed * SUN_FIRST_DISC_DIAMETER_EXPANSION);
 
         //troisième disque
         graphicsContext.setFill(Color.WHITE);
-        graphicsContext.fillOval(sunX - dTransformed / 2, sunY - dTransformed / 2, dTransformed, dTransformed);
+        graphicsContext.fillOval(sunX - dTransformed / 2, sunY - dTransformed / 2
+                ,dTransformed, dTransformed);
 
     }
 
@@ -201,18 +204,13 @@ final class SkyCanvasPainter {
         Point2D moonCoord = carthesianCoordOnCanvas(planeToCanvas, sky.moonPosition());
 
         graphicsContext.setFill(Color.WHITE);
-        graphicsContext.fillOval(moonCoord.getX() - dTransformed / 2, moonCoord.getY() - dTransformed / 2, dTransformed, dTransformed);
+        graphicsContext.fillOval(moonCoord.getX() - dTransformed / 2, moonCoord.getY() - dTransformed / 2
+                ,dTransformed, dTransformed);
 
     }
 
-    /**
-     * Méthode dessinant une étoile ou une planète
-     *
-     * @param positionsOnCanvas tableaux contenant les posiitons des étoiles ou des planètes à dessiner
-     * @param list              list contenant les étoiles ou les planètes à dessiner
-     * @param projection        la projection stéréographique utilisée pour projeter les coordonées sphérique en coordonées carthésiennes
-     * @param planeToCanvas     transformation utilisée pour passer d'un repère carthésien au repère du canvas
-     */
+
+    // Méthode dessinant une étoile ou une planète
     private void drawBlackBody(double[] positionsOnCanvas, List<? extends CelestialObject> list, StereographicProjection projection, Transform planeToCanvas) {
 
         int i = 0;
@@ -227,6 +225,7 @@ final class SkyCanvasPainter {
                 // les planètes sont grises
                 graphicsContext.setFill(Color.GRAY);
             }
+            // Dessine l'object céleste
             graphicsContext.fillOval(positionsOnCanvas[i] - dTransformed / 2, positionsOnCanvas[i + 1] - dTransformed / 2
                     , dTransformed
                     , dTransformed);

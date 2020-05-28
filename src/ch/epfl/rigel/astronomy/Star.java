@@ -36,6 +36,14 @@ public final class Star extends CelestialObject {
         colorTemperature = colorIndexToTemperature(colorIndex);
     }
 
+    // Donne la température correspondante à l'index de la couleur
+    private int colorIndexToTemperature (float colorIndex){
+        double c = 0.92 * colorIndex;
+        double T = 4600 * (1 / (c + 1.7) + 1 / (c + 0.62));
+
+        return (int) (Math.floor(T));
+    }
+
     /**
      * Retourne le numéro d'Hipparcos de l'étoile
      *
@@ -55,10 +63,5 @@ public final class Star extends CelestialObject {
         return colorTemperature;
     }
 
-    private int colorIndexToTemperature (float colorIndex){
-        double c = 0.92 * colorIndex;
-        double T = 4600 * (1 / (c + 1.7) + 1 / (c + 0.62));
 
-        return (int) (Math.floor(T));
-    }
 }

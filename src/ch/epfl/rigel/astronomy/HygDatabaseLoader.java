@@ -69,7 +69,5 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
         }
     }
 
-    private ? extends Object checkIsEmpty(){
 
-    }
 }

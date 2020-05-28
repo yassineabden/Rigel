@@ -19,7 +19,7 @@ public final class DateTimeBean {
     private ObjectProperty<LocalDate> date = new SimpleObjectProperty<>();
     private ObjectProperty<LocalTime> time = new SimpleObjectProperty<>();
     private ObjectProperty<ZoneId> zone = new SimpleObjectProperty<>();
-    //TODO constructeur?
+
     /**
      * Retourne la propriété de la date
      *
@@ -107,7 +107,6 @@ public final class DateTimeBean {
      * @return l'instant d'observation
      */
     public ZonedDateTime getZonedDateTime() {
-
         return ZonedDateTime.of(getDate(), getTime(), getZone());
     }
 

@@ -48,7 +48,8 @@ public interface TimeAccelerator {
      */
     static TimeAccelerator discrete(long lambda, Duration step) {
 
-        return ((simulatedTime, nanoSeconds) -> simulatedTime.plus(step.multipliedBy((long) (lambda * nanoSeconds / NANOSECONDS_PER_SECOND))));
+        return ((simulatedTime, nanoSeconds) ->
+                simulatedTime.plus(step.multipliedBy((long) (lambda * nanoSeconds / NANOSECONDS_PER_SECOND))));
     }
 
 }

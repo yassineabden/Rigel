@@ -24,7 +24,6 @@ public final class ObserverLocationBean {
 
 
     /**
-     * TODO public
      * Constructeur de bean de l'endroit d'observation
      */
     public ObserverLocationBean() {

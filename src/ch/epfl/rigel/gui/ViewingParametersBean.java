@@ -18,7 +18,6 @@ public final class ViewingParametersBean {
     private final ObjectProperty<HorizontalCoordinates> center;
 
     /**
-     * TODO public?
      * Constructeur de bean des paramètres de vue
      */
     public ViewingParametersBean() {

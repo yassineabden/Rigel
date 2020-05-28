@@ -98,7 +98,7 @@ public final class ObservedSky {
         return array;
     }
 
-    //TODO elle fait quoi enfaite cette méthode?
+    // Retourne l'objcet céleste correspondant à l'index de sa coordonée x
     private CelestialObject indexOfCoordinatesToObject(Objects object, int index) {
 
         if (index % 2 != 0) System.out.println("ObservedSky.indexOfCoordinatesToObject - mauvais index");
@@ -198,7 +198,7 @@ public final class ObservedSky {
         return starCatalogue.asterismIndices(asterism);
     }
 
-    //TODO revoir efficacité et conception
+
     /**
      * Retourne l'objet céleste le plus proche de ce point qui se trouve à une distance inférieure à la distance maximale
      *
