@@ -38,7 +38,8 @@ public final class Angle {
 
     public static double normalizePositive(double rad) {
 
-        return INTERVAL_NORMAL_TRIGO.reduce(rad); }
+        return INTERVAL_NORMAL_TRIGO.reduce(rad);
+    }
 
     /**
      * Transforme un angle donné en secondes en radians

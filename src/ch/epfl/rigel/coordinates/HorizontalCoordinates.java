@@ -33,7 +33,8 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
         Preconditions.checkInInterval(SphericalCoordinates.LONGITUDE_RAD_INTERVAL_TAU, az);
         Preconditions.checkInInterval(SphericalCoordinates.LATITUDE_RAD_INTERVAL, alt);
 
-        return new HorizontalCoordinates(az, alt); }
+        return new HorizontalCoordinates(az, alt);
+    }
 
     /**
      * Construit des coordonnées horizontales à partir d'angle en degrés

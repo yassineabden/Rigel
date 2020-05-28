@@ -52,14 +52,14 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
             //TODO Yassine
             while ((line = bufferedReader.readLine()) != null) {
                 String[] parts = line.split(SEPARATOR);
-                int hipparcosId = parts[HIP].isEmpty()? 0 : Integer.parseInt(parts[HIP]);
+                int hipparcosId = parts[HIP].isEmpty() ? 0 : Integer.parseInt(parts[HIP]);
                 String con = parts[CON];
-                String bayer = parts[BAYER].isEmpty()? "?": parts[BAYER];
-                String name = parts[PROPER].isEmpty()? bayer+ " " + con: parts[PROPER];
+                String bayer = parts[BAYER].isEmpty() ? "?": parts[BAYER];
+                String name = parts[PROPER].isEmpty() ? bayer+ " " + con: parts[PROPER];
                 double rared = Double.parseDouble(parts[RARAD]);
                 double decred = Double.parseDouble(parts[DECRAD]);
-                double magnitude = parts[MAG].isEmpty()? 0 : Double.parseDouble(parts[MAG]);
-                double colorIndex = parts[CI].isEmpty()? 0 : Double.parseDouble(parts[CI]);
+                double magnitude = parts[MAG].isEmpty() ? 0 : Double.parseDouble(parts[MAG]);
+                double colorIndex = parts[CI].isEmpty() ? 0 : Double.parseDouble(parts[CI]);
                 EquatorialCoordinates coordinates = EquatorialCoordinates.of(rared,decred);
 
                 Star star = new Star(hipparcosId,name,coordinates,(float) magnitude,(float) colorIndex);
@@ -67,5 +67,9 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
 
             }
         }
+    }
+
+    private ? extends Object checkIsEmpty(){
+
     }
 }

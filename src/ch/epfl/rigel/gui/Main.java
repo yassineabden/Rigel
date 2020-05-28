@@ -38,6 +38,7 @@ public final class Main extends Application {
 
 
     private Font fontAwesome;
+
     private final static GeographicCoordinates INITIAL_POSITION = GeographicCoordinates.ofDeg(6.57, 46.52);
     private final static HorizontalCoordinates INITIAL_OBSERVATION = HorizontalCoordinates.ofDeg(180.000000000001, 15);
     private final static double INITIAL_FIELD_OF_VIEW = 100;
@@ -46,28 +47,15 @@ public final class Main extends Application {
     private final static String TITLE = "Rigel";
     private final static String STARS_RESOURCES_FILE_NAME = "/hygdata_v3.csv";
     private final static String ASTERISMS_RESOURCES_FILE_NAME = "/asterisms.txt";
-    private static final String HBOX_STYLE = "-fx-spacing: inherit; -fx-alignment: baseline-left;";
     private static final String FONT_AWESOME_FILE_NAME = "/Font Awesome 5 Free-Solid-900.otf";
 
+    private static final String STYLE_BASELINE_RIGHT = "-fx-alignment: baseline-right;";
+    private static final String STYLE_BASELINE_LEFT = "-fx-alignment: baseline-left;";
+    private static final String STYLE_SPACING_INHERIT = "--fx-spacing: inherit;";
+    private static final String STYLE_CONTROL_BAR = "-fx-spacing: 4; -fx-padding: 4;";
+    private static final String STYLE_INFORMATION_PANE = "-fx-padding: 4; -fx-background-color: white;";
+    private static final String STYLE_PREF_WIDHT = "-fx-pref-width:";
 
-    // Constructeur de la classe qui permt d'initialiser tous les flots
-    /*private Main() throws Exception {
-        try (InputStream hs = resourceStream("/hygdata_v3.csv");
-             InputStream as = resourceStream("/asterisms.txt");
-             InputStream fontStream = resourceStream("/Font Awesome 5 Free-Solid-900.otf")) {
-
-            catalogue = new StarCatalogue.Builder()
-                    .loadFrom(hs, HygDatabaseLoader.INSTANCE)
-                    .loadFrom(as, AsterismLoader.INSTANCE)
-                    .build();
-            fontAwesome = Font.loadFont(fontStream, 15);
-        }
-
-    private InputStream resourceStream(String resourceName) {
-        return getClass().getResourceAsStream(resourceName);
-
-    }
-*/
 
     /**
      * Méthode main de la classe
@@ -123,14 +111,13 @@ public final class Main extends Application {
             stage.setMinWidth(MIN_WIDTH);
 
             // Barre de contrôle
-            //TODO longitude à 3 chiffres et autres
             HBox controlBar = new HBox(observationPosition(observerLocationBean)
                     ,new Separator(Orientation.VERTICAL)
                     ,observationTime(dateTimeBean, timeAnimator)
                     ,new Separator(Orientation.VERTICAL)
                     ,timeLapsePane(timeAnimator, dateTimeBean));
 
-            controlBar.setStyle("-fx-spacing: 4; -fx-padding: 4;");
+            controlBar.setStyle(STYLE_CONTROL_BAR);
             mainPane.setTop(controlBar);
 
             // Ciel
@@ -161,7 +148,7 @@ public final class Main extends Application {
     private HBox observationPosition(ObserverLocationBean observerLocationBean) {
 
         HBox observationPositionPane = new HBox();
-        observationPositionPane.setStyle(HBOX_STYLE);
+        observationPositionPane.setStyle(STYLE_SPACING_INHERIT + STYLE_BASELINE_LEFT);
 
         NumberStringConverter stringToNumberConverter =
                 new NumberStringConverter("#0.00");
@@ -180,12 +167,12 @@ public final class Main extends Application {
     private HBox observationTime(DateTimeBean dateTimeBean, TimeAnimator timeAnimator) {
 
         HBox observationTimePane = new HBox();
-        observationTimePane.setStyle(HBOX_STYLE);
+        observationTimePane.setStyle(STYLE_SPACING_INHERIT + STYLE_BASELINE_LEFT);
 
         //Date
         Label dateLabel = new Label("Date :");
         DatePicker datePicker = new DatePicker(dateTimeBean.getDate());
-        datePicker.setStyle("-fx-pref-width: 120;");
+        datePicker.setStyle( STYLE_PREF_WIDHT + " 120;");
         datePicker.valueProperty().bindBidirectional(dateTimeBean.dateProperty());
         datePicker.disableProperty().bind(timeAnimator.isRunning());
 
@@ -194,7 +181,7 @@ public final class Main extends Application {
                 DateTimeFormatter.ofPattern("HH:mm:ss");
         Label hourLabel = new Label("Heure :");
         TextField hourTextField = new TextField();
-        hourTextField.setStyle("-fx-pref-width: 75; -fx-alignment: baseline-right;");
+        hourTextField.setStyle(STYLE_PREF_WIDHT + " 75;" + STYLE_BASELINE_RIGHT);
 
         LocalTimeStringConverter stringConverter =
                 new LocalTimeStringConverter(hmsFormatter, hmsFormatter);
@@ -214,7 +201,7 @@ public final class Main extends Application {
             zoneIdList.add(ZoneId.of(s));
 
         ComboBox<ZoneId> timeZone = new ComboBox<>(FXCollections.observableArrayList(List.copyOf(zoneIdList)));
-        timeZone.setStyle("-fx-pref-width: 180;");
+        timeZone.setStyle(STYLE_PREF_WIDHT + " 180;");
         timeZone.getSelectionModel().select(dateTimeBean.getZone());
         timeZone.valueProperty().bindBidirectional(dateTimeBean.zoneProperty());
         timeZone.disableProperty().bind(timeAnimator.isRunning());
@@ -229,7 +216,7 @@ public final class Main extends Application {
     private HBox timeLapsePane(TimeAnimator timeAnimator, DateTimeBean dateTimeBean) throws Exception {
 
         HBox timeLapsePane = new HBox();
-        timeLapsePane.setStyle("-fx-spacing: inherit;");
+        timeLapsePane.setStyle(STYLE_SPACING_INHERIT);
 
         ChoiceBox<NamedTimeAccelerator> timeAcceleratorChoiceBox = new ChoiceBox<>();
         timeAcceleratorChoiceBox.setItems(FXCollections.observableArrayList(NamedTimeAccelerator.values()));
@@ -286,7 +273,7 @@ public final class Main extends Application {
                 -> canvasManager.getObjectUnderMouse() == null ? "" : canvasManager.getObjectUnderMouse().info(), canvasManager.objectUnderMouseProperty()));
 
         BorderPane informationPane = new BorderPane(objectClosesToText, null, mousePositionText, null, fieldOfViewText);
-        informationPane.setStyle("-fx-padding: 4; -fx-background-color: white;");
+        informationPane.setStyle(STYLE_INFORMATION_PANE);
 
 
         return informationPane;
@@ -296,7 +283,7 @@ public final class Main extends Application {
     private TextField positionTextField(CoordinatesType coordinatesType, NumberStringConverter stringToNumberConverter, ObserverLocationBean observerLocationBean) {
 
         TextField textField = new TextField();
-        textField.setStyle("-fx-pref-width: 60; -fx-alignment: baseline-right;");
+        textField.setStyle(STYLE_PREF_WIDHT + " 60;" + STYLE_BASELINE_RIGHT);
 
         UnaryOperator<TextFormatter.Change> filter = (change -> {
             try {

@@ -7,6 +7,7 @@ import java.time.temporal.ChronoUnit;
 /**
  * Enumération époque
  * Représente les moments à partir desquels les mouvement des planètes est calculé
+ *
  * @author Yassine Abdennadher (299273)
  * @author Juliette Aerni (296670)
  */

@@ -34,7 +34,8 @@ public final class EclipticCoordinates extends SphericalCoordinates{
         Preconditions.checkInInterval(SphericalCoordinates.LONGITUDE_RAD_INTERVAL_TAU,lon);
         Preconditions.checkInInterval(SphericalCoordinates.LATITUDE_RAD_INTERVAL,lat);
 
-         return new EclipticCoordinates(lon,lat); }
+         return new EclipticCoordinates(lon,lat);
+    }
 
     /**
      * Vérifie qu'un angle est une logitude valide, contenue entre [0°, 360°[

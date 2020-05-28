@@ -21,7 +21,8 @@ public final class Preconditions {
      */
     public static void checkArgument(boolean isTrue) {
 
-        if (!isTrue) throw new IllegalArgumentException(); }
+        if (!isTrue) throw new IllegalArgumentException();
+    }
 
     /**
      * Vérifie qu'une valeur est contenue dans un interval donné
@@ -35,5 +36,6 @@ public final class Preconditions {
     public static double checkInInterval (Interval interval, double value) {
 
         if (interval.contains(value)) return value;
-        else throw new IllegalArgumentException("Valeur non comprise dans l'interval"); }
+        else throw new IllegalArgumentException("Valeur non comprise dans l'interval");
+    }
 }

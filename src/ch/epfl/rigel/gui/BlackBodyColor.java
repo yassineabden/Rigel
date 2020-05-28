@@ -22,6 +22,7 @@ public final class BlackBodyColor {
     private final static RightOpenInterval DEG = RightOpenInterval.of(10, 15);
     private final static RightOpenInterval COLOR_RGB = RightOpenInterval.of(80, 87);
     private final static ClosedInterval TEMPERATURE_RANGE = ClosedInterval.of(1000, 40000);
+    private static final int TEMPERATURE_STEP = 100;
 
     private final static List<Color> COLOR_LIST = colorList("/bbr_color.txt");
 
@@ -59,18 +60,19 @@ public final class BlackBodyColor {
         Preconditions.checkInInterval(TEMPERATURE_RANGE, kelvin);
         return COLOR_LIST.get(tempToIndex(validKelvinTemprature(kelvin)));
     }
-    // TODO les nombres magiques représentent ils qqch? Si oui il faut les stocker dans des csts!!
+
+    // Vérifie que la température donée soit comprise dans le catalogue
     private static int validKelvinTemprature(float kelvin) {
-//todo cte
-        int temp = Math.round(kelvin / 100);
-        return temp * 100;
+
+        int temp = Math.round(kelvin / TEMPERATURE_STEP);
+        return temp * TEMPERATURE_STEP;
     }
 
+    // Donne l'index de la température
     private static int tempToIndex(float kelvin) {
 
-        return (int) (kelvin - TEMPERATURE_RANGE.low()) / 100;
+        return (int) (kelvin - TEMPERATURE_RANGE.low()) / TEMPERATURE_STEP;
     }
-    //TODO est-ce qu'on peut juste mettre bbr.color.txt?
 
 
 
