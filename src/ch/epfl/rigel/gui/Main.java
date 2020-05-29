@@ -54,7 +54,7 @@ public final class Main extends Application {
     private final static String ASTERISMS_RESOURCES_FILE_NAME = "/asterisms.txt";
     private static final String FONT_AWESOME_FILE_NAME = "/Font Awesome 5 Free-Solid-900.otf";
 
-    // Styles FX utilisés pour les différents noeuds
+    // Styles FX et séparateur utilisés pour les différents noeuds
     private static final String STYLE_BASELINE_RIGHT = "-fx-alignment: baseline-right;";
     private static final String STYLE_BASELINE_LEFT = "-fx-alignment: baseline-left;";
     private static final String STYLE_SPACING_INHERIT = "-fx-spacing: inherit;";
@@ -119,9 +119,9 @@ public final class Main extends Application {
 
             // Barre de contrôle
             HBox controlBar = new HBox(observationPosition(observerLocationBean)
-                    ,new Separator(Orientation.VERTICAL)
+                    , new Separator(Orientation.VERTICAL)
                     ,observationTime(dateTimeBean, timeAnimator)
-                    ,new Separator(Orientation.VERTICAL)
+                    , new Separator(Orientation.VERTICAL)
                     ,timeLapsePane(timeAnimator, dateTimeBean));
 
             controlBar.setStyle(STYLE_CONTROL_BAR);
@@ -221,7 +221,7 @@ public final class Main extends Application {
     }
 
     // Sous-panneau permettant de régler l'ecoulement du temps
-    private HBox timeLapsePane(TimeAnimator timeAnimator, DateTimeBean dateTimeBean) throws Exception {
+    private HBox timeLapsePane(TimeAnimator timeAnimator, DateTimeBean dateTimeBean) {
 
         HBox timeLapsePane = new HBox();
         timeLapsePane.setStyle(STYLE_SPACING_INHERIT);
@@ -277,7 +277,8 @@ public final class Main extends Application {
         // Objet céleste sous la souris
         Text objectClosesToText = new Text();
         objectClosesToText.textProperty().bind(Bindings.createStringBinding(()
-                -> canvasManager.getObjectUnderMouse() == null ? "" : canvasManager.getObjectUnderMouse().info(), canvasManager.objectUnderMouseProperty()));
+                -> canvasManager.getObjectUnderMouse() == null ? "" : canvasManager.getObjectUnderMouse().info()
+                ,canvasManager.objectUnderMouseProperty()));
 
         BorderPane informationPane = new BorderPane(objectClosesToText, null, mousePositionText, null, fieldOfViewText);
         informationPane.setStyle(STYLE_INFORMATION_PANE);

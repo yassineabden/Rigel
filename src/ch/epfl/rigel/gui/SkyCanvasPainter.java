@@ -102,7 +102,8 @@ final public class SkyCanvasPainter {
         }
 
         //dessine les étoiles
-        drawBlackBody(starsOnCanvas, sky.stars(), projection, planeToCanvas);
+        double diameterOnCanvas = planeToCanvas.deltaTransform(projection.applyToAngle(Angle.ofDeg(0.5)), 0).getX();
+        drawBlackBody(starsOnCanvas, sky.stars(), diameterOnCanvas, planeToCanvas);
 
     }
 
@@ -119,7 +120,7 @@ final public class SkyCanvasPainter {
 
         // Dessine la ligne d'horizon
         Point2D equator = carthesianCoordOnCanvas(planeToCanvas, stereographicProjection.circleCenterForParallel(EQUATOR));
-        double equatorD = diameterOnCanvas(stereographicProjection.circleRadiusForParallel(EQUATOR), planeToCanvas);
+        double equatorD = 2 * radiusOnCanvas(stereographicProjection.circleRadiusForParallel(EQUATOR), planeToCanvas);
 
         graphicsContext.strokeOval(equator.getX() - equatorD / 2, equator.getY() - equatorD / 2, equatorD, equatorD);
         graphicsContext.setFill(Color.RED);
@@ -149,7 +150,8 @@ final public class SkyCanvasPainter {
         double[] planetsOnCanvas = sky.planetsPositions();
         planeToCanvas.transform2DPoints(sky.planetsPositions(), 0, planetsOnCanvas, 0, planetsOnCanvas.length / 2);
 
-        drawBlackBody(planetsOnCanvas, sky.planets(), projection, planeToCanvas);
+        double diameterOnCanvas = planeToCanvas.deltaTransform(projection.applyToAngle(Angle.ofDeg(0.5)), 0).getX();
+        drawBlackBody(planetsOnCanvas, sky.planets(), diameterOnCanvas, planeToCanvas);
 
     }
 
@@ -165,7 +167,7 @@ final public class SkyCanvasPainter {
         double d = projection.applyToAngle(sky.sun().angularSize());
 
         //vecteur diamètre du soleil
-        double dTransformed = diameterOnCanvas(d, planeToCanvas);
+        double dTransformed = radiusOnCanvas(d, planeToCanvas);
 
         Point2D sunCoord = carthesianCoordOnCanvas(planeToCanvas, sky.sunPosition());
 
@@ -199,7 +201,7 @@ final public class SkyCanvasPainter {
     public void drawMoon(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas) {
 
         double d = projection.applyToAngle(sky.moon().angularSize());
-        double dTransformed = diameterOnCanvas(d, planeToCanvas);
+        double dTransformed = radiusOnCanvas(d, planeToCanvas);
 
         Point2D moonCoord = carthesianCoordOnCanvas(planeToCanvas, sky.moonPosition());
 
@@ -211,11 +213,11 @@ final public class SkyCanvasPainter {
 
 
     // Méthode dessinant une étoile ou une planète
-    private void drawBlackBody(double[] positionsOnCanvas, List<? extends CelestialObject> list, StereographicProjection projection, Transform planeToCanvas) {
+    private void drawBlackBody(double[] positionsOnCanvas, List<? extends CelestialObject> list, double diameterOnCanvas, Transform planeToCanvas) {
 
         int i = 0;
         for (CelestialObject celestialObject : list) {
-            double dTransformed = diameterWithMagnitude(celestialObject, projection, planeToCanvas);
+            double dTransformed = diameterWithMagnitude(celestialObject, diameterOnCanvas, planeToCanvas);
 
             if (celestialObject instanceof Star) {
                 // détermine la couleur de l'étoile en fonction de la température de cette dernière
@@ -232,17 +234,15 @@ final public class SkyCanvasPainter {
 
             i += 2;
         }
-
     }
 
 
      //Transforme le diamètre d'un object celeste ayant une magnitude (une étoile ou une planète) de coordonées sphérique au repère du canvas
-    private double diameterWithMagnitude(CelestialObject object, StereographicProjection projection, Transform planeToCanvas) {
+    private double diameterWithMagnitude(CelestialObject object, double diameterOnCanvas, Transform planeToCanvas) {
 
         double mDash = MAGNITUDE.clip(object.magnitude());
         double f = (99 - 17 * mDash) / 140;
-        double d = f * projection.applyToAngle(Angle.ofDeg(0.5));
-        return diameterOnCanvas(d, planeToCanvas);
+        return f * diameterOnCanvas;
     }
 
     // Applique la transformation d'un repère carthésien au repère du canvas à des coordonées cathésiennes
@@ -252,9 +252,9 @@ final public class SkyCanvasPainter {
     }
 
    // Applique la transformation d'un repère carthésien au repère du canvas à un diamètre
-    private double diameterOnCanvas(double d, Transform planeToCanvas) {
+    private double radiusOnCanvas(double d, Transform planeToCanvas) {
 
-        return 2 * planeToCanvas.deltaTransform(d, 0).getX();
+        return  planeToCanvas.deltaTransform(d, 0).getX();
     }
 
 }

@@ -46,7 +46,7 @@ public final class ViewingParametersBean {
     /**
      * Permet de modifier l'angle du champs de vue contenu dans la propriété
      *
-     * @param newFieldOfViewDeg nouvel angle du champs de vue
+     * @param newFieldOfViewDeg nouvel angle en degrés du champs de vue
      */
     public void setFieldOfViewDeg(double newFieldOfViewDeg) {
         fieldOfViewDeg.set(newFieldOfViewDeg);

@@ -42,31 +42,53 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
      * @throws IOException s'il y'a une erreur d'entrée/sortie.
      */
     @Override
-    public  void load(InputStream inputStream, StarCatalogue.Builder builder) throws IOException {
+    public void load(InputStream inputStream, StarCatalogue.Builder builder) throws IOException {
 
-        try ( BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,US_ASCII))){
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, US_ASCII))) {
 
             String line;
             bufferedReader.readLine();
 
+
             while ((line = bufferedReader.readLine()) != null) {
                 String[] parts = line.split(SEPARATOR);
-                int hipparcosId = parts[HIP].isEmpty() ? 0 : Integer.parseInt(parts[HIP]);
+                int hipparcosId = checkInteger(parts, HIP);
+
                 String con = parts[CON];
-                String bayer = parts[BAYER].isEmpty() ? "?": parts[BAYER];
-                String name = parts[PROPER].isEmpty() ? bayer+ " " + con: parts[PROPER];
+                String bayer = checkString(parts, BAYER, "?");
+                String name = checkString(parts, PROPER, bayer + " " + con);
+
                 double rared = Double.parseDouble(parts[RARAD]);
                 double decred = Double.parseDouble(parts[DECRAD]);
-                double magnitude = parts[MAG].isEmpty() ? 0 : Double.parseDouble(parts[MAG]);
-                double colorIndex = parts[CI].isEmpty() ? 0 : Double.parseDouble(parts[CI]);
-                EquatorialCoordinates coordinates = EquatorialCoordinates.of(rared,decred);
+                double magnitude = checkDouble(parts, MAG);
+                double colorIndex = checkDouble(parts, CI);
 
-                Star star = new Star(hipparcosId,name,coordinates,(float) magnitude,(float) colorIndex);
+                EquatorialCoordinates coordinates = EquatorialCoordinates.of(rared, decred);
+
+                Star star = new Star(hipparcosId, name, coordinates, (float) magnitude, (float) colorIndex);
                 builder.addStar(star);
 
             }
         }
     }
 
+    // Retourne la valeur par défault si la cellule du tableau est vide
+    private String checkString(String[] array, int index, String defaultvalue) {
+
+        return array[index].isEmpty() ? defaultvalue : array[index];
+    }
+
+    // Retourne la valeur par défault (0) si la cellule du tableau est vide
+    private int checkInteger(String[] array, int index) {
+
+        return array[index].isEmpty() ? (int) DEFAULT_ZERO :Integer.parseInt(array[index]);
+
+    }
+    // Retourne la valeur par défault (0) si la cellule du tableau est vide
+    private double checkDouble(String[] array, int index) {
+
+        return array[index].isEmpty() ? DEFAULT_ZERO : Double.parseDouble(array[index]);
+
+    }
 
 }
