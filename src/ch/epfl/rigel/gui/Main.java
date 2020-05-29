@@ -57,7 +57,7 @@ public final class Main extends Application {
     // Styles FX utilisés pour les différents noeuds
     private static final String STYLE_BASELINE_RIGHT = "-fx-alignment: baseline-right;";
     private static final String STYLE_BASELINE_LEFT = "-fx-alignment: baseline-left;";
-    private static final String STYLE_SPACING_INHERIT = "--fx-spacing: inherit;";
+    private static final String STYLE_SPACING_INHERIT = "-fx-spacing: inherit;";
     private static final String STYLE_CONTROL_BAR = "-fx-spacing: 4; -fx-padding: 4;";
     private static final String STYLE_INFORMATION_PANE = "-fx-padding: 4; -fx-background-color: white;";
     private static final String STYLE_PREF_WIDHT = "-fx-pref-width:";
