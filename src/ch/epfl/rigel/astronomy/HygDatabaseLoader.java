@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
+
 /**
  * Chargeur de catalogue HYG
  *
@@ -21,9 +22,9 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
 
     // Index des colonnes dont les informations doivent être extraites
     private final static int HIP = 1;
-    private final static int PROPER=6;
-    private final static int MAG= 13;
-    private final static int CI= 16;
+    private final static int PROPER = 6;
+    private final static int MAG = 13;
+    private final static int CI = 16;
     private final static int RARAD = 23;
     private final static int DECRAD = 24;
     private final static int BAYER = 27;
@@ -37,37 +38,55 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
      * ou lève une IOException s'il y a une erreur
      *
      * @param inputStream Flot d'entrée contenant des asterism et/ou des étoiles
-     * @param builder Catalogue en cours de construction
-     *
+     * @param builder     Catalogue en cours de construction
      * @throws IOException s'il y'a une erreur d'entrée/sortie.
      */
     @Override
-    public  void load(InputStream inputStream, StarCatalogue.Builder builder) throws IOException {
+    public void load(InputStream inputStream, StarCatalogue.Builder builder) throws IOException {
 
-        try ( BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,US_ASCII))){
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, US_ASCII))) {
 
             String line;
             bufferedReader.readLine();
 
-            //TODO Yassine
+
             while ((line = bufferedReader.readLine()) != null) {
                 String[] parts = line.split(SEPARATOR);
-                int hipparcosId = parts[HIP].isEmpty() ? 0 : Integer.parseInt(parts[HIP]);
+                int hipparcosId = checkInteger(parts, HIP, 0);
+
                 String con = parts[CON];
-                String bayer = parts[BAYER].isEmpty() ? "?": parts[BAYER];
-                String name = parts[PROPER].isEmpty() ? bayer+ " " + con: parts[PROPER];
+                String bayer = checkString(parts, BAYER, "?");
+                String name = checkString(parts, PROPER, bayer + " " + con);
+
                 double rared = Double.parseDouble(parts[RARAD]);
                 double decred = Double.parseDouble(parts[DECRAD]);
-                double magnitude = parts[MAG].isEmpty() ? 0 : Double.parseDouble(parts[MAG]);
-                double colorIndex = parts[CI].isEmpty() ? 0 : Double.parseDouble(parts[CI]);
-                EquatorialCoordinates coordinates = EquatorialCoordinates.of(rared,decred);
+                double magnitude = checkDouble(parts, MAG, 0);
+                double colorIndex = checkDouble(parts, CI, 0);
 
-                Star star = new Star(hipparcosId,name,coordinates,(float) magnitude,(float) colorIndex);
+                EquatorialCoordinates coordinates = EquatorialCoordinates.of(rared, decred);
+
+                Star star = new Star(hipparcosId, name, coordinates, (float) magnitude, (float) colorIndex);
                 builder.addStar(star);
 
             }
         }
     }
 
+    private String checkString(String[] array, int index, String defaultvalue) {
+
+        return array[index].isEmpty() ? defaultvalue : array[index];
+    }
+
+    private int checkInteger(String[] array, int index, int defaultvalue) {
+
+        return array[index].isEmpty() ? defaultvalue :Integer.parseInt(array[index]);
+
+    }
+
+    private double checkDouble(String[] array, int index, double defaultvalue) {
+
+        return array[index].isEmpty() ? defaultvalue : Double.parseDouble(array[index]);
+
+    }
 
 }
