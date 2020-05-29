@@ -44,6 +44,10 @@ public final class SkyCanvasManager {
 
     private final static int AZIMUT_DEG_STEP = 10;
     private final static int ALTITUDE_DEG_STEP = 5;
+    private static final int OBJECT_CLOSETST_TO_DISTANCE = 10;
+    private final static double DEFAULT_ZERO = 0.0;
+
+
     private final static RightOpenInterval AZIMUT_DEG_INTERVAL = RightOpenInterval.of(0, 360);
     private final static ClosedInterval ALTITUDE_DEG_INTERVAL = ClosedInterval.of(5, 90);
     private final static ClosedInterval FOV_INTERVAL_DEG = ClosedInterval.of(30, 150);
@@ -62,7 +66,6 @@ public final class SkyCanvasManager {
         canvas = new Canvas();
         skyCanvasPainter = new SkyCanvasPainter(canvas);
 
-
         projection = Bindings.createObjectBinding(() -> (new StereographicProjection(viewingParametersBean.getCenter()))
                 , viewingParametersBean.centerProperty());
 
@@ -71,7 +74,7 @@ public final class SkyCanvasManager {
                     double dilatation = canvas.getWidth()
                             / projection.getValue().applyToAngle(Angle.ofDeg(viewingParametersBean.getFieldOfViewDeg()));
 
-                    return Transform.affine(dilatation, 0, 0, -dilatation, canvas.getWidth() / 2.0, canvas.getHeight() / 2.0);
+                    return Transform.translate(canvas.getWidth() / 2.0, canvas.getHeight() / 2.0).createConcatenation(Transform.scale(dilatation, -dilatation));
                 }
                 , viewingParametersBean.fieldOfViewDegProperty()
                 , projection
@@ -89,25 +92,26 @@ public final class SkyCanvasManager {
                 , projection);
 
         // Initialisation des attributs et actions de la souris
-        mousePosition = new SimpleObjectProperty<>(new Point2D(0, 0));
+        mousePosition = new SimpleObjectProperty<>(Point2D.ZERO);
         canvas.setOnMouseMoved(event -> mousePosition.set(new Point2D(event.getX(), event.getY())));
 
         mouseHorizontalPosition = Bindings.createObjectBinding(() -> {
                     Point2D newPosition;
-
-                    if ((newPosition = inversePlaneToCanvas(mousePosition.get())) != null) {
+                    try {
+                        newPosition = planeToCanvas.getValue().inverseTransform(mousePosition.get());
                         return projection.getValue().inverseApply(CartesianCoordinates.of(newPosition.getX(), newPosition.getY()));
-                    } else {
+                    } catch (NonInvertibleTransformException e) {
                         return null;
                     }
+
                 }
                 , mousePosition
                 , projection
                 , planeToCanvas);
 
-        mouseAzDeg = createDoubleBinding(() -> (mouseHorizontalPosition.getValue() == null) ? 0.0 : mouseHorizontalPosition.getValue().azDeg()
+        mouseAzDeg = createDoubleBinding(() -> (mouseHorizontalPosition.getValue() == null) ? DEFAULT_ZERO : mouseHorizontalPosition.getValue().azDeg()
                 , mouseHorizontalPosition);
-        mouseAltDeg = createDoubleBinding(() -> (mouseHorizontalPosition.getValue() == null) ? 0.0 : mouseHorizontalPosition.getValue().altDeg()
+        mouseAltDeg = createDoubleBinding(() -> (mouseHorizontalPosition.getValue() == null) ? DEFAULT_ZERO : mouseHorizontalPosition.getValue().altDeg()
                 , mouseHorizontalPosition);
 
         canvas.setOnMousePressed(event -> {
@@ -117,13 +121,17 @@ public final class SkyCanvasManager {
 
         objectUnderMouse = Bindings.createObjectBinding(() -> {
                     Point2D newPosition;
-                    if ((newPosition = inversePlaneToCanvas(mousePosition.get())) != null) {
+                    Point2D newObjectDistance;
+                    try {
+                        newPosition = planeToCanvas.getValue().inverseTransform(mousePosition.get());
+                        newObjectDistance = planeToCanvas.getValue().inverseDeltaTransform(OBJECT_CLOSETST_TO_DISTANCE,0);
                         return observedSky.getValue()
-                                .objectClosestTo(CartesianCoordinates.of(newPosition.getX(), newPosition.getY()), 10)
+                                .objectClosestTo(CartesianCoordinates.of(newPosition.getX(), newPosition.getY()), newObjectDistance.getX())
                                 .orElse(null);
-                    } else {
+                    } catch (NonInvertibleTransformException e) {
                         return null;
                     }
+
                 }
                 , observedSky
                 , planeToCanvas
@@ -138,7 +146,7 @@ public final class SkyCanvasManager {
 
             double x = Math.abs(scrollDeltaX);
             double y = Math.abs(scrollDeltaY);
-            double z = Math.max(x, y) == x ? currentFoV + scrollDeltaX : currentFoV + scrollDeltaY;
+            double z = x > y ? currentFoV + scrollDeltaX : currentFoV + scrollDeltaY;
 
             viewingParametersBean.setFieldOfViewDeg(FOV_INTERVAL_DEG.clip(z));
         });
@@ -203,15 +211,6 @@ public final class SkyCanvasManager {
         skyCanvasPainter.drawMoon(sky, stereographicProjection, transform);
         skyCanvasPainter.drawHorizon(stereographicProjection, transform);
 
-    }
-
-    // Transforme un point 2D du repère du canvas au repère carthésien utilisé
-    private Point2D inversePlaneToCanvas(Point2D canvasCoordinates) {
-        try {
-            return planeToCanvas.getValue().inverseTransform(canvasCoordinates);
-        } catch (NonInvertibleTransformException e) {
-            return null;
-        }
     }
 
     /**

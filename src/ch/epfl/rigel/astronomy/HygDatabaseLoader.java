@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
-
 /**
  * Chargeur de catalogue HYG
  *
@@ -22,9 +21,9 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
 
     // Index des colonnes dont les informations doivent être extraites
     private final static int HIP = 1;
-    private final static int PROPER = 6;
-    private final static int MAG = 13;
-    private final static int CI = 16;
+    private final static int PROPER=6;
+    private final static int MAG= 13;
+    private final static int CI= 16;
     private final static int RARAD = 23;
     private final static int DECRAD = 24;
     private final static int BAYER = 27;
@@ -38,7 +37,8 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
      * ou lève une IOException s'il y a une erreur
      *
      * @param inputStream Flot d'entrée contenant des asterism et/ou des étoiles
-     * @param builder     Catalogue en cours de construction
+     * @param builder Catalogue en cours de construction
+     *
      * @throws IOException s'il y'a une erreur d'entrée/sortie.
      */
     @Override
@@ -52,7 +52,7 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
 
             while ((line = bufferedReader.readLine()) != null) {
                 String[] parts = line.split(SEPARATOR);
-                int hipparcosId = checkInteger(parts, HIP, 0);
+                int hipparcosId = checkInteger(parts, HIP);
 
                 String con = parts[CON];
                 String bayer = checkString(parts, BAYER, "?");
@@ -60,8 +60,8 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
 
                 double rared = Double.parseDouble(parts[RARAD]);
                 double decred = Double.parseDouble(parts[DECRAD]);
-                double magnitude = checkDouble(parts, MAG, 0);
-                double colorIndex = checkDouble(parts, CI, 0);
+                double magnitude = checkDouble(parts, MAG);
+                double colorIndex = checkDouble(parts, CI);
 
                 EquatorialCoordinates coordinates = EquatorialCoordinates.of(rared, decred);
 
@@ -72,20 +72,22 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
         }
     }
 
+    // Retourne la valeur par défault si la cellule du tableau est vide
     private String checkString(String[] array, int index, String defaultvalue) {
 
         return array[index].isEmpty() ? defaultvalue : array[index];
     }
 
-    private int checkInteger(String[] array, int index, int defaultvalue) {
+    // Retourne la valeur par défault (0) si la cellule du tableau est vide
+    private int checkInteger(String[] array, int index) {
 
-        return array[index].isEmpty() ? defaultvalue :Integer.parseInt(array[index]);
+        return array[index].isEmpty() ? (int) DEFAULT_ZERO :Integer.parseInt(array[index]);
 
     }
+    // Retourne la valeur par défault (0) si la cellule du tableau est vide
+    private double checkDouble(String[] array, int index) {
 
-    private double checkDouble(String[] array, int index, double defaultvalue) {
-
-        return array[index].isEmpty() ? defaultvalue : Double.parseDouble(array[index]);
+        return array[index].isEmpty() ? DEFAULT_ZERO : Double.parseDouble(array[index]);
 
     }
 
