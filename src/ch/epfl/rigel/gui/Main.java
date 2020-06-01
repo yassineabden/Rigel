@@ -1,341 +1,125 @@
 package ch.epfl.rigel.gui;
 
-import ch.epfl.rigel.astronomy.AsterismLoader;
-import ch.epfl.rigel.astronomy.HygDatabaseLoader;
-import ch.epfl.rigel.astronomy.StarCatalogue;
-import ch.epfl.rigel.coordinates.GeographicCoordinates;
-import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import javafx.application.Application;
-import javafx.beans.binding.Bindings;
-import javafx.collections.FXCollections;
-import javafx.geometry.Orientation;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.converter.LocalTimeStringConverter;
-import javafx.util.converter.NumberStringConverter;
 
-import java.io.InputStream;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
+import java.awt.*;
+import java.io.FileInputStream;
+
+public class Main extends Application {
 
 
-public final class Main extends Application {
-
-
-    private Font fontAwesome;
-
-    // Valeurs initiales de la position d'observation et du champ de vue
-    private final static GeographicCoordinates INITIAL_POSITION = GeographicCoordinates.ofDeg(6.57, 46.52);
-    private final static HorizontalCoordinates INITIAL_OBSERVATION = HorizontalCoordinates.ofDeg(180.000000000001, 15);
-    private final static double INITIAL_FIELD_OF_VIEW = 100;
-
-    // Valeurs du canevas
     private final static double MIN_WIDTH = 800;
     private final static double MIN_HEIGHT = 600;
     private final static String TITLE = "Rigel";
 
-    // Noms des différentes sources
-    private final static String STARS_RESOURCES_FILE_NAME = "/hygdata_v3.csv";
-    private final static String ASTERISMS_RESOURCES_FILE_NAME = "/asterisms.txt";
-    private static final String FONT_AWESOME_FILE_NAME = "/Font Awesome 5 Free-Solid-900.otf";
 
-    // Styles FX et séparateur utilisés pour les différents noeuds
-    private static final String STYLE_BASELINE_RIGHT = "-fx-alignment: baseline-right;";
-    private static final String STYLE_BASELINE_LEFT = "-fx-alignment: baseline-left;";
-    private static final String STYLE_SPACING_INHERIT = "-fx-spacing: inherit;";
-    private static final String STYLE_CONTROL_BAR = "-fx-spacing: 4; -fx-padding: 4;";
-    private static final String STYLE_INFORMATION_PANE = "-fx-padding: 4; -fx-background-color: white;";
-    private static final String STYLE_PREF_WIDHT = "-fx-pref-width:";
+    FinalSky finalSky = new FinalSky();
 
 
-    /**
-     * Méthode main de la classe
-     *
-     * @param args lignes de commandes java
-     */
-    public static void main(String[] args) {
-        launch(args);
-    }
 
-    // Retourne l'input de la ressource en fonction de son nom
-    private InputStream resourceStream(String resourceName) {
-        return getClass().getResourceAsStream(resourceName);
-    }
 
-    /**
-     * Démarre l'application
-     *
-     * @param stage l'étape principale de cette application, sur laquelle la scène d'application va être définie
-     */
+
+
+
+
+
+
+
     @Override
     public void start(Stage stage) throws Exception {
-        try (InputStream hs = resourceStream(STARS_RESOURCES_FILE_NAME);
-             InputStream as = resourceStream(ASTERISMS_RESOURCES_FILE_NAME);
-             InputStream fontStream = resourceStream(FONT_AWESOME_FILE_NAME)) {
 
-            // Chargement des ressources
-            fontAwesome = Font.loadFont(fontStream, 15);
-
-            StarCatalogue catalogue = new StarCatalogue.Builder()
-                    .loadFrom(hs, HygDatabaseLoader.INSTANCE)
-                    .loadFrom(as, AsterismLoader.INSTANCE)
-                    .build();
-
-            //Initialisation des beans et de l'accélérateur de temps
-            ObserverLocationBean observerLocationBean =
-                    new ObserverLocationBean();
-            observerLocationBean.setCoordinates(INITIAL_POSITION);
-
-            DateTimeBean dateTimeBean = new DateTimeBean();
-            dateTimeBean.setZonedDateTime(ZonedDateTime.now());
-
-            ViewingParametersBean viewingParametersBean = new ViewingParametersBean();
-            viewingParametersBean.setCenter(INITIAL_OBSERVATION);
-            viewingParametersBean.setFieldOfViewDeg(INITIAL_FIELD_OF_VIEW);
-
-            TimeAnimator timeAnimator = new TimeAnimator(dateTimeBean);
-            timeAnimator.acceleratorProperty().set(NamedTimeAccelerator.TIMES_300.getAccelerator());
-
-            // Fenêtre principale
-            BorderPane mainPane = new BorderPane();
-            stage.setMinHeight(MIN_HEIGHT);
-            stage.setTitle(TITLE);
-            stage.setMinWidth(MIN_WIDTH);
-
-            // Barre de contrôle
-            HBox controlBar = new HBox(observationPosition(observerLocationBean)
-                    , new Separator(Orientation.VERTICAL)
-                    ,observationTime(dateTimeBean, timeAnimator)
-                    , new Separator(Orientation.VERTICAL)
-                    ,timeLapsePane(timeAnimator, dateTimeBean));
-
-            controlBar.setStyle(STYLE_CONTROL_BAR);
-            mainPane.setTop(controlBar);
-
-            // Ciel
-            SkyCanvasManager canvasManager = new SkyCanvasManager(
-                    catalogue,
-                    dateTimeBean,
-                    observerLocationBean,
-                    viewingParametersBean);
-
-            Canvas sky = canvasManager.canvas();
-            Pane skyPane = new Pane(sky);
-
-            sky.widthProperty().bind(skyPane.widthProperty());
-            sky.heightProperty().bind(skyPane.heightProperty());
-
-            mainPane.setCenter(skyPane);
-
-            // Barre d'information
-            mainPane.setBottom(informationPane(canvasManager, viewingParametersBean));
-
-            // Affiche le programme
-            stage.setScene(new Scene(mainPane));
-            stage.show();
-            sky.requestFocus();
-        }
-    }
-
-    // Sous-panneau permettant de régler la position d'observation
-    private HBox observationPosition(ObserverLocationBean observerLocationBean) {
-
-        HBox observationPositionPane = new HBox();
-        observationPositionPane.setStyle(STYLE_SPACING_INHERIT + STYLE_BASELINE_LEFT);
-
-        NumberStringConverter stringToNumberConverter =
-                new NumberStringConverter("#0.00");
-
-        Label lonLabel = new Label("Longitude (°) :");
-        TextField lonTextField = positionTextField(CoordinatesType.LONGITUDE, stringToNumberConverter, observerLocationBean);
-        Label latLabel = new Label("Latitude (°) :");
-        TextField latTextField = positionTextField(CoordinatesType.LATITUDE, stringToNumberConverter, observerLocationBean);
-
-        observationPositionPane.getChildren().addAll(lonLabel, lonTextField, latLabel, latTextField);
-
-        return observationPositionPane;
-    }
-
-    // Sous-panneau permettant de régler l'instant d'observation
-    private HBox observationTime(DateTimeBean dateTimeBean, TimeAnimator timeAnimator) {
-
-        HBox observationTimePane = new HBox();
-        observationTimePane.setStyle(STYLE_SPACING_INHERIT + STYLE_BASELINE_LEFT);
-
-        //Date
-        Label dateLabel = new Label("Date :");
-        DatePicker datePicker = new DatePicker(dateTimeBean.getDate());
-        datePicker.setStyle( STYLE_PREF_WIDHT + " 120;");
-        datePicker.valueProperty().bindBidirectional(dateTimeBean.dateProperty());
-        datePicker.disableProperty().bind(timeAnimator.isRunning());
-
-        //Temps
-        DateTimeFormatter hmsFormatter =
-                DateTimeFormatter.ofPattern("HH:mm:ss");
-        Label hourLabel = new Label("Heure :");
-        TextField hourTextField = new TextField();
-        hourTextField.setStyle(STYLE_PREF_WIDHT + " 75;" + STYLE_BASELINE_RIGHT);
-
-        LocalTimeStringConverter stringConverter =
-                new LocalTimeStringConverter(hmsFormatter, hmsFormatter);
-        TextFormatter<LocalTime> timeFormatter =
-                new TextFormatter<>(stringConverter);
-
-        hourTextField.setTextFormatter(timeFormatter);
-        timeFormatter.setValue(LocalTime.now());
-        timeFormatter.valueProperty().bindBidirectional(dateTimeBean.timeProperty());
-        hourTextField.disableProperty().bind(timeAnimator.isRunning());
-
-        //Zone
-        Set<String> stringZoneId = new TreeSet<>(ZoneId.getAvailableZoneIds());
-        List<ZoneId> zoneIdList = new ArrayList<>();
-
-        for (String s : stringZoneId)
-            zoneIdList.add(ZoneId.of(s));
-
-        ComboBox<ZoneId> timeZone = new ComboBox<>(FXCollections.observableArrayList(List.copyOf(zoneIdList)));
-        timeZone.setStyle(STYLE_PREF_WIDHT + " 180;");
-        timeZone.getSelectionModel().select(dateTimeBean.getZone());
-        timeZone.valueProperty().bindBidirectional(dateTimeBean.zoneProperty());
-        timeZone.disableProperty().bind(timeAnimator.isRunning());
-
-        observationTimePane.getChildren().addAll(dateLabel, datePicker, hourLabel, hourTextField, timeZone);
-
-        return observationTimePane;
-
-    }
-
-    // Sous-panneau permettant de régler l'ecoulement du temps
-    private HBox timeLapsePane(TimeAnimator timeAnimator, DateTimeBean dateTimeBean) {
-
-        HBox timeLapsePane = new HBox();
-        timeLapsePane.setStyle(STYLE_SPACING_INHERIT);
-
-        // Accélérateur
-        ChoiceBox<NamedTimeAccelerator> timeAcceleratorChoiceBox = new ChoiceBox<>();
-        timeAcceleratorChoiceBox.setItems(FXCollections.observableArrayList(NamedTimeAccelerator.values()));
-        timeAcceleratorChoiceBox.setValue(NamedTimeAccelerator.TIMES_300);
-        timeAnimator.acceleratorProperty().bind(Bindings.select(timeAcceleratorChoiceBox.valueProperty(), "accelerator"));
-        timeAcceleratorChoiceBox.disableProperty().bind(timeAnimator.isRunning());
-
-        // Boutons reset, pause, play
-        String reset = "\uf0e2";
-        Button resetButton = new Button(reset);
-        Button playPauseButton = new Button();
-
-        resetButton.setFont(fontAwesome);
-        resetButton.setOnAction(e -> dateTimeBean.setZonedDateTime(ZonedDateTime.now()));
-        resetButton.disableProperty().bind(timeAnimator.isRunning());
-
-        String play = "\uf04b";
-        String pause = "\uf04c";
-        playPauseButton.setText(play);
-
-        playPauseButton.setFont(fontAwesome);
-        playPauseButton.setText(play);
-        playPauseButton.setOnAction(e -> playPauseButton.setText((playPauseButton.getText().equals(play)) ? pause : play));
-
-        playPauseButton.textProperty().addListener((p, o, n) -> {
-                    if (timeAnimator.isRunning().get()) timeAnimator.stop();
-                    else timeAnimator.start();
-                }
-        );
-
-        timeLapsePane.getChildren().addAll(timeAcceleratorChoiceBox, resetButton, playPauseButton);
+        Image image = new Image("fond.jpg");
+        BackgroundImage backgroundImage = new BackgroundImage(image, null,null,null,null);
 
 
-        return timeLapsePane;
-    }
+        GridPane mainPane = new GridPane();
+        //mainPane.setPadding(new Insets(10,10,10,10));
+        mainPane.setVgap(5);
+        mainPane.setHgap(2);
+        mainPane.setBackground(new Background(backgroundImage));
 
-    //Barre d'information
-    private BorderPane informationPane(SkyCanvasManager canvasManager, ViewingParametersBean viewingParametersBean) {
+        stage.setMinHeight(MIN_HEIGHT);
+        stage.setTitle(TITLE);
+        stage.setMinWidth(MIN_WIDTH);
 
-        // Champ de vue
-        Text fieldOfViewText = new Text();
-        fieldOfViewText.textProperty().bind(Bindings.format("Champ de vue : %.2f °", viewingParametersBean.fieldOfViewDegProperty()));
 
-        // Coordonnées de la souris
-        Text mousePositionText = new Text();
-        mousePositionText.textProperty().bind(Bindings.format("Azimut : %.2f°, hauteur : %.2f°"
-                , canvasManager.mouseAzDegProperty(), canvasManager.mouseAltDegProperty()));
+        String familyTitle = "Phosphate";
+        double sizeTitle = 100;
+        Text textTitle = new Text("Rigel.");
+        textTitle.setFont(Font.font(familyTitle,sizeTitle));
+        textTitle.setFill(Color.web("#D17008"));
+        mainPane.add(textTitle,125,9);
 
-        // Objet céleste sous la souris
-        Text objectClosesToText = new Text();
-        objectClosesToText.textProperty().bind(Bindings.createStringBinding(()
-                -> canvasManager.getObjectUnderMouse() == null ? "" : canvasManager.getObjectUnderMouse().info()
-                ,canvasManager.objectUnderMouseProperty()));
+       Text textButton = new Text("Observer le ciel");
+       double sizetextButton = 50;
+       String familyButton = "Rockwell";
+       textButton.setFont(Font.font(familyButton,sizetextButton));
+       Button button = new Button(textButton.getText());
 
-        BorderPane informationPane = new BorderPane(objectClosesToText, null, mousePositionText, null, fieldOfViewText);
-        informationPane.setStyle(STYLE_INFORMATION_PANE);
+       button.setStyle("-fx-background-color: \n" +
+               "        linear-gradient(#ffd65b, #e68400),\n" +
+               "        linear-gradient(#ffef84, #f2ba44),\n" +
+               "        linear-gradient(#ffea6a, #efaa22),\n" +
+               "        linear-gradient(#ffe657 0%, #f8c202 50%, #eea10b 100%),\n" +
+               "        linear-gradient(from 0% 0% to 15% 50%, rgba(255,255,255,0.9), rgba(255,255,255,0));\n" +
+               "    -fx-background-radius: 30;\n" +
+               "    -fx-background-insets: 0,1,2,3,0;\n" +
+               "    -fx-text-fill: #654b00;\n" +
+               "    -fx-font-weight: bold;\n" +
+               "    -fx-font-size: 25px;\n" +
+               "    -fx-padding: 10 20 10 20;");
+       mainPane.add(button,125,11);
 
-        return informationPane;
-    }
+        Text textButton2 = new Text("En savoir plus...");
+        double sizetextButton2 = 50;
+        String familyButton2 = "Rockwell";
+        textButton.setFont(Font.font(familyButton2,sizetextButton2));
+        Button button2 = new Button(textButton2.getText());
 
-    //Retourne des champs de texte en leur attachant un formateur de texte
-    private TextField positionTextField(CoordinatesType coordinatesType, NumberStringConverter stringToNumberConverter, ObserverLocationBean observerLocationBean) {
+        button2.setStyle("-fx-background-color: \n" +
+                "        linear-gradient(#ffd65b, #e68400),\n" +
+                "        linear-gradient(#ffef84, #f2ba44),\n" +
+                "        linear-gradient(#ffea6a, #efaa22),\n" +
+                "        linear-gradient(#ffe657 0%, #f8c202 50%, #eea10b 100%),\n" +
+                "        linear-gradient(from 0% 0% to 15% 50%, rgba(255,255,255,0.9), rgba(255,255,255,0));\n" +
+                "    -fx-background-radius: 30;\n" +
+                "    -fx-background-insets: 0,1,2,3,0;\n" +
+                "    -fx-text-fill: #654b00;\n" +
+                "    -fx-font-weight: bold;\n" +
+                "    -fx-font-size: 25px;\n" +
+                "    -fx-padding: 10 20 10 20;");
+        mainPane.add(button2,125,13);
 
-        TextField textField = new TextField();
-        textField.setStyle(STYLE_PREF_WIDHT + " 60;" + STYLE_BASELINE_RIGHT);
-
-        UnaryOperator<TextFormatter.Change> filter = (change -> {
+        EventHandler<MouseEvent> eventHandler = mouseEvent -> {
             try {
-                String newText =
-                        change.getControlNewText();
-                double newCoord =
-                        stringToNumberConverter.fromString(newText).doubleValue();
-
-                if (coordinatesType == CoordinatesType.LONGITUDE) {
-
-                    return checkCoordinates(GeographicCoordinates::isValidLonDeg, newCoord, change);
-
-                } else {
-                    return checkCoordinates(GeographicCoordinates::isValidLatDeg, newCoord, change);
-                }
+                finalSky.start(stage);
             } catch (Exception e) {
-                return null;
+                e.printStackTrace();
             }
-        });
+        };
 
-        TextFormatter<Number> textFormatter = (coordinatesType == CoordinatesType.LONGITUDE) ?
-                new TextFormatter<>(stringToNumberConverter, observerLocationBean.getLonDeg(), filter)
-                : new TextFormatter<>(stringToNumberConverter, observerLocationBean.getLatDeg(), filter);
+        button.addEventFilter(MouseEvent.MOUSE_CLICKED,eventHandler);
 
-        textField.setTextFormatter(textFormatter);
 
-        if (coordinatesType == CoordinatesType.LONGITUDE)
-            observerLocationBean.lonDegProperty().bindBidirectional(textFormatter.valueProperty());
-        else observerLocationBean.latDegProperty().bindBidirectional(textFormatter.valueProperty());
 
-        return textField;
 
+
+
+        stage.setScene(new Scene(mainPane));
+        stage.show();
     }
-
-
-    //Contrôle si la coordonnée est valide (c-à-d nombre à deux décimales et compris dans les bons intervalles)
-    private TextFormatter.Change checkCoordinates(Predicate<Double> predicate, double coordinates, TextFormatter.Change change) {
-
-        return predicate.test(coordinates) ? change : null;
-    }
-
-
-    // Enum représentant les types de coordonnées
-    private enum CoordinatesType {
-        LATITUDE, LONGITUDE;
-    }
-
 }
