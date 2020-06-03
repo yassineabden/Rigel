@@ -123,7 +123,7 @@ public final class FinalSky extends Application {
                     , new Separator(Orientation.VERTICAL)
                     ,observationTime(dateTimeBean, timeAnimator)
                     , new Separator(Orientation.VERTICAL)
-                    ,asterisms(timeAnimator,canvasManager.drawAsterismsProperty())
+                    , asterismsButton(timeAnimator,canvasManager.drawAsterismsProperty())
                     , new Separator(Orientation.VERTICAL)
                     ,timeLapsePane(timeAnimator, dateTimeBean));
 
@@ -218,21 +218,23 @@ public final class FinalSky extends Application {
 
     }
 
-    private Pane asterisms(TimeAnimator timeAnimator, BooleanProperty drawAsterisms) {
+    private Pane asterismsButton(TimeAnimator timeAnimator, BooleanProperty drawAsterisms) {
         Pane pane = new Pane();
         pane.setStyle(STYLE_SPACING_INHERIT);
         String asterismsOn = "Asterisms on";
         String asterismsOff = "Asterisms off";
 
         Button asterismsButton = new Button();
-        asterismsButton.setText(asterismsOff);
+        asterismsButton.setText(asterismsOn);
         asterismsButton.setFont(fontAwesome);
+
         asterismsButton.setOnAction(a -> asterismsButton.setText(asterismsButton.getText().equals(asterismsOn) ? asterismsOff : asterismsOn));
         asterismsButton.disableProperty().bind(timeAnimator.isRunning());
         asterismsButton.textProperty().addListener((p, o, n) -> {
             if (drawAsterisms.get()) drawAsterisms.set(false);
             else drawAsterisms.set(true);
         });
+
         pane.getChildren().add(asterismsButton);
         return pane;
     }

@@ -226,6 +226,7 @@ final public class SkyCanvasPainter {
     // Méthode dessinant une étoile ou une planète
     private void drawBlackBody(double[] positionsOnCanvas, List<? extends CelestialObject> list, double diameterOnCanvas, Transform planeToCanvas) {
 
+        ClosedInterval brighestStarsMagnitude = ClosedInterval.of(-1.5, 0.65);
         int i = 0;
         for (CelestialObject celestialObject : list) {
             double dTransformed = diameterWithMagnitude(celestialObject, diameterOnCanvas);
@@ -235,12 +236,15 @@ final public class SkyCanvasPainter {
             if (celestialObject instanceof Star) {
                 // détermine la couleur de l'étoile en fonction de la température de cette dernière
                 Color starColor = BlackBodyColor.colorForTemperature(((Star) (celestialObject)).colorTemperature());
+                if(brighestStarsMagnitude.contains(celestialObject.magnitude())){
+                    graphicsContext.setFill(Color.LIGHTGRAY);
+                    graphicsContext.fillText(celestialObject.name(), x + 1, y + 1);
+                }
                 graphicsContext.setFill(starColor);
             } else {
                 // les planètes sont grises
                 graphicsContext.setFill(Color.LIGHTGRAY);
                 graphicsContext.fillText(celestialObject.name(), x + 1, y + 1);
-
                 graphicsContext.setFill(Color.GRAY);
             }
             // Dessine l'object céleste

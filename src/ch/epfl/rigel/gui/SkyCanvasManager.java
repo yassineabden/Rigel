@@ -197,6 +197,7 @@ public final class SkyCanvasManager {
         // Redessine le ciel lorsqu'on change de position d'observation, de champ de vue ou d'instant d'observation
         planeToCanvas.addListener(e -> drawSky());
         observedSky.addListener(e -> drawSky());
+        drawAsterisms.addListener(e -> drawSky());
 
 
     }
