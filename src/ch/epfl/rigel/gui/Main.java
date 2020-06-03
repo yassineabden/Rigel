@@ -106,12 +106,6 @@ public class Main extends Application {
 
 
 
-
-
-
-
-
-
         stage.setScene(new Scene(mainPane));
         stage.show();
     }
@@ -160,13 +154,6 @@ public class Main extends Application {
 
 
     }
-
-
-
-
-
-
-
 
 
 

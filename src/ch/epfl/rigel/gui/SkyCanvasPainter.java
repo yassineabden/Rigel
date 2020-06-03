@@ -107,7 +107,7 @@ final public class SkyCanvasPainter {
         }
         //dessine les étoiles
         double diameterOnCanvas = planeToCanvas.deltaTransform(projection.applyToAngle(ANGULAR_SIZE_BLACK_BODY), 0).getX();
-        drawBlackBody(starsOnCanvas, sky.stars(), diameterOnCanvas, planeToCanvas);
+        drawBlackBody(starsOnCanvas, sky.stars(), diameterOnCanvas);
 
     }
 
@@ -156,7 +156,7 @@ final public class SkyCanvasPainter {
         planeToCanvas.transform2DPoints(sky.planetsPositions(), 0, planetsOnCanvas, 0, planetsOnCanvas.length / 2);
 
         double diameterOnCanvas = planeToCanvas.deltaTransform(projection.applyToAngle(ANGULAR_SIZE_BLACK_BODY), 0).getX();
-        drawBlackBody(planetsOnCanvas, sky.planets(), diameterOnCanvas, planeToCanvas);
+        drawBlackBody(planetsOnCanvas, sky.planets(), diameterOnCanvas);
 
     }
 
@@ -224,7 +224,7 @@ final public class SkyCanvasPainter {
 
 
     // Méthode dessinant une étoile ou une planète
-    private void drawBlackBody(double[] positionsOnCanvas, List<? extends CelestialObject> list, double diameterOnCanvas, Transform planeToCanvas) {
+    private void drawBlackBody(double[] positionsOnCanvas, List<? extends CelestialObject> list, double diameterOnCanvas) {
 
         ClosedInterval brighestStarsMagnitude = ClosedInterval.of(-1.5, 0.65);
         int i = 0;
