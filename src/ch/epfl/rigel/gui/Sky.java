@@ -34,7 +34,7 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 
-public final class FinalSky extends Application {
+public final class Sky extends Application {
 
 
     private Font fontAwesome;
@@ -63,7 +63,7 @@ public final class FinalSky extends Application {
     private static final String STYLE_PREF_WIDHT = "-fx-pref-width:";
 
 
-    FinalSky () {}
+    Sky() {}
 
 
     // Retourne l'input de la ressource en fonction de son nom
@@ -145,6 +145,17 @@ public final class FinalSky extends Application {
             sky.requestFocus();
         }
     }
+
+    private Button backButton (){
+
+        Button button = new Button();
+        button.setFont(fontAwesome);
+        button.setText("Retour");
+
+        return button;
+
+    }
+
 
     // Sous-panneau permettant de régler la position d'observation
     private HBox observationPosition(ObserverLocationBean observerLocationBean) {

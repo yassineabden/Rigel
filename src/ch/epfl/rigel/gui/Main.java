@@ -5,7 +5,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -24,16 +23,7 @@ public class Main extends Application {
     private final static String TITLE = "Rigel";
 
 
-    FinalSky finalSky = new FinalSky();
-
-
-
-
-
-
-
-
-
+    Sky finalSky = new Sky();
 
 
     @Override
@@ -68,15 +58,18 @@ public class Main extends Application {
 
 
        button.setStyle("-fx-background-color: \n" +
-               "        #000000,\n" +
-               "        linear-gradient(#7ebcea, #2f4b8f),\n" +
-               "        linear-gradient(#426ab7, #263e75),\n" +
-               "        linear-gradient(#395cab, #223768);\n" +
-               "    -fx-background-insets: 0,1,2,3;\n" +
-               "    -fx-background-radius: 3,2,2,2;\n" +
-               "    -fx-padding: 12 30 12 30;\n" +
+               "        #090a0c,\n" +
+               "        linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),\n" +
+               "        linear-gradient(#20262b, #191d22),\n" +
+               "        radial-gradient(center 50% 0%, radius 100%, rgba(114,131,148,0.9), rgba(255,255,255,0));\n" +
+               "    -fx-background-radius: 5,4,3,5;\n" +
+               "    -fx-background-insets: 0,1,2,0;\n" +
                "    -fx-text-fill: white;\n" +
-               "    -fx-font-size: 25px;");
+               "    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );\n" +
+               "    -fx-font-family: \"Arial\";\n" +
+               "    -fx-text-fill: linear-gradient(white, #d0d0d0);\n" +
+               "    -fx-font-size: 25px;\n" +
+               "    -fx-padding: 10 20 10 20;");
 
         mainPane.add(button,125,30);
 
@@ -87,15 +80,18 @@ public class Main extends Application {
         Button button2 = new Button(textButton2.getText());
 
         button2.setStyle("-fx-background-color: \n" +
-                "        #000000,\n" +
-                "        linear-gradient(#7ebcea, #2f4b8f),\n" +
-                "        linear-gradient(#426ab7, #263e75),\n" +
-                "        linear-gradient(#395cab, #223768);\n" +
-                "    -fx-background-insets: 0,1,2,3;\n" +
-                "    -fx-background-radius: 3,2,2,2;\n" +
-                "    -fx-padding: 12 30 12 30;\n" +
+                "        #090a0c,\n" +
+                "        linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),\n" +
+                "        linear-gradient(#20262b, #191d22),\n" +
+                "        radial-gradient(center 50% 0%, radius 100%, rgba(114,131,148,0.9), rgba(255,255,255,0));\n" +
+                "    -fx-background-radius: 5,4,3,5;\n" +
+                "    -fx-background-insets: 0,1,2,0;\n" +
                 "    -fx-text-fill: white;\n" +
-                "    -fx-font-size: 25px;");
+                "    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );\n" +
+                "    -fx-font-family: \"Arial\";\n" +
+                "    -fx-text-fill: linear-gradient(white, #d0d0d0);\n" +
+                "    -fx-font-size: 25px;\n" +
+                "    -fx-padding: 10 20 10 20;");
         mainPane.add(button2,125,40);
 
 
