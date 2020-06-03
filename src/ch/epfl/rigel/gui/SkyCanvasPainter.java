@@ -235,11 +235,11 @@ final public class SkyCanvasPainter {
 
             if (celestialObject instanceof Star) {
                 // détermine la couleur de l'étoile en fonction de la température de cette dernière
-                Color starColor = BlackBodyColor.colorForTemperature(((Star) (celestialObject)).colorTemperature());
                 if(brighestStarsMagnitude.contains(celestialObject.magnitude())){
                     graphicsContext.setFill(Color.LIGHTGRAY);
                     graphicsContext.fillText(celestialObject.name(), x + 1, y + 1);
                 }
+                Color starColor = BlackBodyColor.colorForTemperature(((Star) (celestialObject)).colorTemperature());
                 graphicsContext.setFill(starColor);
             } else {
                 // les planètes sont grises
