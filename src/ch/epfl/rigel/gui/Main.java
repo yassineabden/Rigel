@@ -25,16 +25,6 @@ public class Main extends Application {
 
     FinalSky finalSky = new FinalSky();
 
-
-
-
-
-
-
-
-
-
-
     @Override
     public void start(Stage stage) throws Exception {
 

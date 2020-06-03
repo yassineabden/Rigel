@@ -10,8 +10,7 @@ import ch.epfl.rigel.math.Angle;
 import ch.epfl.rigel.math.ClosedInterval;
 import ch.epfl.rigel.math.RightOpenInterval;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.*;
 import javafx.beans.value.ObservableDoubleValue;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
@@ -41,6 +40,8 @@ public final class SkyCanvasManager {
     private final ObservableValue<ObservedSky> observedSky;
     private final ObjectProperty<Point2D> mousePosition;
     private final ObservableValue<HorizontalCoordinates> mouseHorizontalPosition;
+
+    private final BooleanProperty drawAsterisms;
 
     private final static int AZIMUT_DEG_STEP = 10;
     private final static int ALTITUDE_DEG_STEP = 5;
@@ -131,7 +132,6 @@ public final class SkyCanvasManager {
                     } catch (NonInvertibleTransformException e) {
                         return null;
                     }
-
                 }
                 , observedSky
                 , planeToCanvas
@@ -192,9 +192,12 @@ public final class SkyCanvasManager {
 
         });
 
+        drawAsterisms = new SimpleBooleanProperty();
+
         // Redessine le ciel lorsqu'on change de position d'observation, de champ de vue ou d'instant d'observation
         planeToCanvas.addListener(e -> drawSky());
         observedSky.addListener(e -> drawSky());
+
 
     }
 
@@ -205,13 +208,14 @@ public final class SkyCanvasManager {
         Transform transform = planeToCanvas.getValue();
 
         skyCanvasPainter.clear();
-        skyCanvasPainter.drawStars(sky, stereographicProjection, transform);
+        skyCanvasPainter.drawStars(sky, stereographicProjection, transform,getDrawAsterisms());
         skyCanvasPainter.drawPlanets(sky, stereographicProjection, transform);
         skyCanvasPainter.drawSun(sky, stereographicProjection, transform);
         skyCanvasPainter.drawMoon(sky, stereographicProjection, transform);
         skyCanvasPainter.drawHorizon(stereographicProjection, transform);
 
     }
+
 
     /**
      * Retourne le canvas utilisé
@@ -220,6 +224,30 @@ public final class SkyCanvasManager {
      */
     public Canvas canvas() {
         return canvas;
+    }
+
+    /**
+     * TODO
+     * @return
+     */
+    public boolean getDrawAsterisms() {
+        return drawAsterisms.get();
+    }
+
+    /**TODO
+     *
+     * @return
+     */
+    public BooleanProperty drawAsterismsProperty() {
+        return drawAsterisms;
+    }
+
+    /**
+     * TODO
+     * @param drawAsterisms
+     */
+    public void setDrawAsterisms(boolean drawAsterisms) {
+        this.drawAsterisms.set(drawAsterisms);
     }
 
     /**

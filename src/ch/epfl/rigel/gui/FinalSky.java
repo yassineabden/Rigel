@@ -7,6 +7,7 @@ import ch.epfl.rigel.coordinates.GeographicCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
@@ -105,6 +106,12 @@ public final class FinalSky extends Application {
             TimeAnimator timeAnimator = new TimeAnimator(dateTimeBean);
             timeAnimator.acceleratorProperty().set(NamedTimeAccelerator.TIMES_300.getAccelerator());
 
+            SkyCanvasManager canvasManager = new SkyCanvasManager(
+                    catalogue,
+                    dateTimeBean,
+                    observerLocationBean,
+                    viewingParametersBean);
+
             // Fenêtre principale
             BorderPane mainPane = new BorderPane();
             stage.setMinHeight(MIN_HEIGHT);
@@ -116,17 +123,14 @@ public final class FinalSky extends Application {
                     , new Separator(Orientation.VERTICAL)
                     ,observationTime(dateTimeBean, timeAnimator)
                     , new Separator(Orientation.VERTICAL)
+                    ,asterisms(timeAnimator,canvasManager.drawAsterismsProperty())
+                    , new Separator(Orientation.VERTICAL)
                     ,timeLapsePane(timeAnimator, dateTimeBean));
 
             controlBar.setStyle(STYLE_CONTROL_BAR);
             mainPane.setTop(controlBar);
 
             // Ciel
-            SkyCanvasManager canvasManager = new SkyCanvasManager(
-                    catalogue,
-                    dateTimeBean,
-                    observerLocationBean,
-                    viewingParametersBean);
 
             Canvas sky = canvasManager.canvas();
             Pane skyPane = new Pane(sky);
@@ -212,6 +216,25 @@ public final class FinalSky extends Application {
 
         return observationTimePane;
 
+    }
+
+    private Pane asterisms(TimeAnimator timeAnimator, BooleanProperty drawAsterisms) {
+        Pane pane = new Pane();
+        pane.setStyle(STYLE_SPACING_INHERIT);
+        String asterismsOn = "Asterisms on";
+        String asterismsOff = "Asterisms off";
+
+        Button asterismsButton = new Button();
+        asterismsButton.setText(asterismsOff);
+        asterismsButton.setFont(fontAwesome);
+        asterismsButton.setOnAction(a -> asterismsButton.setText(asterismsButton.getText().equals(asterismsOn) ? asterismsOff : asterismsOn));
+        asterismsButton.disableProperty().bind(timeAnimator.isRunning());
+        asterismsButton.textProperty().addListener((p, o, n) -> {
+            if (drawAsterisms.get()) drawAsterisms.set(false);
+            else drawAsterisms.set(true);
+        });
+        pane.getChildren().add(asterismsButton);
+        return pane;
     }
 
     // Sous-panneau permettant de régler l'ecoulement du temps
