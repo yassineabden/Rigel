@@ -5,11 +5,11 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -23,8 +23,7 @@ public class Main extends Application {
     private final static String TITLE = "Rigel";
 
 
-    Sky finalSky = new Sky();
-
+    FinalSky finalSky = new FinalSky();
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -58,18 +57,15 @@ public class Main extends Application {
 
 
        button.setStyle("-fx-background-color: \n" +
-               "        #090a0c,\n" +
-               "        linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),\n" +
-               "        linear-gradient(#20262b, #191d22),\n" +
-               "        radial-gradient(center 50% 0%, radius 100%, rgba(114,131,148,0.9), rgba(255,255,255,0));\n" +
-               "    -fx-background-radius: 5,4,3,5;\n" +
-               "    -fx-background-insets: 0,1,2,0;\n" +
+               "        #000000,\n" +
+               "        linear-gradient(#7ebcea, #2f4b8f),\n" +
+               "        linear-gradient(#426ab7, #263e75),\n" +
+               "        linear-gradient(#395cab, #223768);\n" +
+               "    -fx-background-insets: 0,1,2,3;\n" +
+               "    -fx-background-radius: 3,2,2,2;\n" +
+               "    -fx-padding: 12 30 12 30;\n" +
                "    -fx-text-fill: white;\n" +
-               "    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );\n" +
-               "    -fx-font-family: \"Arial\";\n" +
-               "    -fx-text-fill: linear-gradient(white, #d0d0d0);\n" +
-               "    -fx-font-size: 25px;\n" +
-               "    -fx-padding: 10 20 10 20;");
+               "    -fx-font-size: 25px;");
 
         mainPane.add(button,125,30);
 
@@ -80,18 +76,15 @@ public class Main extends Application {
         Button button2 = new Button(textButton2.getText());
 
         button2.setStyle("-fx-background-color: \n" +
-                "        #090a0c,\n" +
-                "        linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),\n" +
-                "        linear-gradient(#20262b, #191d22),\n" +
-                "        radial-gradient(center 50% 0%, radius 100%, rgba(114,131,148,0.9), rgba(255,255,255,0));\n" +
-                "    -fx-background-radius: 5,4,3,5;\n" +
-                "    -fx-background-insets: 0,1,2,0;\n" +
+                "        #000000,\n" +
+                "        linear-gradient(#7ebcea, #2f4b8f),\n" +
+                "        linear-gradient(#426ab7, #263e75),\n" +
+                "        linear-gradient(#395cab, #223768);\n" +
+                "    -fx-background-insets: 0,1,2,3;\n" +
+                "    -fx-background-radius: 3,2,2,2;\n" +
+                "    -fx-padding: 12 30 12 30;\n" +
                 "    -fx-text-fill: white;\n" +
-                "    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );\n" +
-                "    -fx-font-family: \"Arial\";\n" +
-                "    -fx-text-fill: linear-gradient(white, #d0d0d0);\n" +
-                "    -fx-font-size: 25px;\n" +
-                "    -fx-padding: 10 20 10 20;");
+                "    -fx-font-size: 25px;");
         mainPane.add(button2,125,40);
 
 
@@ -126,15 +119,15 @@ public class Main extends Application {
 
     private void showTextButton2 ( Stage stage) {
 
-        StackPane stackPane = new StackPane();
+        BorderPane borderPane = new BorderPane();
         Image image = new Image("sky.jpg");
         BackgroundImage backgroundImage = new BackgroundImage(image, null,null,null,null);
-        stackPane.setBackground(new Background(backgroundImage));
+        borderPane.setBackground(new Background(backgroundImage));
 
         Text text = new Text("Ce travail a été réalisé dans " +
                 "le cadre d’un cours donné à l’EPFL" +
                 " par Yassine Abdennadher et Juliette Aerni," +
-                " deux  programmeurs qui ne sont qu’à" +
+                " deux jeunes programmeurs qui ne sont qu’à" +
                 " leur début dans le monde de la programmation. " +
                 "On espère que vous allez profiter de leur magnifique travail. " +
                 "Hésitez pas non plus à envoyer votre avis aux adresses mail: " +
@@ -143,22 +136,24 @@ public class Main extends Application {
         stage.setHeight(MIN_HEIGHT);
         stage.setTitle(TITLE);
         stage.setWidth(MIN_WIDTH);
-
+        TextField textField = new TextField("Ce travail a été réalisé dans " +
+                "le cadre d’un cours donné à l’EPFL" +
+                " par Yassine Abdennadher et Juliette Aerni," +
+                " deux jeunes programmeurs qui ne sont qu’à" +
+                " leur début dans le monde de la programmation. " +
+                "On espère que vous allez profiter de leur magnifique travail. " +
+                "Hésitez pas non plus à envoyer votre avis aux adresses mail: " +
+                "yassine.abdennadher@epfl.ch ou juliette.aerni@epfl.ch.");
         double size = 18;
         String family = "Rockwell";
         text.setFont(Font.font(family,size));
-        Rectangle rectangle = new Rectangle(650,300);
-        rectangle.setFill(Color.FLORALWHITE);
-
-
-        stackPane.getChildren().addAll(rectangle, text);
 
 
 
+        borderPane.setCenter(text);
 
-        stage.setScene(new Scene(stackPane));
+        stage.setScene(new Scene(borderPane));
         stage.show();
-
 
 
 

@@ -11,7 +11,9 @@ import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Transform;
 
@@ -27,6 +29,7 @@ import java.util.Set;
 final public class SkyCanvasPainter {
 
     private static final int INTERCARDINAL_DEG_STEP = 45;
+    private static final double ANGULAR_SIZE_BLACK_BODY = Angle.ofDeg(0.5);
     private final Canvas canvas;
     private final GraphicsContext graphicsContext;
 
@@ -62,7 +65,7 @@ final public class SkyCanvasPainter {
      * @param projection    projection stéréographique pour mettre les étoiles sur un repère carthésien
      * @param planeToCanvas transformation utilisée pour passer d'un repère carthésien au repère du canvas
      */
-    public void drawStars(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas) {
+    public void drawStars(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas, boolean drawAsterisms) {
 
         // Créer un tableau contenant les coordonées des étoiles sur le canvas
         double[] starsOnCanvas = sky.starsPositions();
@@ -70,39 +73,40 @@ final public class SkyCanvasPainter {
         Set<Asterism> asterisms = sky.asterisms();
 
         //Dessine les asterisms
-        Bounds canvasBound = canvas.getBoundsInLocal();
-        graphicsContext.setStroke(Color.BLUE);
-        graphicsContext.setLineWidth(ASTERISMS_LINE_WIDTH);
-        boolean lastStarInBounds = false, thisStarInBounds, firstStar = true;
+        if(drawAsterisms) {
+            Bounds canvasBound = canvas.getBoundsInLocal();
+            graphicsContext.setStroke(Color.BLUE);
+            graphicsContext.setLineWidth(ASTERISMS_LINE_WIDTH);
+            boolean lastStarInBounds = false, thisStarInBounds, firstStar = true;
 
-        for (Asterism a : asterisms) {
+            for (Asterism a : asterisms) {
 
-            List<Integer> aIndex = sky.asterismIndices(a);
-            graphicsContext.beginPath();
+                List<Integer> aIndex = sky.asterismIndices(a);
+                graphicsContext.beginPath();
 
-            for (Integer index : aIndex) {
+                for (Integer index : aIndex) {
 
-                double x = starsOnCanvas[2 * index], y = starsOnCanvas[2 * index + 1];
-                if (firstStar) {
-                    graphicsContext.moveTo(x, y);
-                    lastStarInBounds = canvasBound.contains(new Point2D(x, y));
-                    firstStar = false;
-                } else {
-                    if ((thisStarInBounds = canvasBound.contains(new Point2D(x, y))) || lastStarInBounds) {
-                        graphicsContext.lineTo(x, y);
-                    } else {
+                    double x = starsOnCanvas[2 * index], y = starsOnCanvas[2 * index + 1];
+                    if (firstStar) {
                         graphicsContext.moveTo(x, y);
+                        lastStarInBounds = canvasBound.contains(new Point2D(x, y));
+                        firstStar = false;
+                    } else {
+                        if ((thisStarInBounds = canvasBound.contains(new Point2D(x, y))) || lastStarInBounds) {
+                            graphicsContext.lineTo(x, y);
+                        } else {
+                            graphicsContext.moveTo(x, y);
+                        }
+                        lastStarInBounds = thisStarInBounds;
                     }
-                    lastStarInBounds = thisStarInBounds;
                 }
+                firstStar = true;
+                lastStarInBounds = false;
+                graphicsContext.stroke();
             }
-            firstStar = true;
-            lastStarInBounds = false;
-            graphicsContext.stroke();
         }
-
         //dessine les étoiles
-        double diameterOnCanvas = planeToCanvas.deltaTransform(projection.applyToAngle(Angle.ofDeg(0.5)), 0).getX();
+        double diameterOnCanvas = planeToCanvas.deltaTransform(projection.applyToAngle(ANGULAR_SIZE_BLACK_BODY), 0).getX();
         drawBlackBody(starsOnCanvas, sky.stars(), diameterOnCanvas, planeToCanvas);
 
     }
@@ -123,6 +127,7 @@ final public class SkyCanvasPainter {
         double equatorD = 2 * radiusOnCanvas(stereographicProjection.circleRadiusForParallel(EQUATOR), planeToCanvas);
 
         graphicsContext.strokeOval(equator.getX() - equatorD / 2, equator.getY() - equatorD / 2, equatorD, equatorD);
+
         graphicsContext.setFill(Color.RED);
         graphicsContext.setTextBaseline(VPos.TOP);
         graphicsContext.setTextAlign(TextAlignment.CENTER);
@@ -150,7 +155,7 @@ final public class SkyCanvasPainter {
         double[] planetsOnCanvas = sky.planetsPositions();
         planeToCanvas.transform2DPoints(sky.planetsPositions(), 0, planetsOnCanvas, 0, planetsOnCanvas.length / 2);
 
-        double diameterOnCanvas = planeToCanvas.deltaTransform(projection.applyToAngle(Angle.ofDeg(0.5)), 0).getX();
+        double diameterOnCanvas = planeToCanvas.deltaTransform(projection.applyToAngle(ANGULAR_SIZE_BLACK_BODY), 0).getX();
         drawBlackBody(planetsOnCanvas, sky.planets(), diameterOnCanvas, planeToCanvas);
 
     }
@@ -189,6 +194,12 @@ final public class SkyCanvasPainter {
         graphicsContext.fillOval(sunX - dTransformed / 2, sunY - dTransformed / 2
                 ,dTransformed, dTransformed);
 
+        //texte
+        graphicsContext.setFill(Color.LIGHTGRAY);
+        graphicsContext.setTextBaseline(VPos.TOP);
+        graphicsContext.setTextAlign(TextAlignment.CENTER);
+        graphicsContext.fillText(sky.sun().name(), sunX + 1, sunY + 1);
+
     }
 
     /**
@@ -215,20 +226,29 @@ final public class SkyCanvasPainter {
     // Méthode dessinant une étoile ou une planète
     private void drawBlackBody(double[] positionsOnCanvas, List<? extends CelestialObject> list, double diameterOnCanvas, Transform planeToCanvas) {
 
+        ClosedInterval brighestStarsMagnitude = ClosedInterval.of(-1.5, 0.65);
         int i = 0;
         for (CelestialObject celestialObject : list) {
-            double dTransformed = diameterWithMagnitude(celestialObject, diameterOnCanvas, planeToCanvas);
+            double dTransformed = diameterWithMagnitude(celestialObject, diameterOnCanvas);
+
+            double x = positionsOnCanvas[i], y = positionsOnCanvas[i + 1];
 
             if (celestialObject instanceof Star) {
                 // détermine la couleur de l'étoile en fonction de la température de cette dernière
+                if(brighestStarsMagnitude.contains(celestialObject.magnitude())){
+                    graphicsContext.setFill(Color.LIGHTGRAY);
+                    graphicsContext.fillText(celestialObject.name(), x + 1, y + 1);
+                }
                 Color starColor = BlackBodyColor.colorForTemperature(((Star) (celestialObject)).colorTemperature());
                 graphicsContext.setFill(starColor);
             } else {
                 // les planètes sont grises
+                graphicsContext.setFill(Color.LIGHTGRAY);
+                graphicsContext.fillText(celestialObject.name(), x + 1, y + 1);
                 graphicsContext.setFill(Color.GRAY);
             }
             // Dessine l'object céleste
-            graphicsContext.fillOval(positionsOnCanvas[i] - dTransformed / 2, positionsOnCanvas[i + 1] - dTransformed / 2
+            graphicsContext.fillOval(x - dTransformed / 2, y - dTransformed / 2
                     , dTransformed
                     , dTransformed);
 
@@ -238,7 +258,7 @@ final public class SkyCanvasPainter {
 
 
      //Transforme le diamètre d'un object celeste ayant une magnitude (une étoile ou une planète) de coordonées sphérique au repère du canvas
-    private double diameterWithMagnitude(CelestialObject object, double diameterOnCanvas, Transform planeToCanvas) {
+    private double diameterWithMagnitude(CelestialObject object, double diameterOnCanvas) {
 
         double mDash = MAGNITUDE.clip(object.magnitude());
         double f = (99 - 17 * mDash) / 140;
