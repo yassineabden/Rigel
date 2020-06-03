@@ -10,6 +10,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -129,15 +130,15 @@ public class Main extends Application {
 
     private void showTextButton2 ( Stage stage) {
 
-        BorderPane borderPane = new BorderPane();
+        StackPane stackPane = new StackPane();
         Image image = new Image("sky.jpg");
         BackgroundImage backgroundImage = new BackgroundImage(image, null,null,null,null);
-        borderPane.setBackground(new Background(backgroundImage));
+        stackPane.setBackground(new Background(backgroundImage));
 
         Text text = new Text("Ce travail a été réalisé dans " +
                 "le cadre d’un cours donné à l’EPFL" +
                 " par Yassine Abdennadher et Juliette Aerni," +
-                " deux jeunes programmeurs qui ne sont qu’à" +
+                " deux  programmeurs qui ne sont qu’à" +
                 " leur début dans le monde de la programmation. " +
                 "On espère que vous allez profiter de leur magnifique travail. " +
                 "Hésitez pas non plus à envoyer votre avis aux adresses mail: " +
@@ -146,24 +147,22 @@ public class Main extends Application {
         stage.setHeight(MIN_HEIGHT);
         stage.setTitle(TITLE);
         stage.setWidth(MIN_WIDTH);
-        TextField textField = new TextField("Ce travail a été réalisé dans " +
-                "le cadre d’un cours donné à l’EPFL" +
-                " par Yassine Abdennadher et Juliette Aerni," +
-                " deux jeunes programmeurs qui ne sont qu’à" +
-                " leur début dans le monde de la programmation. " +
-                "On espère que vous allez profiter de leur magnifique travail. " +
-                "Hésitez pas non plus à envoyer votre avis aux adresses mail: " +
-                "yassine.abdennadher@epfl.ch ou juliette.aerni@epfl.ch.");
+
         double size = 18;
         String family = "Rockwell";
         text.setFont(Font.font(family,size));
+        Rectangle rectangle = new Rectangle(650,300);
+        rectangle.setFill(Color.FLORALWHITE);
+
+
+        stackPane.getChildren().addAll(rectangle, text);
 
 
 
-        borderPane.setCenter(text);
 
-        stage.setScene(new Scene(borderPane));
+        stage.setScene(new Scene(stackPane));
         stage.show();
+
 
 
 
