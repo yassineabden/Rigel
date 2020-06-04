@@ -24,7 +24,7 @@ public final class AsterismWithName {
      */
     public AsterismWithName(List<List<Star>> stars, String name){
 
-        Preconditions.checkArgument(!stars.isEmpty());
+       // Preconditions.checkArgument(!stars.isEmpty());
         Preconditions.checkArgument(name != null);
         this.stars = List.copyOf(stars);
         //TODO immuabilité
@@ -59,6 +59,14 @@ public final class AsterismWithName {
         public Builder setName ( String name){
             this.name = name;
             return this;
+        }
+
+        public String name(){
+            return name;
+        }
+
+        public List<List<Star>> stars(){
+            return stars;
         }
 
         public Builder addStars (List<Star> stars){

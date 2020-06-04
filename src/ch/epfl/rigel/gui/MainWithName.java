@@ -1,8 +1,6 @@
 package ch.epfl.rigel.gui;
 
-import ch.epfl.rigel.astronomy.AsterismLoader;
-import ch.epfl.rigel.astronomy.HygDatabaseLoader;
-import ch.epfl.rigel.astronomy.StarCatalogue;
+import ch.epfl.rigel.astronomy.*;
 import ch.epfl.rigel.coordinates.GeographicCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import javafx.application.Application;
@@ -36,7 +34,7 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 
-public final class Main extends Application {
+public final class MainWithName extends Application {
 
 
     private Font fontAwesome;
@@ -53,7 +51,7 @@ public final class Main extends Application {
 
     // Noms des différentes sources
     private final static String STARS_RESOURCES_FILE_NAME = "/hygdata_v3.csv";
-    private final static String ASTERISMS_RESOURCES_FILE_NAME = "/asterisms.txt";
+    private final static String ASTERISMS_RESOURCES_FILE_NAME = "/constellation_lines_simplified.dat";
     private static final String FONT_AWESOME_FILE_NAME = "/Font Awesome 5 Free-Solid-900.otf";
 
     // Styles FX et séparateur utilisés pour les différents noeuds
@@ -124,9 +122,9 @@ public final class Main extends Application {
             // Chargement des ressources
             fontAwesome = Font.loadFont(fontStream, 15);
 
-            StarCatalogue catalogue = new StarCatalogue.Builder()
-                    .loadFrom(hs, HygDatabaseLoader.INSTANCE)
-                    .loadFrom(as, AsterismLoader.INSTANCE)
+            StarCatalogueWithName catalogue = new StarCatalogueWithName.Builder()
+                    .loadFrom(hs, HygDatabaseWithNameLoader.INSTANCE)
+                    .loadFrom(as, AsterismWithNameLoader.INSTANCE)
                     .build();
 
             //Initialisation des beans et de l'accélérateur de temps
@@ -144,7 +142,7 @@ public final class Main extends Application {
             TimeAnimator timeAnimator = new TimeAnimator(dateTimeBean);
             timeAnimator.acceleratorProperty().set(NamedTimeAccelerator.TIMES_300.getAccelerator());
 
-            SkyCanvasManager canvasManager = new SkyCanvasManager(
+            SkyCanvasManagerWithName canvasManager = new SkyCanvasManagerWithName(
                     catalogue,
                     dateTimeBean,
                     observerLocationBean,
@@ -336,7 +334,7 @@ public final class Main extends Application {
     }
 
     //Barre d'information
-    private BorderPane informationPane(SkyCanvasManager canvasManager, ViewingParametersBean viewingParametersBean) {
+    private BorderPane informationPane(SkyCanvasManagerWithName canvasManager, ViewingParametersBean viewingParametersBean) {
 
         // Champ de vue
         Text fieldOfViewText = new Text();

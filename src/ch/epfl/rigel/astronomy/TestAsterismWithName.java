@@ -20,9 +20,10 @@ public class TestAsterismWithName {
         InputStream hs = resourceStream("/hygdata_v3.csv");
         InputStream as = resourceStream("/constellation_lines_rey.txt");
 
-        StarCatalogue catalogue = new StarCatalogue.Builder()
+       /** StarCatalogueWithName catalogue = new StarCatalogueWithName.Builder()
                 .loadFrom(hs, HygDatabaseLoader.INSTANCE)
                 .loadFrom(as, AsterismWithNameLoader.INSTANCE)
                 .build();
+        */
     }
 }

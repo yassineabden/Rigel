@@ -1,8 +1,6 @@
 package ch.epfl.rigel.gui;
 
-import ch.epfl.rigel.astronomy.CelestialObject;
-import ch.epfl.rigel.astronomy.ObservedSky;
-import ch.epfl.rigel.astronomy.StarCatalogue;
+import ch.epfl.rigel.astronomy.*;
 import ch.epfl.rigel.coordinates.CartesianCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import ch.epfl.rigel.coordinates.StereographicProjection;
@@ -10,7 +8,10 @@ import ch.epfl.rigel.math.Angle;
 import ch.epfl.rigel.math.ClosedInterval;
 import ch.epfl.rigel.math.RightOpenInterval;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.*;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableDoubleValue;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
@@ -26,10 +27,10 @@ import static javafx.beans.binding.Bindings.createDoubleBinding;
  * @author Yassine Abdennadher (299273)
  * @author Juliette Aerni (296670)
  */
-public final class SkyCanvasManager {
+public final class SkyCanvasManagerWithName {
 
     private final Canvas canvas;
-    private final SkyCanvasPainter skyCanvasPainter;
+    private final SkyCanvasPainterWithName skyCanvasPainter;
     private final ObservableValue<StereographicProjection> projection;
 
     private final ObservableDoubleValue mouseAzDeg;
@@ -37,7 +38,7 @@ public final class SkyCanvasManager {
     private final ObservableValue<CelestialObject> objectUnderMouse;
 
     private final ObservableValue<Transform> planeToCanvas;
-    private final ObservableValue<ObservedSky> observedSky;
+    private final ObservableValue<ObservedSkyWithName> observedSky;
     private final ObjectProperty<Point2D> mousePosition;
     private final ObservableValue<HorizontalCoordinates> mouseHorizontalPosition;
 
@@ -60,11 +61,11 @@ public final class SkyCanvasManager {
      * @param observerLocationBean  bean contenant la position d'observation du ciel
      * @param viewingParametersBean bean contenant les paramètres du vue de l'écran
      */
-    public SkyCanvasManager(StarCatalogue starCatalogue, DateTimeBean dateTimeBean, ObserverLocationBean observerLocationBean, ViewingParametersBean viewingParametersBean) {
+    public SkyCanvasManagerWithName(StarCatalogueWithName starCatalogue, DateTimeBean dateTimeBean, ObserverLocationBean observerLocationBean, ViewingParametersBean viewingParametersBean) {
 
         // Initialisation des beans et attributs
         canvas = new Canvas();
-        skyCanvasPainter = new SkyCanvasPainter(canvas);
+        skyCanvasPainter = new SkyCanvasPainterWithName(canvas);
 
         projection = Bindings.createObjectBinding(() -> (new StereographicProjection(viewingParametersBean.getCenter()))
                 , viewingParametersBean.centerProperty());
@@ -81,7 +82,7 @@ public final class SkyCanvasManager {
                 , canvas.heightProperty()
                 , canvas.widthProperty());
 
-        observedSky = Bindings.createObjectBinding(() -> new ObservedSky(dateTimeBean.getZonedDateTime()
+        observedSky = Bindings.createObjectBinding(() -> new ObservedSkyWithName(dateTimeBean.getZonedDateTime()
                         , observerLocationBean.getCoordinates()
                         , projection.getValue()
                         , starCatalogue)
@@ -204,7 +205,7 @@ public final class SkyCanvasManager {
     // Dessine le ciel en entier
     private void drawSky() {
         StereographicProjection stereographicProjection = projection.getValue();
-        ObservedSky sky = observedSky.getValue();
+        ObservedSkyWithName sky = observedSky.getValue();
         Transform transform = planeToCanvas.getValue();
 
         skyCanvasPainter.clear();

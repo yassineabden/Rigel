@@ -14,12 +14,12 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
  * @author Yassine Abdennadher (299273)
  * @author Juliette Aerni (296670)
  */
-public enum AsterismWithNameLoader implements StarCatalogue.Loader {
+public enum AsterismWithNameLoader implements StarCatalogueWithName.Loader {
 
     INSTANCE;
 
     @Override
-    public void load(InputStream inputStream, StarCatalogue.Builder builder) throws IOException {
+    public void load(InputStream inputStream, StarCatalogueWithName.Builder builder) throws IOException {
 
         List<Star> starsBuilded = builder.stars();
         HashMap<Integer, Star> hipToStar = new HashMap<>();
@@ -28,31 +28,37 @@ public enum AsterismWithNameLoader implements StarCatalogue.Loader {
             hipToStar.put(star.hipparcosId(), star);
 
         String a;
-
         AsterismWithName.Builder asterism = new AsterismWithName.Builder();
+
 
         try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, US_ASCII))) {
             while ((a = bufferedReader.readLine()) != null) {
 
                 if (a.startsWith("*")) {
+                    if(asterism.name()!= null) builder.addAsterism(asterism.build());
                     asterism.setName(a);
-                    if (a.startsWith("[")) {
+                }
 
-                        String[] stars = a.substring(2, a.length() - 2)
-                                .split("\", \"");
+                if (a.startsWith("[")) {
 
-                        List<Star> aStars = new ArrayList<>(stars.length);
+                    String[] stars = a.substring(2, a.length() - 2)
+                            .split("\", \"");
 
-                        for (String hipparcosId : stars) {
-                            aStars.add(hipToStar.get(Integer.parseInt(hipparcosId)));
-                        }
+                    List<Star> aStars = new ArrayList<>(stars.length);
+
+                    for (String hipparcosId : stars) {
+                       // System.out.println(hipparcosId);
+                        aStars.add(hipToStar.get(Integer.parseInt(hipparcosId)));
+                    }
+
+                    System.out.println(aStars.toString());
                     asterism.addStars(aStars);
 
-                    }
                 }
-               // builder.addAsterism(asterism.build());
-               // System.out.println(asterism.);
+
             }
+
+            builder.addAsterism(asterism.build());
 
         }
     }
