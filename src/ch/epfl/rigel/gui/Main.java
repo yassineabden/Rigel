@@ -47,8 +47,8 @@ public final class Main extends Application {
     private final static double INITIAL_FIELD_OF_VIEW = 100;
 
     // Valeurs du canevas
-    private final static double MIN_WIDTH = 800;
-    private final static double MIN_HEIGHT = 600;
+    private final static double MIN_WIDTH = 1000;
+    private final static double MIN_HEIGHT = 800;
     private final static String TITLE = "Rigel";
 
     // Noms des différentes sources
@@ -84,7 +84,7 @@ public final class Main extends Application {
     private final static String TITLE_MENU = "Rigel.";
     private final static int TITLE_SIZE = 100;
     private final static int BOUTON_SIZE = 50;
-    private final static int COLUMN_INDEX = 125;
+    private final static int COLUMN_INDEX = 165;
 
     //Propriétés de la fenêtre du bouton "En savoir plus"
     private final static int TEXT_X = 50;
@@ -273,6 +273,7 @@ public final class Main extends Application {
     }
 
     private Pane asterismsButton(TimeAnimator timeAnimator, BooleanProperty drawAsterisms) {
+
         Pane pane = new Pane();
         pane.setStyle(STYLE_SPACING_INHERIT);
         String asterismsOn = "Asterisms on";
@@ -495,9 +496,8 @@ public final class Main extends Application {
     private Button menuButton(String name) {
 
         Text textback = new Text(name);
-        double sizetext = BOUTON_SIZE;
         String familyButton = "Rockwell";
-        textback.setFont(Font.font(familyButton, sizetext));
+        textback.setFont(Font.font(familyButton, BOUTON_SIZE));
         Button but = new Button(textback.getText());
         but.setStyle(STYLE_BOUTON_MENU);
 
