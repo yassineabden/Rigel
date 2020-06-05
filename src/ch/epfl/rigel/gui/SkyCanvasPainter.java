@@ -235,7 +235,7 @@ final public class SkyCanvasPainter {
 
             if (celestialObject instanceof Star) {
                 // détermine la couleur de l'étoile en fonction de la température de cette dernière
-                if(brighestStarsMagnitude.contains(celestialObject.magnitude())){
+                if(celestialObject.magnitude() <= 0.63){
                     graphicsContext.setFill(Color.LIGHTGRAY);
                     graphicsContext.fillText(celestialObject.name(), x + 1, y + 1);
                 }

@@ -227,24 +227,27 @@ public final class SkyCanvasManager {
     }
 
     /**
-     * TODO
-     * @return
+     * Retourne le booléen qui détermine si les asterisms seront déssinés ou non
+     *
+     * @return le booléen qui détermine si les asterisms seront dessinés ou non
      */
     public boolean getDrawAsterisms() {
         return drawAsterisms.get();
     }
 
-    /**TODO
+    /**
+     * Retourne la propriété contenant le booléen qui dessine les asterisms
      *
-     * @return
+     * @return la propriété contenant le booléen qui dessine les asterisms
      */
     public BooleanProperty drawAsterismsProperty() {
         return drawAsterisms;
     }
 
     /**
-     * TODO
-     * @param drawAsterisms
+     * Méthode permettant d'attribuer une valeur au booléen contenu dans la propriété qui dessine les asterism
+     *
+     * @param drawAsterisms nouvelle valeur pour le booléen qui dessine les asterisms
      */
     public void setDrawAsterisms(boolean drawAsterisms) {
         this.drawAsterisms.set(drawAsterisms);
