@@ -45,6 +45,7 @@ final public class SkyCanvasPainter {
     private static final double NAME_DISTANCE_TO_OBJECT = 5.0;
 
 
+
     public SkyCanvasPainter(Canvas canvas) {
 
         this.canvas = canvas;
@@ -196,7 +197,7 @@ final public class SkyCanvasPainter {
                 ,dTransformed, dTransformed);
 
         //texte
-        setGraphicsContextForName().setFill(Color.PAPAYAWHIP);
+        setGraphicsContextForName().setFill(Color.LIGHTSALMON);
         graphicsContext.fillText(sky.sun().name(), sunX + NAME_DISTANCE_TO_OBJECT, sunY + NAME_DISTANCE_TO_OBJECT);
 
     }
@@ -216,7 +217,7 @@ final public class SkyCanvasPainter {
         Point2D moonCoord = carthesianCoordOnCanvas(planeToCanvas, sky.moonPosition());
         double x = moonCoord.getX(), y = moonCoord.getY();
 
-        setGraphicsContextForName().setFill(Color.PAPAYAWHIP);
+        setGraphicsContextForName().setFill(Color.LIGHTSALMON);
         graphicsContext.fillText(sky.moon().info(),x + NAME_DISTANCE_TO_OBJECT, y + NAME_DISTANCE_TO_OBJECT);
 
         graphicsContext.setFill(Color.WHITE);
@@ -246,7 +247,7 @@ final public class SkyCanvasPainter {
                 graphicsContext.setFill(starColor);
             } else {
                 // Affiche le nom de la planète et la dessine
-                setGraphicsContextForName().setFill(Color.PAPAYAWHIP);
+                setGraphicsContextForName().setFill(Color.LIGHTSALMON);
                 graphicsContext.fillText(celestialObject.name(), x + NAME_DISTANCE_TO_OBJECT, y + NAME_DISTANCE_TO_OBJECT);
                 graphicsContext.setFill(Color.GRAY);
             }

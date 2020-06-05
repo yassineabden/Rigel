@@ -95,6 +95,7 @@ public final class StarCatalogue {
         private final List<Star> stars = new ArrayList<>();
         private final List<Asterism> asterisms = new ArrayList<>();
 
+
         /**
          * Constructeur par défaut qui initialise le bâtisseur de manière à ce que le catalogue
          * en construction soit initialment vide.
