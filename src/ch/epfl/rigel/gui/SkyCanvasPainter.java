@@ -30,6 +30,7 @@ final public class SkyCanvasPainter {
 
     private static final int INTERCARDINAL_DEG_STEP = 45;
     private static final double ANGULAR_SIZE_BLACK_BODY = Angle.ofDeg(0.5);
+
     private final Canvas canvas;
     private final GraphicsContext graphicsContext;
 
@@ -40,6 +41,8 @@ final public class SkyCanvasPainter {
     private final static double SUN_FIRST_DISC_OPACITY = 0.25;
     private final static double SUN_FIRST_DISC_DIAMETER_EXPANSION = 2.2;
     private final static double SUN_SECOND_DISC_DIAMETER_EXPANSION = 2.0;
+    private static final double MAGNITUDE_FOR_BRIGHTEST_CELESTIAL_OBJECTS = 0.63;
+    private static final double NAME_DISTANCE_TO_OBJECT = 5.0;
 
 
     public SkyCanvasPainter(Canvas canvas) {
@@ -128,9 +131,7 @@ final public class SkyCanvasPainter {
 
         graphicsContext.strokeOval(equator.getX() - equatorD / 2, equator.getY() - equatorD / 2, equatorD, equatorD);
 
-        graphicsContext.setFill(Color.RED);
-        graphicsContext.setTextBaseline(VPos.TOP);
-        graphicsContext.setTextAlign(TextAlignment.CENTER);
+        setGraphicsContextForName().setFill(Color.RED);
 
         //dessine les points cardinaux et intercardinaux
         for (int deg = 0; deg < 360; deg += INTERCARDINAL_DEG_STEP) {
@@ -195,10 +196,8 @@ final public class SkyCanvasPainter {
                 ,dTransformed, dTransformed);
 
         //texte
-        graphicsContext.setFill(Color.LIGHTGRAY);
-        graphicsContext.setTextBaseline(VPos.TOP);
-        graphicsContext.setTextAlign(TextAlignment.CENTER);
-        graphicsContext.fillText(sky.sun().name(), sunX + 1, sunY + 1);
+        setGraphicsContextForName().setFill(Color.PAPAYAWHIP);
+        graphicsContext.fillText(sky.sun().name(), sunX + NAME_DISTANCE_TO_OBJECT, sunY + NAME_DISTANCE_TO_OBJECT);
 
     }
 
@@ -215,9 +214,13 @@ final public class SkyCanvasPainter {
         double dTransformed = radiusOnCanvas(d, planeToCanvas);
 
         Point2D moonCoord = carthesianCoordOnCanvas(planeToCanvas, sky.moonPosition());
+        double x = moonCoord.getX(), y = moonCoord.getY();
+
+        setGraphicsContextForName().setFill(Color.PAPAYAWHIP);
+        graphicsContext.fillText(sky.moon().info(),x + NAME_DISTANCE_TO_OBJECT, y + NAME_DISTANCE_TO_OBJECT);
 
         graphicsContext.setFill(Color.WHITE);
-        graphicsContext.fillOval(moonCoord.getX() - dTransformed / 2, moonCoord.getY() - dTransformed / 2
+        graphicsContext.fillOval(x - dTransformed / 2, y - dTransformed / 2
                 ,dTransformed, dTransformed);
 
     }
@@ -235,16 +238,16 @@ final public class SkyCanvasPainter {
 
             if (celestialObject instanceof Star) {
                 // détermine la couleur de l'étoile en fonction de la température de cette dernière
-                if(celestialObject.magnitude() <= 0.63){
-                    graphicsContext.setFill(Color.LIGHTGRAY);
-                    graphicsContext.fillText(celestialObject.name(), x + 1, y + 1);
+                if(celestialObject.magnitude() <= MAGNITUDE_FOR_BRIGHTEST_CELESTIAL_OBJECTS){
+                    setGraphicsContextForName().setFill(Color.WHITE);
+                    graphicsContext.fillText(celestialObject.name(), x + NAME_DISTANCE_TO_OBJECT, y + NAME_DISTANCE_TO_OBJECT);
                 }
                 Color starColor = BlackBodyColor.colorForTemperature(((Star) (celestialObject)).colorTemperature());
                 graphicsContext.setFill(starColor);
             } else {
                 // les planètes sont grises
-                graphicsContext.setFill(Color.LIGHTGRAY);
-                graphicsContext.fillText(celestialObject.name(), x + 1, y + 1);
+                setGraphicsContextForName().setFill(Color.PAPAYAWHIP);
+                graphicsContext.fillText(celestialObject.name(), x + NAME_DISTANCE_TO_OBJECT, y + NAME_DISTANCE_TO_OBJECT);
                 graphicsContext.setFill(Color.GRAY);
             }
             // Dessine l'object céleste
@@ -275,6 +278,14 @@ final public class SkyCanvasPainter {
     private double radiusOnCanvas(double d, Transform planeToCanvas) {
 
         return  planeToCanvas.deltaTransform(d, 0).getX();
+    }
+
+    // Applique le style au contexte graphic pour l'affichage de texte
+    private GraphicsContext setGraphicsContextForName (){
+
+        graphicsContext.setTextBaseline(VPos.TOP);
+        graphicsContext.setTextAlign(TextAlignment.CENTER);
+        return graphicsContext;
     }
 
 }
