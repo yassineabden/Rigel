@@ -77,6 +77,7 @@ public final class Main extends Application {
             "    -fx-font-size: 25px;\n" +
             "    -fx-padding: 10 20 10 20;";
 
+    // Bonus
     //Propriétés du Menu
     private final static int HGAP_VGAP = 2;
     private final static int INSETS = 10;
@@ -86,6 +87,7 @@ public final class Main extends Application {
     private final static int BOUTON_SIZE = 50;
     private final static int COLUMN_INDEX = 165;
 
+    // Bonus
     //Propriétés de la fenêtre du bouton "En savoir plus"
     private final static int TEXT_X = 50;
     private final static int TEXT_Y = 200;
@@ -95,6 +97,16 @@ public final class Main extends Application {
     // Retourne l'input de la ressource en fonction de son nom
     private InputStream resourceStream(String resourceName) {
         return getClass().getResourceAsStream(resourceName);
+    }
+
+
+    /**
+     * Méthode principale
+     *
+     *  @param args lignes de commandes
+     */
+    public static void main(String[] args) {
+        launch(args);
     }
 
     /**
@@ -191,7 +203,7 @@ public final class Main extends Application {
             return new Scene(mainPane);
         }
     }
-
+    // Bonus
     //Bouton qui permet de retourner au menu
     private Button backButton() {
 
@@ -272,6 +284,7 @@ public final class Main extends Application {
 
     }
 
+    //Bonus
     private Pane asterismsButton(TimeAnimator timeAnimator, BooleanProperty drawAsterisms) {
 
         Pane pane = new Pane();
@@ -412,6 +425,7 @@ public final class Main extends Application {
         LATITUDE, LONGITUDE;
     }
 
+    //Bonus
     //Affiche le Menu
     private Scene startMenu(Stage stage) {
 
@@ -456,6 +470,7 @@ public final class Main extends Application {
         return new Scene(mainPane);
     }
 
+    // Bonus
     //Affiche un texte une fois que l'utilisateur a appuyé sur le bouton "En savoir plus"
     private Scene showTextButton2(Stage stage) {
 
@@ -492,6 +507,7 @@ public final class Main extends Application {
         return new Scene(pane);
     }
 
+    // Bonus
     // Initialise un bouton du menu
     private Button menuButton(String name) {
 

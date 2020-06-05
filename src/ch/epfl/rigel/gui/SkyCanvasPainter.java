@@ -237,6 +237,7 @@ final public class SkyCanvasPainter {
 
             double x = positionsOnCanvas[i], y = positionsOnCanvas[i + 1];
 
+            //Bonus
             if (celestialObject instanceof Star) {
                 // Affiche le nom de l'étoile si cette dernière est assez lumineuse et détermine sa couleur en fonction de sa température
                 if(celestialObject.magnitude() <= MAGNITUDE_FOR_BRIGHTEST_CELESTIAL_OBJECTS){
