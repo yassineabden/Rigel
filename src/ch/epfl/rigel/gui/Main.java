@@ -35,7 +35,13 @@ import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
-
+/**
+ * Classe principale qui initialise le menu, l'interface du ciel, la page en savoir plus et gère les interactions entre les diverses fenêtres
+ *
+ *
+ * @author Yassine Abdennadher (299273)
+ * @author Juliette Aerni (296670)
+*/
 public final class Main extends Application {
 
 
@@ -173,7 +179,6 @@ public final class Main extends Application {
             mainPane.setTop(controlBar);
 
             // Ciel
-
             Canvas sky = canvasManager.canvas();
             Pane skyPane = new Pane(sky);
 
@@ -474,7 +479,7 @@ public final class Main extends Application {
                 "deux  programmeurs qui ne sont qu’à" +
                 " leur début dans le monde de la programmation. " + "\n" +
                 "On espère que vous allez profiter de leur magnifique travail. " +
-                "Hésitez pas à leur envoyer votre avis aux adresses mail: " + "\n" +
+                "N'hésitez pas à leur envoyer votre avis aux adresses mail: " + "\n" +
                 "yassine.abdennadher@epfl.ch ou juliette.aerni@epfl.ch.");
         text.setX(TEXT_X);
         text.setY(TEXT_Y);
