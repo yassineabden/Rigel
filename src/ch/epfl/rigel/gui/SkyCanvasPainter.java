@@ -237,7 +237,7 @@ final public class SkyCanvasPainter {
             double x = positionsOnCanvas[i], y = positionsOnCanvas[i + 1];
 
             if (celestialObject instanceof Star) {
-                // détermine la couleur de l'étoile en fonction de la température de cette dernière
+                // Affiche le nom de l'étoile si cette dernière est assez lumineuse et détermine sa couleur en fonction de sa température
                 if(celestialObject.magnitude() <= MAGNITUDE_FOR_BRIGHTEST_CELESTIAL_OBJECTS){
                     setGraphicsContextForName().setFill(Color.WHITE);
                     graphicsContext.fillText(celestialObject.name(), x + NAME_DISTANCE_TO_OBJECT, y + NAME_DISTANCE_TO_OBJECT);
@@ -245,7 +245,7 @@ final public class SkyCanvasPainter {
                 Color starColor = BlackBodyColor.colorForTemperature(((Star) (celestialObject)).colorTemperature());
                 graphicsContext.setFill(starColor);
             } else {
-                // les planètes sont grises
+                // Affiche le nom de la planète et la dessine
                 setGraphicsContextForName().setFill(Color.PAPAYAWHIP);
                 graphicsContext.fillText(celestialObject.name(), x + NAME_DISTANCE_TO_OBJECT, y + NAME_DISTANCE_TO_OBJECT);
                 graphicsContext.setFill(Color.GRAY);
